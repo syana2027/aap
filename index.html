@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>نظام إدارة صيانة الأجهزة المنزلية المتكامل</title>
+  <title>منظومة الصيانة المعتمدة</title>
   <link rel="manifest" href="manifest.json">
   
   <!-- Bootstrap 5 RTL -->
@@ -17,7 +17,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- HTML2Canvas لتحويل الفاتورة إلى صورة عالية الدقة للواتساب -->
+  <!-- HTML2Canvas لاستخراج صورة الفاتورة للواتساب بدقة عالية -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -114,6 +114,49 @@
       border: none;
     }
 
+    /* التقويم العربي المنبثق لحل مشكلة التاريخ نهائياً */
+    .arabic-calendar-popover {
+      position: absolute;
+      z-index: 99999;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border: 1px solid #ced4da;
+      width: 295px;
+      padding: 12px;
+      direction: rtl;
+    }
+    .calendar-weekdays-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #6c757d;
+      background-color: #f8f9fa;
+      padding: 6px 0;
+      border-radius: 6px;
+    }
+    .calendar-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .calendar-day-cell {
+      padding: 6px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .calendar-day-cell:hover:not(.empty) { background-color: #e2e6ea; }
+    .calendar-day-cell.today { border: 1px solid #0d6efd; color: #0d6efd; font-weight: bold; }
+    .calendar-day-cell.selected { background-color: #0d6efd !important; color: #ffffff !important; font-weight: bold; }
+    .calendar-day-cell.empty { cursor: default; background: transparent; }
+
     /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
     .invoice-scroll-container {
       width: 100%;
@@ -125,8 +168,8 @@
       color: #111111 !important;
       padding: 30px;
       border-radius: 10px;
-      width: 900px;
-      min-width: 900px;
+      width: 880px;
+      min-width: 880px;
       margin: auto;
       direction: rtl;
       position: relative;
@@ -215,12 +258,14 @@
       font-weight: bold;
     }
     .inv-row-item span { white-space: nowrap; }
+    
     .inv-table-custom {
       width: 100%;
       border-collapse: collapse;
       margin-top: 12px;
       border: 1.5px solid #0e5c36;
       text-align: center;
+      position: relative;
     }
     .inv-table-custom th {
       background-color: #0e5c36 !important;
@@ -318,8 +363,13 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.25);
       pointer-events: none;
     }
-
-    /* الكارنيه */
+    .preview-box {
+      border: 2px dashed #0d6efd;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      background: #f8f9fa;
+    }
     .id-card-trust {
       background: #ffffff;
       border: 2px solid #198754;
@@ -332,13 +382,6 @@
       color: white;
       padding: 12px;
       text-align: center;
-    }
-    .preview-box {
-      border: 2px dashed #0d6efd;
-      border-radius: 10px;
-      padding: 8px;
-      text-align: center;
-      background: #f8f9fa;
     }
   </style>
 </head>
@@ -461,8 +504,17 @@
           <option value="مؤجل">مؤجل</option>
           <option value="مرتجع">مرتجع</option>
         </select>
-        <!-- خانة التاريخ مع محاذاة LTR لمنع قلب الأرقام -->
-        <input type="date" class="form-control form-control-sm" id="techFilterDate" style="direction: ltr !important; text-align: center;" onchange="renderTechOrders()">
+        
+        <!-- مربع تاريخ منسق وواضح بدون انعكاس -->
+        <div class="input-group input-group-sm" style="width: 175px;">
+          <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('techFilterDate', event)">
+            <i class="fa-solid fa-calendar-days"></i>
+          </span>
+          <input type="text" class="form-control form-control-sm text-center fw-bold date-click-input" id="techFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('techFilterDate', event)">
+          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDatePicker('techFilterDate', renderTechOrders)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -537,10 +589,15 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <!-- خانة التاريخ مع اتجاه LTR لمنع قلب الأرقام والشرطات -->
-        <div class="d-flex align-items-center gap-1">
-          <input type="date" class="form-control form-control-sm" id="adminFilterDate" style="direction: ltr !important; text-align: center; width: 160px;" onchange="renderAdminOrders()">
-          <button class="btn btn-sm btn-outline-secondary" onclick="clearAdminDateFilter()" title="إلغاء فلتر التاريخ">الكل</button>
+        <!-- مربع تاريخ سليم وواضح يمنع أي انعكاس للحروف نهائياً -->
+        <div class="input-group input-group-sm" style="width: 185px;">
+          <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('adminFilterDate', event)">
+            <i class="fa-solid fa-calendar-days"></i>
+          </span>
+          <input type="text" class="form-control form-control-sm text-center fw-bold date-click-input" id="adminFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('adminFilterDate', event)">
+          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearAdminDateFilter()" title="عرض كل التواريخ">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
       </div>
       <div id="adminOrdersContainer" class="row g-3"></div>
@@ -842,7 +899,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة وتعديل البلاغ ==================== -->
+  <!-- ==================== مودال إضافة وتعديل البلاغ والعميل ==================== -->
   <div class="modal fade" id="orderModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -876,7 +933,12 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">تاريخ البلاغ</label>
-                <input type="date" class="form-control" id="orderDate" style="direction: ltr !important; text-align: center;" required>
+                <div class="input-group">
+                  <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('orderDate', event)">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                  <input type="text" class="form-control text-center fw-bold date-click-input" id="orderDate" readonly onclick="openArabicDatePicker('orderDate', event)" required>
+                </div>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">حالة البلاغ</label>
@@ -901,6 +963,24 @@
           </form>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ==================== مودال التقويم العربي المشترك ==================== -->
+  <div id="arabicCalendarPopover" class="arabic-calendar-popover" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="prevCalMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="fw-bold fs-6" id="calMonthYearTitle">أكتوبر 2026</div>
+      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="nextCalMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+    </div>
+    <div class="calendar-weekdays-grid mb-1">
+      <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
+    </div>
+    <div id="calDaysGrid" class="calendar-days-grid mb-2"></div>
+    <div class="d-flex justify-content-between pt-2 border-top">
+      <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" onclick="selectCalendarDate(getLocalDateStr())">اليوم</button>
+      <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-bold" onclick="selectYesterday()">أمس</button>
+      <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 fw-bold" onclick="clearCurrentDatePicker()">مسح</button>
     </div>
   </div>
 
@@ -1189,7 +1269,7 @@
 
       const todayStr = getLocalDateStr();
       const statusFilter = document.getElementById('techFilterStatus').value;
-      const dateFilter = document.getElementById('techFilterDate').value;
+      const dateFilter = document.getElementById('techFilterDate').value.trim();
 
       const todayOrdersAll = techOrders.filter(o => o.date === todayStr || o.statusDate === todayStr);
 
@@ -1243,7 +1323,7 @@
               </div>
 
               <div class="d-flex align-items-center gap-1">
-                <select class="form-select form-select-sm fw-bold border-primary" style="width: 125px;" onchange="updateOrderStatus('${order.id}', this.value)">
+                <select class="form-select form-select-sm fw-bold border-primary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
                   <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
                   <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
                   <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
@@ -1253,7 +1333,7 @@
                 </select>
 
                 <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة">
-                  <i class="fa-solid fa-file-invoice"></i>
+                  <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
                 </button>
               </div>
             </div>
@@ -1311,7 +1391,7 @@
 
       const searchTxt = document.getElementById('adminSearchInput').value.trim().toLowerCase();
       const statusFilter = document.getElementById('adminFilterStatusSelect').value;
-      const dateFilter = document.getElementById('adminFilterDate').value;
+      const dateFilter = document.getElementById('adminFilterDate').value.trim();
 
       let filtered = globalOrders.filter(o => {
         if (statusFilter && o.status !== statusFilter) return false;
@@ -1603,7 +1683,7 @@
       document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
       document.getElementById('invSheetProblemDesc').value = order.notes || 'صيانة وفحص دوري للجهاز';
 
-      // تجزئة التاريخ إلى يوم/شهر/سنة بدون أي انعكاس
+      // تجزئة التاريخ بدون أي انعكاس
       const today = new Date();
       let dayVal = String(today.getDate()).padStart(2, '0');
       let monthVal = String(today.getMonth() + 1).padStart(2, '0');
@@ -1646,7 +1726,6 @@
       const stampBox = document.getElementById('invSheetStamp');
 
       if (type === 'kiriazi') {
-        // لوجو كيريازي الأصلي المطابق تماماً
         logoBox.innerHTML = `
           <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; box-shadow: 0 3px 6px rgba(0,0,0,0.18); display: inline-block;">
             <div style="background:#e63946; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
@@ -1659,15 +1738,14 @@
         stampBox.className = "stamp-kiriazi-red";
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>`;
       } else {
-        // لوجو المركز المعتمد 19387 الأصلي
         logoBox.innerHTML = `
           <div style="display:flex; align-items:center; gap:8px;">
-            <div style="width:48px; height:48px; background:linear-gradient(135deg, #0d6efd, #0b4f8a); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1.35rem; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+            <div style="width:48px; height:48px; background:linear-gradient(135deg, #0d6efd, #0b4f8a); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1.4rem;">
               <i class="fa-solid fa-wrench"></i>
             </div>
             <div>
               <div style="color:#b02a37; font-weight:900; font-size:1.05rem; line-height:1.2;">قسم الخدمة والصيانة</div>
-              <div style="color:#333; font-size:0.7rem; font-weight:bold; letter-spacing:0.3px;">Service &amp; Maintenance Section</div>
+              <div style="color:#333; font-size:0.7rem; font-weight:bold;">Service &amp; Maintenance Section</div>
             </div>
           </div>
         `;
@@ -1761,7 +1839,7 @@
       });
     }
 
-    // ==================== الحل الجذري: تحويل الفاتورة لصورة عالية الدقة كاملة وبدون أي نقص ====================
+    // ==================== تحويل الفاتورة لصورة عالية الدقة للواتساب ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -1772,13 +1850,12 @@
 
       showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
 
-      // 1. بناء حاوية مستقلة ومسطحة تماماً بعرض 920 بكسل وبنصوص عربية صريحة لمنع مشاكل تقطيع الحروف أو قص الشاشة
       const container = document.createElement('div');
       container.style.cssText = `
         position: fixed;
         left: -9999px;
         top: 0;
-        width: 920px;
+        width: 900px;
         background: #ffffff;
         padding: 30px;
         border: 2px solid #1c6841;
@@ -1790,7 +1867,6 @@
         z-index: -99999;
       `;
 
-      // تجهيز اللوجو
       let logoHtml = '';
       let headerTitleText = '';
       let hotlineHtml = '';
@@ -1831,7 +1907,6 @@
         `;
       }
 
-      // قراءة القيم وتجهيز التاريخ غير المعكوس
       const cName = document.getElementById('invSheetClientName').value;
       const cPhone = document.getElementById('invSheetClientPhone').value;
       const cAddr = document.getElementById('invSheetClientAddress').value;
@@ -1843,7 +1918,6 @@
       const month = document.getElementById('invDateMonth').value || '  ';
       const year = document.getElementById('invDateYear').value || '    ';
 
-      // بناء صفوف الجدول كنصوص ثابتة
       let rowsHtml = '';
       officialInvoiceParts.forEach((part, i) => {
         const itemTotal = (part.qty || 1) * (part.price || 0);
@@ -1862,7 +1936,6 @@
 
       container.innerHTML = `
         <div style="position:relative;">
-          <!-- ترويسة -->
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <div style="width:230px;">${logoHtml}</div>
             <div style="text-align:center; flex:1;">
@@ -1882,9 +1955,7 @@
             </div>
           </div>
 
-          <!-- صناديق البيانات والتاريخ -->
           <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:12px;">
-            <!-- عميل -->
             <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
               <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات العميل</div>
               <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>اسم العميل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cName}</span></div>
@@ -1892,7 +1963,6 @@
               <div style="font-size:0.92rem; font-weight:bold;"><span>العنوان : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cAddr}</span></div>
             </div>
 
-            <!-- التاريخ المطابق تماماً وبدون أي انعكاس -->
             <div style="min-width:180px; text-align:center;">
               <div style="display:inline-flex; align-items:baseline; justify-content:center; font-size:1rem; font-weight:bold;">
                 <span style="margin-left:6px;">التاريخ :</span>
@@ -1902,7 +1972,6 @@
               </div>
             </div>
 
-            <!-- جهاز -->
             <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
               <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات الجهاز</div>
               <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>نوع الجهاز : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dType}</span></div>
@@ -1911,12 +1980,10 @@
             </div>
           </div>
 
-          <!-- وصف المشكلة -->
           <div style="margin:10px 0; font-size:0.92rem; font-weight:bold;">
             <span>وصف المشكلة : </span><span style="border-bottom:1.5px dotted #555; padding:0 8px;">${problem}</span>
           </div>
 
-          <!-- الجدول -->
           <table style="width:100%; border-collapse:collapse; margin-top:10px; border:1.5px solid #0e5c36; text-align:center;">
             <thead>
               <tr style="background-color:#0e5c36; color:#ffffff;">
@@ -1942,7 +2009,6 @@
             </tfoot>
           </table>
 
-          <!-- شروط الضمان -->
           <div style="border:1.5px solid #212529; border-radius:12px; padding:10px 18px; margin-top:16px; display:flex; align-items:center; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
             <div style="display:flex; align-items:center;">
               <span style="background-color:#0e5c36; color:#fff; width:24px; height:24px; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; margin-left:6px;"><i class="fa-solid fa-check"></i></span>
@@ -1953,7 +2019,6 @@
             <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
           </div>
 
-          <!-- الختم -->
           ${stampHtml}
         </div>
       `;
@@ -1962,11 +2027,11 @@
 
       try {
         const canvas = await html2canvas(container, {
-          scale: 2,
+          scale: 2.5,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 920
+          width: 900
         });
 
         document.body.removeChild(container);
@@ -1988,7 +2053,6 @@
             }
           }
 
-          // تنزيل الصورة وفتح واتساب إذا لم يتوفر Web Share
           const downloadUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = downloadUrl;
@@ -2005,6 +2069,68 @@
         alert('حدث خطأ أثناء إنشاء الصورة: ' + e.message);
       }
     }
+
+    // ==================== ميزات التقويم المنبثق ====================
+    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    let activeDatePickerInputId = null;
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+
+    function openArabicDatePicker(inputId, evt) {
+      if (evt) evt.stopPropagation();
+      activeDatePickerInputId = inputId;
+      renderArabicCalendar();
+      const popover = document.getElementById('arabicCalendarPopover');
+      const input = document.getElementById(inputId);
+      const rect = input.getBoundingClientRect();
+      popover.style.display = 'block';
+      popover.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+      popover.style.left = Math.max(10, rect.left + window.scrollX) + 'px';
+    }
+
+    function renderArabicCalendar() {
+      document.getElementById('calMonthYearTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
+      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); 
+      const firstDayEgypt = (firstDayJs + 1) % 7;
+      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayStr = getLocalDateStr();
+      const currentVal = activeDatePickerInputId ? document.getElementById(activeDatePickerInputId)?.value : '';
+
+      let html = '';
+      for (let i = 0; i < firstDayEgypt; i++) html += '<div class="calendar-day-cell empty"></div>';
+
+      for (let d = 1; d <= totalDays; d++) {
+        const fullDate = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        let cellClass = 'calendar-day-cell';
+        if (fullDate === currentVal) cellClass += ' selected';
+        else if (fullDate === todayStr) cellClass += ' today';
+        html += `<div class="${cellClass}" onclick="selectCalendarDate('${fullDate}')">${d}</div>`;
+      }
+      document.getElementById('calDaysGrid').innerHTML = html;
+    }
+
+    function prevCalMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderArabicCalendar(); }
+    function nextCalMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderArabicCalendar(); }
+    function closeArabicDatePicker() { document.getElementById('arabicCalendarPopover').style.display = 'none'; activeDatePickerInputId = null; }
+    
+    function selectCalendarDate(dateStr) {
+      if (activeDatePickerInputId) {
+        document.getElementById(activeDatePickerInputId).value = dateStr;
+        if (activeDatePickerInputId === 'techFilterDate') renderTechOrders();
+        if (activeDatePickerInputId === 'adminFilterDate') renderAdminOrders();
+      }
+      closeArabicDatePicker();
+    }
+    function selectYesterday() { const d = new Date(); d.setDate(d.getDate() - 1); selectCalendarDate(getLocalDateStr(d)); }
+    function clearCurrentDatePicker() { if (activeDatePickerInputId) document.getElementById(activeDatePickerInputId).value = ''; closeArabicDatePicker(); }
+    function clearDatePicker(id, cb) { document.getElementById(id).value = ''; if (cb) cb(); }
+
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('arabicCalendarPopover');
+      if (pop && pop.style.display === 'block' && !pop.contains(e.target) && !e.target.closest('.date-click-input') && !e.target.closest('.input-group-text')) {
+        closeArabicDatePicker();
+      }
+    });
 
     // ==================== الخريطة مع استرجاع صورة الفني الدائرية ====================
     function initMap() {
@@ -2051,7 +2177,7 @@
         case 'قيد الاستكمال': return 'bg-primary';
         case 'مؤجل': return 'bg-warning text-dark';
         case 'مرتجع': return 'bg-danger';
-        default: return 'bg-primary';
+        default: return 'bg-secondary';
       }
     }
 
