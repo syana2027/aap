@@ -1,0 +1,17 @@
+{
+  "name": "منظومة الصيانة المعتمدة",
+  "short_name": "الصيانة",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b2545",
+  "theme_color": "#0b2545",
+  "description": "منظومة إدارة وبلاغات صيانة الأجهزة المنزلية المتكاملة",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/942/942748.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
