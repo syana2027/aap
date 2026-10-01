@@ -114,50 +114,7 @@
       border: none;
     }
 
-    /* التقويم العربي المنبثق لحل مشكلة التاريخ نهائياً */
-    .arabic-calendar-popover {
-      position: absolute;
-      z-index: 99999;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      border: 1px solid #ced4da;
-      width: 295px;
-      padding: 12px;
-      direction: rtl;
-    }
-    .calendar-weekdays-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 3px;
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: #6c757d;
-      background-color: #f8f9fa;
-      padding: 6px 0;
-      border-radius: 6px;
-    }
-    .calendar-days-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 3px;
-      text-align: center;
-      margin-top: 4px;
-    }
-    .calendar-day-cell {
-      padding: 6px 0;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-    .calendar-day-cell:hover:not(.empty) { background-color: #e2e6ea; }
-    .calendar-day-cell.today { border: 1px solid #0d6efd; color: #0d6efd; font-weight: bold; }
-    .calendar-day-cell.selected { background-color: #0d6efd !important; color: #ffffff !important; font-weight: bold; }
-    .calendar-day-cell.empty { cursor: default; background: transparent; }
-
-    /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
+    /* ==================== استايل الفاتورة الرسمي ==================== */
     .invoice-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -168,25 +125,26 @@
       color: #111111 !important;
       padding: 30px;
       border-radius: 10px;
-      width: 880px;
-      min-width: 880px;
+      width: 920px;
+      min-width: 920px;
       margin: auto;
       direction: rtl;
       position: relative;
       border: 1.5px solid #1c6841;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      font-family: 'Arial', sans-serif;
     }
     .inv-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 25px;
     }
     .inv-main-title-box { text-align: center; flex: 1; }
     .inv-main-title-box h2 {
       font-weight: 900;
       margin: 0;
-      font-size: 1.95rem;
+      font-size: 2.2rem;
       letter-spacing: -0.5px;
     }
     .inv-main-subtitle {
@@ -194,33 +152,34 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #2b2b2b !important;
+      color: #333 !important;
       margin-top: 5px;
     }
     .inv-main-subtitle::before, .inv-main-subtitle::after {
       content: '';
       display: inline-block;
-      width: 40px;
+      width: 45px;
       height: 1.5px;
       background: #333;
     }
     .inv-badge-pill {
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 4px 32px;
+      padding: 5px 35px;
       border-radius: 20px;
       font-weight: bold;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       display: inline-block;
+      border: 1px solid #1c6841;
     }
     .inv-dotted-input {
       border: none;
       border-bottom: 1.5px dotted #555;
       background: transparent;
       padding: 2px 4px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: bold;
       outline: none;
       color: #111 !important;
@@ -229,32 +188,33 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 12px;
+      gap: 15px;
+      margin-bottom: 15px;
     }
     .inv-box-section {
       flex: 1;
       border: 1.5px solid #212529;
       border-radius: 12px;
-      padding: 16px 14px 10px 14px;
+      padding: 20px 15px 12px 15px;
       position: relative;
     }
     .inv-box-pill-title {
       position: absolute;
-      top: -13px;
+      top: -15px;
       right: 25px;
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 2px 24px;
+      padding: 3px 25px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: bold;
+      border: 1px solid #1c6841;
     }
     .inv-row-item {
       display: flex;
       align-items: baseline;
-      margin-bottom: 8px;
-      font-size: 0.92rem;
+      margin-bottom: 10px;
+      font-size: 1rem;
       font-weight: bold;
     }
     .inv-row-item span { white-space: nowrap; }
@@ -262,7 +222,7 @@
     .inv-table-custom {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin-top: 15px;
       border: 1.5px solid #0e5c36;
       text-align: center;
       position: relative;
@@ -270,15 +230,15 @@
     .inv-table-custom th {
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 8px;
-      font-size: 0.95rem;
+      padding: 10px;
+      font-size: 1.05rem;
       font-weight: bold;
       border: 1px solid #0e5c36;
     }
     .inv-table-custom td {
       border: 1px solid #888;
-      padding: 6px;
-      font-size: 0.95rem;
+      padding: 8px;
+      font-size: 1rem;
       font-weight: bold;
       color: #111 !important;
     }
@@ -292,56 +252,58 @@
     }
     .inv-subtotal-row {
       background: #ffffff !important;
-      text-align: right;
-      padding-right: 20px !important;
+      text-align: left;
+      padding-left: 20px !important;
       font-weight: bold;
     }
     .inv-total-row {
-      background-color: #d1e7dd !important;
-      color: #0f5132 !important;
+      background-color: #e8f5e9 !important;
+      color: #111 !important;
       font-size: 1.15rem;
       font-weight: 900;
-      text-align: right;
-      padding-right: 20px !important;
+      text-align: left;
+      padding-left: 20px !important;
     }
     .inv-terms-bar {
       border: 1.5px solid #212529;
       border-radius: 12px;
-      padding: 10px 18px;
-      margin-top: 16px;
+      padding: 12px 20px;
+      margin-top: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: bold;
     }
     .inv-check-badge {
       background-color: #0e5c36 !important;
       color: #fff !important;
-      width: 25px;
-      height: 25px;
+      width: 26px;
+      height: 26px;
       border-radius: 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-left: 6px;
+      margin-left: 8px;
     }
+
+    /* الأختام */
     .stamp-kiriazi-red {
       position: absolute;
       bottom: 25px;
       left: 30px;
-      border: 3px dashed #d90429 !important;
-      color: #d90429 !important;
-      border-radius: 50%;
-      width: 105px;
-      height: 105px;
+      background: #d90429 !important;
+      color: #ffffff !important;
+      border-radius: 15px;
+      padding: 10px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       transform: rotate(-15deg);
-      opacity: 0.9;
+      border: 2px dashed #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
       pointer-events: none;
     }
     .stamp-golden-seal {
@@ -351,8 +313,8 @@
       background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
       color: #3d2800 !important;
       border-radius: 50%;
-      width: 105px;
-      height: 105px;
+      width: 110px;
+      height: 110px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -363,6 +325,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.25);
       pointer-events: none;
     }
+
     .preview-box {
       border: 2px dashed #0d6efd;
       border-radius: 10px;
@@ -382,6 +345,15 @@
       color: white;
       padding: 12px;
       text-align: center;
+    }
+    
+    /* منع الانعكاس في حقول التاريخ */
+    .date-input-rtl {
+      direction: rtl;
+      text-align: right;
+    }
+    .date-input-rtl::-webkit-datetime-edit {
+      direction: rtl;
     }
   </style>
 </head>
@@ -505,16 +477,8 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <!-- مربع تاريخ منسق وواضح بدون انعكاس -->
-        <div class="input-group input-group-sm" style="width: 175px;">
-          <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('techFilterDate', event)">
-            <i class="fa-solid fa-calendar-days"></i>
-          </span>
-          <input type="text" class="form-control form-control-sm text-center fw-bold date-click-input" id="techFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('techFilterDate', event)">
-          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDatePicker('techFilterDate', renderTechOrders)">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
+        <input type="date" class="form-control form-control-sm date-input-rtl" id="techFilterDate" onchange="renderTechOrders()" style="width: 175px;">
+        <button class="btn btn-sm btn-outline-secondary" onclick="clearDateFilter('techFilterDate', renderTechOrders)"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
 
@@ -589,16 +553,8 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <!-- مربع تاريخ سليم وواضح يمنع أي انعكاس للحروف نهائياً -->
-        <div class="input-group input-group-sm" style="width: 185px;">
-          <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('adminFilterDate', event)">
-            <i class="fa-solid fa-calendar-days"></i>
-          </span>
-          <input type="text" class="form-control form-control-sm text-center fw-bold date-click-input" id="adminFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('adminFilterDate', event)">
-          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearAdminDateFilter()" title="عرض كل التواريخ">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
+        <input type="date" class="form-control form-control-sm date-input-rtl" id="adminFilterDate" style="width: 175px;" onchange="renderAdminOrders()">
+        <button class="btn btn-sm btn-outline-secondary" onclick="clearDateFilter('adminFilterDate', renderAdminOrders)" title="إلغاء الفلتر"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div id="adminOrdersContainer" class="row g-3"></div>
     </div>
@@ -643,7 +599,7 @@
 
               <!-- الترويسة العليا -->
               <div class="inv-top-row">
-                <div id="invLogoContainer" style="width: 220px;"></div>
+                <div id="invLogoContainer" style="width: 230px;"></div>
 
                 <div class="inv-main-title-box">
                   <h2 id="invMainHeaderTitle">Electric for Home Appliances</h2>
@@ -652,56 +608,56 @@
                   </div>
                 </div>
 
-                <div class="text-start" style="width: 220px;">
-                  <div class="text-end mb-1">
+                <div class="text-start" style="width: 230px;">
+                  <div class="text-end mb-2">
                     <span class="inv-badge-pill">فاتورة</span>
                   </div>
                   <div class="d-flex align-items-center justify-content-end gap-1 mb-1">
-                    <span class="fw-bold small" style="white-space:nowrap;">رقم الفاتورة :</span>
-                    <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 100px;">
+                    <span class="fw-bold" style="white-space:nowrap; font-size:1.05rem;">رقم الفاتورة :</span>
+                    <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold fs-5" style="width: 100px;">
                   </div>
-                  <div id="invHotlineBox" class="d-none text-end mt-1">
-                    <span style="color: #dc3545; font-size: 1.15rem;"><i class="fa-solid fa-phone-volume"></i></span>
-                    <span style="font-size: 1.35rem; font-weight: 900; color: #0d3b66; font-family:sans-serif;"> 19387</span>
+                  <div id="invHotlineBox" class="d-none text-end mt-2">
+                    <span style="color: #dc3545; font-size: 1.25rem;"><i class="fa-solid fa-phone-volume"></i></span>
+                    <span style="font-size: 1.4rem; font-weight: 900; color: #0d3b66; font-family:sans-serif;"> 19387</span>
                   </div>
                 </div>
               </div>
 
-              <!-- مربعات بيانات العميل والتاريخ والجهاز (مطابقة بالكامل للصورة) -->
+              <!-- مربعات بيانات العميل والتاريخ والجهاز -->
               <div class="inv-boxes-container">
-                <!-- مربع بيانات العميل (في اليمين) -->
-                <div class="inv-box-section">
-                  <div class="inv-box-pill-title">بيانات العميل</div>
-                  <div class="inv-row-item"><span>اسم العميل :</span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
-                  <div class="inv-row-item"><span>رقم الهاتف :</span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
-                  <div class="inv-row-item mb-0"><span>العنوان :</span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
-                </div>
-
-                <!-- سطر التاريخ في المنتصف المطابق تماماً للصورة بدون انعكاس -->
-                <div class="text-center px-2" style="min-width: 180px;">
-                  <div class="d-flex align-items-baseline justify-content-center">
-                    <span class="fw-bold ms-1" style="font-size: 1rem;">التاريخ :</span>
-                    <div style="display: inline-flex; align-items: baseline; direction: ltr !important; unicode-bidi: isolate;">
-                      <input type="text" id="invDateDay" placeholder="  " class="inv-dotted-input text-center fw-bold" style="width: 38px; direction: ltr !important;">
-                      <span class="fw-bold mx-1">/</span>
-                      <input type="text" id="invDateMonth" placeholder="  " class="inv-dotted-input text-center fw-bold" style="width: 38px; direction: ltr !important;">
-                      <span class="fw-bold mx-1">/</span>
-                      <input type="text" id="invDateYear" placeholder="    " class="inv-dotted-input text-center fw-bold" style="width: 58px; direction: ltr !important;">
-                    </div>
-                  </div>
-                </div>
-
-                <!-- مربع بيانات الجهاز (في اليسار) -->
+                <!-- مربع بيانات الجهاز (في اليمين كما بالصورة) -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات الجهاز</div>
                   <div class="inv-row-item"><span>نوع الجهاز :</span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
                   <div class="inv-row-item"><span>الماركة :</span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
                   <div class="inv-row-item mb-0"><span>الموديل :</span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
                 </div>
+
+                <!-- سطر التاريخ في المنتصف المطابق تماماً للصورة بدون انعكاس -->
+                <div class="text-center px-3" style="min-width: 180px;">
+                  <div class="d-flex align-items-baseline justify-content-center">
+                    <span class="fw-bold ms-2" style="font-size: 1.1rem;">التاريخ :</span>
+                    <div style="display: inline-flex; align-items: baseline; direction: ltr !important; unicode-bidi: isolate;">
+                      <input type="text" id="invDateDay" placeholder="  " class="inv-dotted-input text-center fw-bold fs-5" style="width: 42px; direction: ltr !important;">
+                      <span class="fw-bold mx-1 fs-5">/</span>
+                      <input type="text" id="invDateMonth" placeholder="  " class="inv-dotted-input text-center fw-bold fs-5" style="width: 42px; direction: ltr !important;">
+                      <span class="fw-bold mx-1 fs-5">/</span>
+                      <input type="text" id="invDateYear" placeholder="    " class="inv-dotted-input text-center fw-bold fs-5" style="width: 65px; direction: ltr !important;">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- مربع بيانات العميل (في اليسار كما بالصورة) -->
+                <div class="inv-box-section">
+                  <div class="inv-box-pill-title">بيانات العميل</div>
+                  <div class="inv-row-item"><span>اسم العميل :</span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
+                  <div class="inv-row-item"><span>رقم الهاتف :</span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
+                  <div class="inv-row-item mb-0"><span>العنوان :</span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
+                </div>
               </div>
 
-              <div class="d-flex align-items-baseline my-2">
-                <span class="fw-bold" style="white-space:nowrap;">وصف المشكلة :</span>
+              <div class="d-flex align-items-baseline my-3">
+                <span class="fw-bold fs-6" style="white-space:nowrap;">وصف المشكلة :</span>
                 <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
               </div>
 
@@ -709,23 +665,25 @@
               <table class="inv-table-custom">
                 <thead>
                   <tr>
-                    <th style="width: 45px;">م</th>
+                    <th style="width: 50px;">م</th>
                     <th>البيان / قطع الغيار</th>
                     <th style="width: 100px;">الكمية</th>
-                    <th style="width: 130px;">سعر الوحدة</th>
-                    <th style="width: 130px;">الإجمالي</th>
-                    <th style="width: 45px;" class="no-print">حذف</th>
+                    <th style="width: 140px;">سعر الوحدة</th>
+                    <th style="width: 140px;">الإجمالي</th>
+                    <th style="width: 50px;" class="no-print">حذف</th>
                   </tr>
                 </thead>
                 <tbody id="invOfficialTableBody"></tbody>
                 <tfoot>
                   <tr>
-                    <td colspan="4" class="inv-subtotal-row">المجموع الفرعي :</td>
-                    <td colspan="2" class="fw-bold fs-6"><span id="invSheetSubtotalDisplay">0</span> ج.م</td>
+                    <td colspan="3" class="border-0"></td>
+                    <td class="inv-subtotal-row border-start border-end">المجموع الفرعي :</td>
+                    <td colspan="2" class="fw-bold fs-6 border-end"><span id="invSheetSubtotalDisplay">0</span> ج.م</td>
                   </tr>
                   <tr>
-                    <td colspan="4" class="inv-total-row">الإجمالي الكلي :</td>
-                    <td colspan="2" class="inv-total-row text-center"><span id="invSheetTotalDisplay">0</span> ج.م</td>
+                    <td colspan="3" class="border-0"></td>
+                    <td class="inv-total-row border-start border-end border-bottom">الإجمالي الكلي :</td>
+                    <td colspan="2" class="inv-total-row text-center border-end border-bottom"><span id="invSheetTotalDisplay">0</span> ج.م</td>
                   </tr>
                 </tfoot>
               </table>
@@ -757,9 +715,9 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر الهام: مشاركة كصورة عبر الواتساب بدقة كاملة وبدون أي نقص -->
+            <!-- الزر الهام: مشاركة كصورة عبر الواتساب -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
-              <i class="fa-brands fa-whatsapp fa-lg me-1"></i> مشاركة كصورة عبر واتساب
+              <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إرسال عبر واتساب
             </button>
             <button type="button" class="btn btn-primary fw-bold btn-sm px-3" onclick="window.print()">
               <i class="fa-solid fa-print me-1"></i> طباعة
@@ -773,7 +731,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة وتعديل الفني (الصورة الشخصية + صورة الكارنيه) ==================== -->
+  <!-- ==================== مودال إضافة وتعديل الفني ==================== -->
   <div class="modal fade" id="techModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -787,7 +745,6 @@
             <input type="hidden" id="techPhotoBase64">
             <input type="hidden" id="techIdCardBase64">
 
-            <!-- معاينة ورفع الصورتين -->
             <div class="row g-3 mb-3">
               <div class="col-md-6 text-center">
                 <div class="preview-box">
@@ -933,12 +890,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">تاريخ البلاغ</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-white text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('orderDate', event)">
-                    <i class="fa-solid fa-calendar-days"></i>
-                  </span>
-                  <input type="text" class="form-control text-center fw-bold date-click-input" id="orderDate" readonly onclick="openArabicDatePicker('orderDate', event)" required>
-                </div>
+                <input type="date" class="form-control date-input-rtl" id="orderDate" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">حالة البلاغ</label>
@@ -963,24 +915,6 @@
           </form>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ==================== مودال التقويم العربي المشترك ==================== -->
-  <div id="arabicCalendarPopover" class="arabic-calendar-popover" style="display: none;">
-    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="prevCalMonth()"><i class="fa-solid fa-chevron-right"></i></button>
-      <div class="fw-bold fs-6" id="calMonthYearTitle">أكتوبر 2026</div>
-      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="nextCalMonth()"><i class="fa-solid fa-chevron-left"></i></button>
-    </div>
-    <div class="calendar-weekdays-grid mb-1">
-      <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
-    </div>
-    <div id="calDaysGrid" class="calendar-days-grid mb-2"></div>
-    <div class="d-flex justify-content-between pt-2 border-top">
-      <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" onclick="selectCalendarDate(getLocalDateStr())">اليوم</button>
-      <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-bold" onclick="selectYesterday()">أمس</button>
-      <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 fw-bold" onclick="clearCurrentDatePicker()">مسح</button>
     </div>
   </div>
 
@@ -1262,6 +1196,11 @@
       renderTechOrders();
     }
 
+    function clearDateFilter(id, callback) {
+      document.getElementById(id).value = '';
+      if (callback) callback();
+    }
+
     function renderTechOrders() {
       if (!currentTech) return;
       const container = document.getElementById('techOrdersContainer');
@@ -1269,7 +1208,7 @@
 
       const todayStr = getLocalDateStr();
       const statusFilter = document.getElementById('techFilterStatus').value;
-      const dateFilter = document.getElementById('techFilterDate').value.trim();
+      const dateFilter = document.getElementById('techFilterDate').value;
 
       const todayOrdersAll = techOrders.filter(o => o.date === todayStr || o.statusDate === todayStr);
 
@@ -1377,11 +1316,6 @@
       }
     }
 
-    function clearAdminDateFilter() {
-      document.getElementById('adminFilterDate').value = '';
-      renderAdminOrders();
-    }
-
     function renderAdminOrders() {
       const container = document.getElementById('adminOrdersContainer');
       document.getElementById('adminTotalOrders').innerText = globalOrders.length;
@@ -1391,7 +1325,7 @@
 
       const searchTxt = document.getElementById('adminSearchInput').value.trim().toLowerCase();
       const statusFilter = document.getElementById('adminFilterStatusSelect').value;
-      const dateFilter = document.getElementById('adminFilterDate').value.trim();
+      const dateFilter = document.getElementById('adminFilterDate').value;
 
       let filtered = globalOrders.filter(o => {
         if (statusFilter && o.status !== statusFilter) return false;
@@ -1436,7 +1370,6 @@
                 </button>
               </div>
               <div class="d-flex gap-1">
-                <!-- زر تعديل بيانات العميل والبلاغ -->
                 <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -1463,7 +1396,6 @@
       new bootstrap.Modal(document.getElementById('orderModal')).show();
     }
 
-    // فتح نافذة تعديل بيانات العميل والبلاغ
     function openEditOrderModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -1517,7 +1449,7 @@
       }
     }
 
-    // ==================== إدارة الفنيين (الصورة الشخصية + صورة الكارنيه + التعديل) ====================
+    // ==================== إدارة الفنيين (إضافة وتعديل ورفع الصور) ====================
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => `
@@ -1839,10 +1771,11 @@
       });
     }
 
-    // ==================== تحويل الفاتورة لصورة عالية الدقة للواتساب ====================
+    // ==================== الحل الجذري: تحويل الفاتورة لصورة عالية الدقة كاملة وبدون أي نقص ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
+      const invoiceOriginal = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone').value.replace(/\D/g, '');
       const clientName = document.getElementById('invSheetClientName').value;
       const invNumber = document.getElementById('invSheetNumber').value || '1001';
@@ -1850,12 +1783,13 @@
 
       showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
 
+      // بناء حاوية مستقلة ومسطحة تماماً بعرض 920 بكسل لمنع قص الشاشة في الموبايل
       const container = document.createElement('div');
       container.style.cssText = `
         position: fixed;
         left: -9999px;
         top: 0;
-        width: 900px;
+        width: 920px;
         background: #ffffff;
         padding: 30px;
         border: 2px solid #1c6841;
@@ -1918,6 +1852,7 @@
       const month = document.getElementById('invDateMonth').value || '  ';
       const year = document.getElementById('invDateYear').value || '    ';
 
+      // تحويل الجداول لنصوص صريحة لمنع مشاكل الصور
       let rowsHtml = '';
       officialInvoiceParts.forEach((part, i) => {
         const itemTotal = (part.qty || 1) * (part.price || 0);
@@ -1963,6 +1898,7 @@
               <div style="font-size:0.92rem; font-weight:bold;"><span>العنوان : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cAddr}</span></div>
             </div>
 
+            <!-- التاريخ في المنتصف غير معكوس -->
             <div style="min-width:180px; text-align:center;">
               <div style="display:inline-flex; align-items:baseline; justify-content:center; font-size:1rem; font-weight:bold;">
                 <span style="margin-left:6px;">التاريخ :</span>
@@ -2031,7 +1967,7 @@
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 900
+          width: 920
         });
 
         document.body.removeChild(container);
@@ -2069,68 +2005,6 @@
         alert('حدث خطأ أثناء إنشاء الصورة: ' + e.message);
       }
     }
-
-    // ==================== ميزات التقويم المنبثق ====================
-    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-    let activeDatePickerInputId = null;
-    let calYear = new Date().getFullYear();
-    let calMonth = new Date().getMonth();
-
-    function openArabicDatePicker(inputId, evt) {
-      if (evt) evt.stopPropagation();
-      activeDatePickerInputId = inputId;
-      renderArabicCalendar();
-      const popover = document.getElementById('arabicCalendarPopover');
-      const input = document.getElementById(inputId);
-      const rect = input.getBoundingClientRect();
-      popover.style.display = 'block';
-      popover.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-      popover.style.left = Math.max(10, rect.left + window.scrollX) + 'px';
-    }
-
-    function renderArabicCalendar() {
-      document.getElementById('calMonthYearTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
-      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); 
-      const firstDayEgypt = (firstDayJs + 1) % 7;
-      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
-      const todayStr = getLocalDateStr();
-      const currentVal = activeDatePickerInputId ? document.getElementById(activeDatePickerInputId)?.value : '';
-
-      let html = '';
-      for (let i = 0; i < firstDayEgypt; i++) html += '<div class="calendar-day-cell empty"></div>';
-
-      for (let d = 1; d <= totalDays; d++) {
-        const fullDate = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        let cellClass = 'calendar-day-cell';
-        if (fullDate === currentVal) cellClass += ' selected';
-        else if (fullDate === todayStr) cellClass += ' today';
-        html += `<div class="${cellClass}" onclick="selectCalendarDate('${fullDate}')">${d}</div>`;
-      }
-      document.getElementById('calDaysGrid').innerHTML = html;
-    }
-
-    function prevCalMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderArabicCalendar(); }
-    function nextCalMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderArabicCalendar(); }
-    function closeArabicDatePicker() { document.getElementById('arabicCalendarPopover').style.display = 'none'; activeDatePickerInputId = null; }
-    
-    function selectCalendarDate(dateStr) {
-      if (activeDatePickerInputId) {
-        document.getElementById(activeDatePickerInputId).value = dateStr;
-        if (activeDatePickerInputId === 'techFilterDate') renderTechOrders();
-        if (activeDatePickerInputId === 'adminFilterDate') renderAdminOrders();
-      }
-      closeArabicDatePicker();
-    }
-    function selectYesterday() { const d = new Date(); d.setDate(d.getDate() - 1); selectCalendarDate(getLocalDateStr(d)); }
-    function clearCurrentDatePicker() { if (activeDatePickerInputId) document.getElementById(activeDatePickerInputId).value = ''; closeArabicDatePicker(); }
-    function clearDatePicker(id, cb) { document.getElementById(id).value = ''; if (cb) cb(); }
-
-    document.addEventListener('click', (e) => {
-      const pop = document.getElementById('arabicCalendarPopover');
-      if (pop && pop.style.display === 'block' && !pop.contains(e.target) && !e.target.closest('.date-click-input') && !e.target.closest('.input-group-text')) {
-        closeArabicDatePicker();
-      }
-    });
 
     // ==================== الخريطة مع استرجاع صورة الفني الدائرية ====================
     function initMap() {
