@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة صيانة الأجهزة المنزلية المتكامل</title>
+  
+  <!-- Bootstrap 5 RTL -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #198754;
+      --dark-blue: #0b2545;
+      --light-bg: #f4f7f6;
+    }
+    body {
+      background-color: var(--light-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .header-bar {
+      background: linear-gradient(135deg, #0b2545 0%, #134074 100%);
+      color: white;
+      padding: 12px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .card-order {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.25s ease;
+      background: #ffffff;
+      border-right: 5px solid #0d6efd;
+    }
+    .card-order:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+    }
+    .card-order.status-مرتجع {
+      border-right-color: #dc3545 !important;
+      background-color: #fff8f8;
+    }
+    .card-order.status-تم {
+      border-right-color: #198754 !important;
+    }
+    .card-order.status-كشف {
+      border-right-color: #0dcaf0 !important;
+    }
+    .card-order.status-مؤجل {
+      border-right-color: #ffc107 !important;
+    }
+    .action-circle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .action-circle-btn:hover {
+      transform: scale(1.1);
+    }
+    .btn-call {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    .btn-whatsapp {
+      background-color: #e8f8f0;
+      color: #25d366;
+    }
+    .tech-avatar-sm {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+    .online-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #28a745;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+      animation: pulse-online 1.8s infinite;
+    }
+    .offline-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #6c757d;
+      border-radius: 50%;
+    }
+    @keyframes pulse-online {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+    }
+    
+    /* Pure Arabic Calendar Popover */
+    .arabic-calendar-popover {
+      position: absolute;
+      z-index: 99999;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border: 1px solid #ced4da;
+      width: 295px;
+      padding: 12px;
+      direction: rtl;
+    }
+    .calendar-weekdays-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #6c757d;
+      background-color: #f8f9fa;
+      padding: 6px 0;
+      border-radius: 6px;
+    }
+    .calendar-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .calendar-day-cell {
+      padding: 6px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .calendar-day-cell:hover:not(.empty) {
+      background-color: #e2e6ea;
+    }
+    .calendar-day-cell.today {
+      border: 1px solid #0d6efd;
+      color: #0d6efd;
+      font-weight: bold;
+    }
+    .calendar-day-cell.selected {
+      background-color: #0d6efd !important;
+      color: #ffffff !important;
+      font-weight: bold;
+    }
+    .calendar-day-cell.empty {
+      cursor: default;
+      background: transparent;
+    }
+
+    #map {
+      height: 520px;
+      border-radius: 12px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+    .leaflet-popup-content-wrapper {
+      direction: rtl;
+      text-align: right;
+      font-family: inherit;
+      border-radius: 10px;
+    }
+
+    /* Official Invoice Sheet Styles */
+    .official-invoice-wrapper {
+      background: #ffffff !important;
+      color: #111111 !important;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 950px;
+      margin: auto;
+      direction: rtl;
+      position: relative;
+      border: 1px solid #dcdcdc;
+    }
+    .official-invoice-wrapper * {
+      color: inherit;
+    }
+    .inv-header-center {
+      text-align: center;
+    }
+    .inv-header-center h2 {
+      font-family: 'Arial', sans-serif;
+      font-weight: 900;
+      color: #1b633b !important;
+      margin: 0;
+      letter-spacing: -0.5px;
+      font-size: 1.9rem;
+    }
+    .inv-header-subline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #2b2b2b !important;
+    }
+    .inv-header-subline::before, .inv-header-subline::after {
+      content: '';
+      display: inline-block;
+      width: 45px;
+      height: 1px;
+      background: #333;
+    }
+    .inv-pill-badge {
+      background-color: #0e5c36 !important;
+      color: #ffffff !important;
+      padding: 4px 30px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: inline-block;
+    }
+    .inv-box-card {
+      border: 1.5px solid #212529;
+      border-radius: 12px;
+      padding: 16px 14px 10px 14px;
+      position: relative;
+      background: #ffffff !important;
+    }
+    .inv-box-badge {
+      position: absolute;
+      top: -14px;
+      right: 25px;
+      background-color: #0e5c36 !important;
+      color: #ffffff !important;
+      padding: 2px 24px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .inv-dotted-row {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #222 !important;
+    }
+    .inv-dotted-input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px dotted #666;
+      background: transparent;
+      padding: 2px 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      color: #111 !important;
+    }
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      border: 1.5px solid #1c6841;
+      text-align: center;
+      background: #fff;
+    }
+    .inv-table th {
+      background-color: #0e5c36 !important;
+      color: #ffffff !important;
+      padding: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border: 1px solid #1c6841;
+    }
+    .inv-table td {
+      border: 1px solid #888;
+      padding: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #111 !important;
+    }
+    .inv-table input {
+      border: none;
+      background: transparent;
+      text-align: center;
+      width: 100%;
+      font-weight: bold;
+      outline: none;
+      color: #111 !important;
+    }
+    .inv-subtotal-bg {
+      background-color: #ffffff !important;
+      font-weight: bold;
+      text-align: right;
+      padding-right: 20px !important;
+    }
+    .inv-total-bg {
+      background-color: #d1e7dd !important;
+      font-weight: 900;
+      font-size: 1.1rem;
+      text-align: right;
+      padding-right: 20px !important;
+      color: #0f5132 !important;
+    }
+    .inv-guarantee-bar {
+      border: 1.5px solid #212529;
+      border-radius: 12px;
+      padding: 10px 18px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: bold;
+      background: #ffffff !important;
+    }
+    .inv-shield-icon {
+      background-color: #0e5c36 !important;
+      color: #ffffff !important;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      margin-left: 6px;
+    }
+    .stamp-kiriazi {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      border: 3px dashed #d90429 !important;
+      color: #d90429 !important;
+      border-radius: 50%;
+      width: 105px;
+      height: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-15deg);
+      opacity: 0.88;
+      pointer-events: none;
+      box-shadow: 0 0 0 3px rgba(217,4,41,0.15);
+    }
+    .stamp-gold {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
+      color: #4a3300 !important;
+      border-radius: 50%;
+      width: 105px;
+      height: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-10deg);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      border: 2px solid #ffffff;
+      pointer-events: none;
+    }
+
+    /* Trust ID Card */
+    .trust-id-card {
+      background: linear-gradient(145deg, #ffffff 0%, #f8fbf9 100%);
+      border: 2px solid #198754;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(25, 135, 84, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .trust-id-header {
+      background: linear-gradient(135deg, #0e5c36 0%, #198754 100%);
+      color: white;
+      padding: 12px;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+    }
+    .verified-seal-badge {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+      border: 1.5px solid #2e7d32;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 5px rgba(46, 125, 50, 0.15);
+    }
+
+    /* ==================== DARK MODE COMPREHENSIVE STYLES ==================== */
+    body.dark-mode {
+      background-color: #121417 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark-mode .header-bar {
+      background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    body.dark-mode .card-order,
+    body.dark-mode .kpi-card,
+    body.dark-mode .modal-content:not(.official-invoice-modal-content),
+    body.dark-mode .bg-white,
+    body.dark-mode .trust-id-card,
+    body.dark-mode .arabic-calendar-popover {
+      background-color: #1c2128 !important;
+      color: #f1f5f9 !important;
+      border-color: #2d333b !important;
+    }
+    body.dark-mode .card-order {
+      background: #1c2128 !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    }
+    body.dark-mode .card-order.status-مرتجع {
+      background-color: #28191c !important;
+    }
+    body.dark-mode .text-dark {
+      color: #f8fafc !important;
+    }
+    body.dark-mode .text-muted, 
+    body.dark-mode .text-secondary {
+      color: #94a3b8 !important;
+    }
+    body.dark-mode .bg-light {
+      background-color: #242931 !important;
+      color: #f1f5f9 !important;
+    }
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+      background-color: #272d36 !important;
+      color: #f8fafc !important;
+      border-color: #3b434e !important;
+    }
+    body.dark-mode .form-control:focus,
+    body.dark-mode .form-select:focus {
+      border-color: #0d6efd !important;
+      color: #ffffff !important;
+    }
+    body.dark-mode .input-group-text {
+      background-color: #2d333d !important;
+      color: #cbd5e1 !important;
+      border-color: #3b434e !important;
+    }
+    body.dark-mode .calendar-weekdays-grid {
+      background-color: #272d36 !important;
+      color: #94a3b8 !important;
+    }
+    body.dark-mode .calendar-day-cell:hover:not(.empty) {
+      background-color: #353c48 !important;
+    }
+    body.dark-mode .border {
+      border-color: #2d333b !important;
+    }
+    body.dark-mode .btn-light {
+      background-color: #272d36 !important;
+      color: #f8fafc !important;
+      border-color: #3b434e !important;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printableOfficialInvoice, #printableOfficialInvoice * { visibility: visible; }
+      #printableOfficialInvoice {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-shadow: none;
+        border: none;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="header-bar d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <h5 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-2"></i>منظومة الصيانة المعتمدة</h5>
+      <span id="roleBadge" class="badge bg-light text-dark fw-bold">جاري التحميل...</span>
+    </div>
+    
+    <div class="d-flex align-items-center gap-2">
+      <!-- Dark Mode Toggle Button -->
+      <button class="btn btn-sm btn-outline-light" onclick="toggleDarkMode()" id="btnDarkModeToggle" title="تبديل الوضع الليلي / النهاري">
+        <i class="fa-solid fa-moon me-1"></i> <span id="darkModeLabel">الوضع الليلي</span>
+      </button>
+
+      <!-- Instant Refresh Button -->
+      <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث لحظي لكافة البيانات">
+        <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i> تحديث
+      </button>
+
+      <!-- Tech Avatar & Badge -->
+      <div id="techUserHeader" class="d-none d-flex align-items-center gap-2">
+        <img id="techHeaderAvatar" src="https://via.placeholder.com/45" class="tech-avatar-sm" onclick="showTechProfileModal()" title="اضغط لعرض بطاقة الاعتماد والكارنيه للعميل">
+        <div>
+          <span id="techHeaderName" class="fw-bold d-block lh-1"></span>
+          <small class="badge bg-success-subtle text-success p-0 mt-1" style="font-size: 0.7rem;"><i class="fa-solid fa-certificate"></i> معتمد</small>
+        </div>
+      </div>
+
+      <!-- Admin Direct Switcher -->
+      <button id="switchRoleBtn" class="btn btn-sm btn-warning fw-bold d-none" onclick="openAdminLoginModal()">
+        <i class="fa-solid fa-user-shield me-1"></i> لوحة المدير
+      </button>
+
+      <!-- Logout -->
+      <button id="logoutBtn" class="btn btn-sm btn-danger fw-bold d-none" onclick="performLogout()">
+        <i class="fa-solid fa-right-from-bracket me-1"></i> خروج
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== LOGIN VIEW ==================== -->
+  <div id="loginView" class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+          <div class="card-header bg-primary text-white text-center py-4">
+            <h4 class="fw-bold mb-1"><i class="fa-solid fa-lock me-2"></i>تسجيل دخول الفني</h4>
+            <small class="text-light">ادخل اسم المستخدم وكلمة المرور المسلمة لك من الإدارة</small>
+          </div>
+          <div class="card-body p-4">
+            <form id="techLoginForm" onsubmit="handleTechLogin(event)">
+              <div class="mb-3">
+                <label class="form-label fw-bold">اسم المستخدم</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                  <input type="text" id="loginUsername" class="form-control" required placeholder="مثال: ahmed10">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">كلمة المرور</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                  <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
+                  <button type="button" class="btn btn-outline-secondary password-eye-btn" onclick="togglePasswordVisibility('loginPassword', this)">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="rememberLogin" checked>
+                <label class="form-check-label text-muted" for="rememberLogin">
+                  تذكر بيانات تسجيل الدخول على هذا الجهاز
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>دخول للنظام
+              </button>
+            </form>
+            <hr class="my-4">
+            <div class="text-center">
+              <button class="btn btn-outline-dark btn-sm fw-bold" onclick="openAdminLoginModal()">
+                <i class="fa-solid fa-user-gear me-1"></i> الدخول كمسؤول إدارة (Admin)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TECHNICIAN MAIN VIEW ==================== -->
+  <div id="techMainView" class="container-fluid py-4 d-none">
+    <div class="row g-3 mb-3">
+      <div class="col-md-4 col-sm-12">
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 d-flex flex-row align-items-center justify-content-between border-start border-4 border-primary">
+          <div>
+            <div class="text-muted small fw-bold">معاملات اليوم الشامل</div>
+            <h4 class="mb-0 fw-bold text-primary" id="techTodayTotal">0</h4>
+          </div>
+          <i class="fa-solid fa-calendar-day fa-2x text-primary opacity-50"></i>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 d-flex flex-row align-items-center justify-content-between border-start border-4 border-success">
+          <div>
+            <div class="text-muted small fw-bold">تم إنجازها اليوم</div>
+            <h4 class="mb-0 fw-bold text-success" id="techTodayDone">0</h4>
+          </div>
+          <i class="fa-solid fa-circle-check fa-2x text-success opacity-50"></i>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 d-flex flex-row align-items-center justify-content-between border-start border-4 border-danger">
+          <div>
+            <div class="text-muted small fw-bold">مرتجعات اليوم</div>
+            <h4 class="mb-0 fw-bold text-danger" id="techTodayReturns">0</h4>
+          </div>
+          <i class="fa-solid fa-triangle-exclamation fa-2x text-danger opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technician Navigation Tabs -->
+    <div class="d-flex flex-wrap gap-2 mb-3 align-items-center justify-content-between bg-white p-2 rounded-3 shadow-sm">
+      <div class="btn-group flex-wrap" role="group">
+        <button class="btn btn-outline-primary active fw-bold" id="tabTechToday" onclick="setTechFilterTab('today')">
+          <i class="fa-solid fa-calendar-check me-1"></i> اليوم الشامل 
+          <span class="badge bg-primary text-white badge-tab-count" id="countTechToday">0</span>
+        </button>
+        <button class="btn btn-outline-secondary fw-bold" id="tabTechAll" onclick="setTechFilterTab('all')">
+          <i class="fa-solid fa-list-check me-1"></i> كل البلاغات
+          <span class="badge bg-secondary text-white badge-tab-count" id="countTechAll">0</span>
+        </button>
+        <button class="btn btn-outline-danger fw-bold" id="tabTechReturns" onclick="setTechFilterTab('مرتجع')">
+          <i class="fa-solid fa-rotate-left me-1"></i> تابة المرتجعات
+          <span class="badge bg-danger text-white badge-tab-count" id="countTechReturns">0</span>
+        </button>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <select class="form-select form-select-sm" id="techFilterStatus" style="width: 170px;" onchange="renderTechOrders()">
+          <option value="">البحث بحالة الاوردر</option>
+          <option value="تم">تم</option>
+          <option value="كشف">كشف</option>
+          <option value="قيد الاستكمال">قيد الاستكمال</option>
+          <option value="مؤجل">مؤجل</option>
+          <option value="يحتاج متابعة">يحتاج متابعة</option>
+          <option value="تم الإلغاء من العميل">تم الإلغاء من العميل</option>
+          <option value="مرتجع">مرتجع</option>
+        </select>
+        
+        <div class="input-group input-group-sm" style="width: 190px;">
+          <span class="input-group-text bg-white border-end-0 text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('techFilterDate', event)">
+            <i class="fa-solid fa-calendar-days"></i>
+          </span>
+          <input type="text" class="form-control form-control-sm border-start-0 text-center fw-bold date-click-input" id="techFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('techFilterDate', event)">
+          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDatePicker('techFilterDate', renderTechOrders)" title="مسح التاريخ">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <button class="btn btn-sm btn-light border" onclick="resetTechFilters()"><i class="fa-solid fa-filter-circle-xmark"></i></button>
+      </div>
+    </div>
+
+    <!-- Technician Orders Cards List -->
+    <div id="techOrdersContainer" class="row g-3"></div>
+  </div>
+
+  <!-- ==================== ADMIN MAIN VIEW ==================== -->
+  <div id="adminMainView" class="container-fluid py-4 d-none">
+    <div class="row g-3 mb-3">
+      <div class="col-md-3 col-6">
+        <div class="kpi-card" style="border-top-color: #0d6efd;">
+          <div class="text-muted small fw-bold">إجمالي البلاغات</div>
+          <h3 class="fw-bold my-1 text-primary" id="adminTotalOrders">0</h3>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="kpi-card" style="border-top-color: #198754;">
+          <div class="text-muted small fw-bold">تم إنجازها</div>
+          <h3 class="fw-bold my-1 text-success" id="adminDoneOrders">0</h3>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="kpi-card" style="border-top-color: #dc3545;">
+          <div class="text-muted small fw-bold">المرتجعات</div>
+          <h3 class="fw-bold my-1 text-danger" id="adminReturnOrders">0</h3>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="kpi-card" style="border-top-color: #6f42c1;">
+          <div class="text-muted small fw-bold">الفنيين المسجلين</div>
+          <h3 class="fw-bold my-1 text-purple" id="adminTechCount">0</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Navigation & Actions -->
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3 bg-white p-3 rounded-3 shadow-sm">
+      <div class="btn-group" role="group">
+        <button class="btn btn-primary fw-bold" id="btnAdminTabOrders" onclick="switchAdminSection('orders')">
+          <i class="fa-solid fa-clipboard-list me-1"></i> البلاغات والعملاء
+        </button>
+        <button class="btn btn-outline-primary fw-bold" id="btnAdminTabTechs" onclick="switchAdminSection('techs')">
+          <i class="fa-solid fa-users-gear me-1"></i> إدارة الفنيين
+        </button>
+        <button class="btn btn-outline-primary fw-bold" id="btnAdminTabMap" onclick="switchAdminSection('map')">
+          <i class="fa-solid fa-map-location-dot me-1"></i> تتبع خط السير
+        </button>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-bold shadow-sm" onclick="showSecurityModal()" title="تعديل رمز مرور الإدارة">
+          <i class="fa-solid fa-shield-halved me-1"></i> أمان الإدارة
+        </button>
+        <button class="btn btn-success fw-bold" onclick="showAddOrderModal()">
+          <i class="fa-solid fa-plus-circle me-1"></i> إضافة بلاغ جديد
+        </button>
+        <button class="btn btn-info text-white fw-bold" onclick="showAddTechModal()">
+          <i class="fa-solid fa-user-plus me-1"></i> إضافة فني جديد
+        </button>
+      </div>
+    </div>
+
+    <!-- Orders Section -->
+    <div id="adminSectionOrders">
+      <div class="d-flex flex-wrap gap-2 mb-3 align-items-center justify-content-between bg-white p-2 rounded-3 border">
+        <div class="btn-group btn-group-sm flex-wrap" role="group">
+          <button class="btn btn-outline-secondary active fw-bold" id="pillAdminAll" onclick="setAdminOrderFilter('all')">كل البلاغات</button>
+          <button class="btn btn-outline-secondary fw-bold" id="pillAdminToday" onclick="setAdminOrderFilter('today')">اليوم الشامل</button>
+          <button class="btn btn-outline-success fw-bold" id="pillAdminDone" onclick="setAdminOrderFilter('تم')">تمت</button>
+          <button class="btn btn-outline-danger fw-bold" id="pillAdminReturn" onclick="setAdminOrderFilter('مرتجع')">المرتجعات</button>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث باسم العميل، الهاتف، الفني..." style="width: 200px;" oninput="renderAdminOrders()">
+          <select class="form-select form-select-sm" id="adminFilterStatusSelect" style="width: 160px;" onchange="renderAdminOrders()">
+            <option value="">البحث بحالة الاوردر</option>
+            <option value="تم">تم</option>
+            <option value="كشف">كشف</option>
+            <option value="قيد الاستكمال">قيد الاستكمال</option>
+            <option value="مؤجل">مؤجل</option>
+            <option value="يحتاج متابعة">يحتاج متابعة</option>
+            <option value="تم الإلغاء من العميل">تم الإلغاء من العميل</option>
+            <option value="مرتجع">مرتجع</option>
+          </select>
+          
+          <div class="input-group input-group-sm" style="width: 190px;">
+            <span class="input-group-text bg-white border-end-0 text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('adminFilterDate', event)">
+              <i class="fa-solid fa-calendar-days"></i>
+            </span>
+            <input type="text" class="form-control form-control-sm border-start-0 text-center fw-bold date-click-input" id="adminFilterDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('adminFilterDate', event)">
+            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDatePicker('adminFilterDate', renderAdminOrders)" title="مسح التاريخ">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <button class="btn btn-sm btn-light border" onclick="resetAdminFilters()"><i class="fa-solid fa-rotate-left"></i></button>
+        </div>
+      </div>
+
+      <div id="adminOrdersContainer" class="row g-3"></div>
+    </div>
+
+    <!-- Techs Section -->
+    <div id="adminSectionTechs" class="d-none">
+      <div class="row g-3" id="adminTechsGridContainer"></div>
+    </div>
+
+    <!-- Map Section -->
+    <div id="adminSectionMap" class="d-none">
+      <div class="card border-0 shadow-sm p-3 mb-3 bg-white">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold m-0"><i class="fa-solid fa-satellite-dish text-primary me-2"></i>تتبع مواقع الفنيين المباشرة (تحديث كل 3 دقائق)</h6>
+          <small class="text-muted" id="lastMapUpdateText">جاري مزامنة الإحداثيات...</small>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mb-2 p-2 bg-light rounded" id="mapTechFilterBar"></div>
+        <div id="map"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== ARABIC CALENDAR POPOVER ==================== -->
+  <div id="arabicCalendarPopover" class="arabic-calendar-popover" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="prevCalMonth()" title="الشهر السابق">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <div class="fw-bold fs-6" id="calMonthYearTitle">أكتوبر 2026</div>
+      <button type="button" class="btn btn-sm btn-light border px-2 py-0" onclick="nextCalMonth()" title="الشهر القادم">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+    </div>
+    
+    <div class="calendar-weekdays-grid mb-1">
+      <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
+    </div>
+
+    <div id="calDaysGrid" class="calendar-days-grid mb-2"></div>
+
+    <div class="d-flex justify-content-between pt-2 border-top">
+      <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" onclick="selectCalendarDate(getLocalDateStr())">اليوم</button>
+      <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-bold" onclick="selectYesterday()">أمس</button>
+      <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 fw-bold" onclick="clearCurrentDatePicker()">مسح</button>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN LOGIN & RECOVERY MODAL ==================== -->
+  <div class="modal fade" id="adminLoginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-shield me-2 text-warning"></i>دخول إدارة النظام</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="adminAuthForm" onsubmit="submitAdminPassword(event)">
+            <div class="mb-3">
+              <label class="form-label fw-bold">رمز مرور الإدارة</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                <input type="password" id="adminInputPass" class="form-control" required placeholder="ادخل رمز المرور (الافتراضي 1234)">
+                <button type="button" class="btn btn-outline-secondary password-eye-btn" onclick="togglePasswordVisibility('adminInputPass', this)">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <a href="#" class="small text-danger fw-bold text-decoration-none" onclick="toggleEmergencyRecoveryBox(event)">
+                <i class="fa-solid fa-circle-question me-1"></i> نسيت رمز المرور؟
+              </a>
+            </div>
+
+            <!-- Emergency Recovery Box (Hidden by default) -->
+            <div id="emergencyRecoveryBox" class="p-3 bg-light rounded border border-warning mb-3 d-none">
+              <h6 class="fw-bold text-dark mb-1"><i class="fa-solid fa-triangle-exclamation text-warning me-1"></i>استرداد رمز المرور الرئيسي:</h6>
+              <p class="small text-muted mb-2">ادخل كود الطوارئ الرئيسي الخاص بالإدارة (الافتراضي: <strong>0000</strong>) لاستعادة القفل فوراً:</p>
+              <div class="input-group input-group-sm mb-2">
+                <input type="text" id="emergencyPinInput" class="form-control text-center fw-bold" placeholder="كود الطوارئ (0000)">
+                <button type="button" class="btn btn-warning fw-bold" onclick="executeEmergencyRecovery()">استعادة الرمز</button>
+              </div>
+              <small class="text-success fw-bold d-none" id="recoverySuccessText"><i class="fa-solid fa-check-circle me-1"></i> تم إعادة الرمز الافتراضي (1234) بنجاح!</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+              <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>دخول لوحة الإدارة
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN SECURITY SETTINGS MODAL ==================== -->
+  <div class="modal fade" id="adminSecurityModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-shield-halved me-2"></i>إعدادات أمان ورمز مرور الإدارة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form onsubmit="saveAdminNewSecuritySettings(event)">
+            <div class="mb-3">
+              <label class="form-label fw-bold">رمز المرور الحالي</label>
+              <input type="password" id="secCurrentPass" class="form-control" required placeholder="الرمز الحالي">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">رمز المرور الجديد</label>
+              <input type="password" id="secNewPass" class="form-control" required placeholder="اكتب الرمز الجديد">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">تأكيد رمز المرور الجديد</label>
+              <input type="password" id="secConfirmPass" class="form-control" required placeholder="أعد كتابة الرمز الجديد">
+            </div>
+            <div class="p-2 bg-light rounded small text-muted mb-3 border">
+              <i class="fa-solid fa-circle-info text-primary me-1"></i>
+              تنبيه: يمكنك دائماً استرداد الرمز بكود الطوارئ الثابت (<strong>0000</strong>) إذا نسيته.
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+              <button type="submit" class="btn btn-warning fw-bold px-4">حفظ الرمز الجديد</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== THE EXACT 1:1 OFFICIAL INVOICE MODAL ==================== -->
+  <div class="modal fade" id="officialInvoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content bg-light border-0 shadow-lg official-invoice-modal-content">
+        
+        <div class="modal-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center no-print">
+          <div class="d-flex align-items-center gap-3">
+            <h6 class="modal-title fw-bold m-0"><i class="fa-solid fa-receipt text-warning me-2"></i>فاتورة الصيانة المعتمدة</h6>
+            <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 270px;" onchange="switchInvoiceDesignTheme()">
+              <option value="kiriazi">قالب صيانة كيريازي المعتمد</option>
+              <option value="authorized">قالب المركز المعتمد (19387)</option>
+            </select>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          
+          <div id="printableOfficialInvoice" class="official-invoice-wrapper">
+            <input type="hidden" id="invoiceOrderId">
+
+            <!-- 1. Header Top -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div id="invLogoContainer" style="width: 220px;"></div>
+
+              <div class="inv-header-center">
+                <h2 id="invMainHeaderTitle">Electric for Home Appliances</h2>
+                <div class="inv-header-subline">
+                  <span>Professional Repair &amp; Maintenance Services</span>
+                </div>
+              </div>
+
+              <div class="text-start" style="width: 220px;">
+                <div class="text-end mb-2">
+                  <span class="inv-pill-badge">فاتورة</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-end gap-1 mb-1">
+                  <span class="fw-bold small">رقم الفاتورة :</span>
+                  <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 110px;">
+                </div>
+                <div id="invHotlineBox" class="d-none text-end">
+                  <span style="color: #dc3545; font-size: 1.25rem;"><i class="fa-solid fa-phone-volume"></i></span>
+                  <span style="font-size: 1.35rem; font-weight: 900; color: #0d3b66; letter-spacing: 1px;"> 19387</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Customer & Device Data Boxes -->
+            <div class="row g-3 align-items-center mb-2">
+              <div class="col-md-5">
+                <div class="inv-box-card">
+                  <div class="inv-box-badge">بيانات العميل</div>
+                  <div class="inv-dotted-row">
+                    <span>اسم العميل :</span>
+                    <input type="text" id="invSheetClientName" class="inv-dotted-input">
+                  </div>
+                  <div class="inv-dotted-row">
+                    <span>رقم الهاتف :</span>
+                    <input type="text" id="invSheetClientPhone" class="inv-dotted-input">
+                  </div>
+                  <div class="inv-dotted-row mb-0">
+                    <span>العنوان :</span>
+                    <input type="text" id="invSheetClientAddress" class="inv-dotted-input">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-2 text-center">
+                <div class="fw-bold text-dark mb-1">التاريخ :</div>
+                <input type="text" id="invSheetDate" class="inv-dotted-input text-center fw-bold fs-6" style="width: 100%;">
+              </div>
+
+              <div class="col-md-5">
+                <div class="inv-box-card">
+                  <div class="inv-box-badge">بيانات الجهاز</div>
+                  <div class="inv-dotted-row">
+                    <span>نوع الجهاز :</span>
+                    <input type="text" id="invSheetDeviceType" class="inv-dotted-input">
+                  </div>
+                  <div class="inv-dotted-row">
+                    <span>الماركة :</span>
+                    <input type="text" id="invSheetDeviceBrand" class="inv-dotted-input">
+                  </div>
+                  <div class="inv-dotted-row mb-0">
+                    <span>الموديل :</span>
+                    <input type="text" id="invSheetDeviceModel" class="inv-dotted-input">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Problem Description Line -->
+            <div class="d-flex align-items-baseline my-3">
+              <span class="fw-bold text-nowrap" style="color: #222;">وصف المشكلة :</span>
+              <input type="text" id="invSheetProblemDesc" class="inv-dotted-input ms-2">
+            </div>
+
+            <!-- 4. Table -->
+            <table class="inv-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">م</th>
+                  <th>البيان / قطع الغيار</th>
+                  <th style="width: 110px;">الكمية</th>
+                  <th style="width: 140px;">سعر الوحدة</th>
+                  <th style="width: 140px;">الإجمالي</th>
+                  <th style="width: 50px;" class="no-print">حذف</th>
+                </tr>
+              </thead>
+              <tbody id="invOfficialTableBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="inv-subtotal-bg">المجموع الفرعي :</td>
+                  <td colspan="2" class="fw-bold fs-6">
+                    <span id="invSheetSubtotalDisplay">0</span> ج.م
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" class="inv-total-bg">الإجمالي الكلي :</td>
+                  <td colspan="2" class="inv-total-bg text-center">
+                    <span id="invSheetTotalDisplay">0</span> ج.م
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <div class="text-start mt-2 no-print">
+              <button type="button" class="btn btn-sm btn-outline-success fw-bold" onclick="addOfficialPartRow()">
+                <i class="fa-solid fa-plus-circle me-1"></i> + إضافة قطعة غيار أخرى
+              </button>
+            </div>
+
+            <!-- 5. Guarantee Banner -->
+            <div class="inv-guarantee-bar">
+              <div class="d-flex align-items-center">
+                <span class="inv-shield-icon"><i class="fa-solid fa-check"></i></span>
+                <span class="me-2">شروط الضمان :</span>
+                <span class="text-muted fw-normal ms-3">• تم تسليم الجهاز بعمل بحالة جيدة</span>
+                <span class="mx-3 text-secondary">|</span>
+                <span class="text-muted fw-normal">• ضمان لمدة عام من تاريخ الفاتورة</span>
+              </div>
+            </div>
+
+            <!-- 6. Physical Stamp -->
+            <div id="invSheetStamp"></div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer justify-content-between bg-white no-print">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إغلاق</button>
+          
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-success fw-bold shadow-sm px-3" onclick="sendOfficialInvoiceWhatsApp()">
+              <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إرسال الفاتورة عبر واتساب
+            </button>
+            <button type="button" class="btn btn-primary fw-bold px-3" onclick="window.print()">
+              <i class="fa-solid fa-print me-1"></i> طباعة الفاتورة
+            </button>
+            <button type="button" class="btn btn-dark fw-bold px-3" onclick="saveOfficialInvoice()">
+              <i class="fa-solid fa-check-double me-1"></i> اعتماد وحفظ الفاتورة
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== OFFICIAL TRUST TECHNICIAN ID MODAL ==================== -->
+  <div class="modal fade" id="techProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 bg-transparent">
+        
+        <div class="trust-id-card shadow-lg bg-white">
+          <div class="trust-id-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-shield-halved fa-lg"></i>
+              <h6 class="m-0 fw-bold">بطاقة إثبات شخصية واعتماد فني</h6>
+            </div>
+            <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="p-4 text-center">
+            <div class="mb-3">
+              <span class="verified-seal-badge">
+                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                معتمد رسمياً من الإدارة العامة للصيانة
+              </span>
+            </div>
+
+            <div class="position-relative d-inline-block mb-3">
+              <img id="profileModalPhoto" src="https://via.placeholder.com/120" class="rounded-circle shadow" style="width: 110px; height: 110px; object-fit: cover; border: 4px solid #198754;">
+              <span class="position-absolute bottom-0 start-0 bg-success text-white rounded-pill px-2 py-0 small fw-bold shadow-sm" style="font-size: 0.75rem;">
+                <i class="fa-solid fa-check"></i> مُفعل
+              </span>
+            </div>
+
+            <h4 class="fw-bold mb-1 text-dark" id="profileModalName">اسم الفني</h4>
+            <div class="mb-2">
+              <span class="badge bg-dark fs-6 px-3 py-1 shadow-sm">
+                <i class="fa-solid fa-id-badge text-warning me-1"></i> كود الفني: <span id="profileModalCode">TECH-101</span>
+              </span>
+            </div>
+            <p class="text-secondary fw-bold mb-3" id="profileModalSpecialty">التخصص: صيانة الأجهزة المنزلية</p>
+
+            <div class="d-inline-block bg-light border rounded-pill px-3 py-1 mb-3">
+              <span class="text-muted small fw-bold">رقم التواصل المعتمد: </span>
+              <strong class="text-dark" id="profileModalPhone">010XXXXXXXX</strong>
+            </div>
+
+            <div class="border rounded-3 p-2 bg-light mb-3 text-start">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <small class="fw-bold text-dark"><i class="fa-solid fa-id-card text-success me-1"></i> كارنيه وتصريح العمل المعتمد:</small>
+                <small class="badge bg-success">ساري المفعول</small>
+              </div>
+              <div class="text-center">
+                <img id="profileModalCarnet" src="https://via.placeholder.com/350x200?text=كارنيه+العمل+المعتمد" class="img-fluid rounded border" style="max-height: 180px; object-fit: contain; width: 100%;">
+              </div>
+            </div>
+
+            <div class="p-2 rounded bg-success-subtle border border-success-subtle text-success small fw-bold text-center">
+              <i class="fa-solid fa-shield-cat me-1"></i>
+              تنبيه للعميل: هذا الفني مرخص ومسجل رسمياً بنظام التتبع الميداني وضمان الجودة للشركة.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals: Add Order, Add Tech, Tech History -->
+  <div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-bold" id="orderModalTitle">إضافة بلاغ صيانة جديد</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="orderForm" onsubmit="saveOrder(event)">
+            <input type="hidden" id="orderFormId">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">اسم العميل بالكامل</label>
+                <input type="text" class="form-control" id="orderClientName" required placeholder="اسم العميل دون أي أكواد">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">رقم هاتف العميل</label>
+                <input type="tel" class="form-control" id="orderClientPhone" required placeholder="مثال: 01012345678">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-bold">العنوان التفصيلي والمنطقة</label>
+                <input type="text" class="form-control" id="orderClientAddress" required placeholder="المدينة، الحي، اسم الشارع، رقم العقار والشقة">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">نوع وموديل الجهاز</label>
+                <input type="text" class="form-control" id="orderDevice" required placeholder="مثال: غسالة أوتوماتيك / ثلاجة 16 قدم">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">الفني المكلف</label>
+                <select class="form-select" id="orderAssignedTech" required></select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">تاريخ البلاغ والموعد</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-end-0 text-primary" style="cursor: pointer;" onclick="openArabicDatePicker('orderDate', event)">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                  <input type="text" class="form-control border-start-0 text-center fw-bold date-click-input" id="orderDate" placeholder="اختر التاريخ..." readonly onclick="openArabicDatePicker('orderDate', event)" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">حالة البلاغ</label>
+                <select class="form-select" id="orderStatus">
+                  <option value="جديد">جديد</option>
+                  <option value="تم">تم</option>
+                  <option value="كشف">كشف</option>
+                  <option value="قيد الاستكمال">قيد الاستكمال</option>
+                  <option value="مؤجل">مؤجل</option>
+                  <option value="يحتاج متابعة">يحتاج متابعة</option>
+                  <option value="مرتجع">مرتجع</option>
+                  <option value="تم الإلغاء من العميل">تم الإلغاء من العميل</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold">وصف عطل الجهاز وملاحظات الفحص</label>
+                <textarea class="form-control" id="orderNotes" rows="2" placeholder="وصف شكوى العميل بالتفصيل"></textarea>
+              </div>
+            </div>
+            <div class="mt-4 text-end">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+              <button type="submit" class="btn btn-primary fw-bold px-4">حفظ البلاغ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="techModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title fw-bold" id="techModalTitle">إضافة فني جديد</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="techForm" onsubmit="saveTechnician(event)">
+            <input type="hidden" id="techFormId">
+            <div class="row g-2 mb-3">
+              <div class="col-8">
+                <label class="form-label fw-bold">الاسم الرباعي للفني</label>
+                <input type="text" class="form-control" id="techName" required placeholder="مثال: محمد أحمد علي">
+              </div>
+              <div class="col-4">
+                <label class="form-label fw-bold">كود الفني</label>
+                <input type="text" class="form-control fw-bold" id="techCodeInput" placeholder="T-105">
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-bold">اسم المستخدم (للدخول)</label>
+                <input type="text" class="form-control" id="techUsername" required placeholder="ahmed1">
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-bold">كلمة المرور</label>
+                <div class="input-group">
+                  <input type="password" class="form-control" id="techPassword" required placeholder="••••••">
+                  <button type="button" class="btn btn-outline-secondary password-eye-btn" onclick="togglePasswordVisibility('techPassword', this)">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-bold">رقم الهاتف</label>
+                <input type="tel" class="form-control" id="techPhone" required placeholder="010XXXXXXXX">
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-bold">التخصص</label>
+                <input type="text" class="form-control" id="techSpecialty" placeholder="غسالات / ثلاجات / تكييف">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">الصورة الشخصية للفني</label>
+              <input type="file" class="form-control" id="techPhotoFile" accept="image/*">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">صورة كارنيه العمل / بطاقة الهوية</label>
+              <input type="file" class="form-control" id="techCarnetFile" accept="image/*">
+            </div>
+            <div class="mt-4 text-end">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+              <button type="submit" class="btn btn-info text-white fw-bold px-4">حفظ بيانات الفني</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="techHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold" id="techHistoryTitle">سجل أوردرات الفني</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div id="techHistoryContainer" class="row g-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 99999;">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0 shadow" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">إشعار جديد</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    function getLocalDateStr(dateObj = new Date()) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    let currentRole = null; 
+    let currentTech = null; 
+    let currentTechTab = 'today'; 
+    let currentAdminTab = 'all'; 
+    let mapInstance = null;
+    let mapMarkers = {};
+
+    // ==================== THEME & DARK MODE CONTROLLER ====================
+    function initTheme() {
+      const savedTheme = localStorage.getItem('syana_theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        updateDarkModeButtonUI(true);
+      } else {
+        document.body.classList.remove('dark-mode');
+        updateDarkModeButtonUI(false);
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('syana_theme', isDark ? 'dark' : 'light');
+      updateDarkModeButtonUI(isDark);
+      showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري');
+    }
+
+    function updateDarkModeButtonUI(isDark) {
+      const btn = document.getElementById('btnDarkModeToggle');
+      const label = document.getElementById('darkModeLabel');
+      if (isDark) {
+        btn.innerHTML = '<i class="fa-solid fa-sun text-warning me-1"></i> <span id="darkModeLabel">الوضع النهاري</span>';
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-moon me-1"></i> <span id="darkModeLabel">الوضع الليلي</span>';
+      }
+    }
+
+    // ==================== ADMIN PASSWORD & SECURITY MANAGEMENT ====================
+    const EMERGENCY_MASTER_PIN = "0000";
+
+    function getAdminPassword() {
+      return localStorage.getItem('syana_admin_pin') || '1234';
+    }
+
+    function setAdminPassword(newPin) {
+      localStorage.setItem('syana_admin_pin', newPin);
+    }
+
+    function openAdminLoginModal() {
+      document.getElementById('adminInputPass').value = '';
+      document.getElementById('emergencyRecoveryBox').classList.add('d-none');
+      document.getElementById('emergencyPinInput').value = '';
+      document.getElementById('recoverySuccessText').classList.add('d-none');
+      new bootstrap.Modal(document.getElementById('adminLoginModal')).show();
+    }
+
+    function submitAdminPassword(e) {
+      e.preventDefault();
+      const entered = document.getElementById('adminInputPass').value.trim();
+      const currentPin = getAdminPassword();
+
+      if (entered === currentPin) {
+        bootstrap.Modal.getInstance(document.getElementById('adminLoginModal')).hide();
+        setRoleAdmin();
+        showToast('مرحباً بك في لوحة الإدارة');
+      } else {
+        alert('رمز المرور غير صحيح! يمكنك استخدام خيار "نسيت رمز المرور؟" لاستعادته.');
+      }
+    }
+
+    function toggleEmergencyRecoveryBox(e) {
+      e.preventDefault();
+      const box = document.getElementById('emergencyRecoveryBox');
+      box.classList.toggle('d-none');
+    }
+
+    function executeEmergencyRecovery() {
+      const enteredPin = document.getElementById('emergencyPinInput').value.trim();
+      if (enteredPin === EMERGENCY_MASTER_PIN) {
+        setAdminPassword('1234');
+        document.getElementById('adminInputPass').value = '1234';
+        document.getElementById('recoverySuccessText').classList.remove('d-none');
+        showToast('تمت استعادة رمز الإدارة بنجاح: 1234');
+      } else {
+        alert('كود الطوارئ الرئيسي غير صحيح! تواصل مع المبرمج أو راجع الكود.');
+      }
+    }
+
+    function showSecurityModal() {
+      document.getElementById('secCurrentPass').value = '';
+      document.getElementById('secNewPass').value = '';
+      document.getElementById('secConfirmPass').value = '';
+      new bootstrap.Modal(document.getElementById('adminSecurityModal')).show();
+    }
+
+    function saveAdminNewSecuritySettings(e) {
+      e.preventDefault();
+      const cur = document.getElementById('secCurrentPass').value.trim();
+      const n1 = document.getElementById('secNewPass').value.trim();
+      const n2 = document.getElementById('secConfirmPass').value.trim();
+      const actualCurrent = getAdminPassword();
+
+      if (cur !== actualCurrent) {
+        alert('رمز المرور الحالي غير صحيح!');
+        return;
+      }
+      if (n1.length < 3) {
+        alert('يجب أن يتكون رمز المرور الجديد من 3 خانات على الأقل.');
+        return;
+      }
+      if (n1 !== n2) {
+        alert('رمز المرور الجديد وتأكيده غير متطابقين!');
+        return;
+      }
+
+      setAdminPassword(n1);
+      bootstrap.Modal.getInstance(document.getElementById('adminSecurityModal')).hide();
+      showToast('تم تغيير رمز مرور الإدارة بنجاح!');
+    }
+
+    // Pure Arabic Calendar Engine
+    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    let activeDatePickerInputId = null;
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+
+    function openArabicDatePicker(inputId, evt) {
+      if (evt) evt.stopPropagation();
+      activeDatePickerInputId = inputId;
+      const input = document.getElementById(inputId);
+      if (!input) return;
+
+      if (input.value && input.value.includes('-')) {
+        const parts = input.value.split('-');
+        if (parts.length === 3) {
+          calYear = parseInt(parts[0], 10);
+          calMonth = parseInt(parts[1], 10) - 1;
+        }
+      } else {
+        const now = new Date();
+        calYear = now.getFullYear();
+        calMonth = now.getMonth();
+      }
+
+      renderArabicCalendar();
+
+      const popover = document.getElementById('arabicCalendarPopover');
+      const rect = input.getBoundingClientRect();
+      popover.style.display = 'block';
+      popover.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+      
+      let leftPos = rect.left + window.scrollX;
+      if (leftPos + 310 > window.innerWidth) {
+        leftPos = window.innerWidth - 315;
+      }
+      popover.style.left = Math.max(10, leftPos) + 'px';
+    }
+
+    function renderArabicCalendar() {
+      document.getElementById('calMonthYearTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
+      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); 
+      const firstDayEgypt = (firstDayJs + 1) % 7;
+      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayStr = getLocalDateStr();
+      const currentVal = activeDatePickerInputId ? document.getElementById(activeDatePickerInputId)?.value : '';
+
+      let html = '';
+      for (let i = 0; i < firstDayEgypt; i++) {
+        html += '<div class="calendar-day-cell empty"></div>';
+      }
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dStr = String(d).padStart(2, '0');
+        const mStr = String(calMonth + 1).padStart(2, '0');
+        const fullDate = `${calYear}-${mStr}-${dStr}`;
+        const isToday = fullDate === todayStr;
+        const isSelected = fullDate === currentVal;
+
+        let cellClass = 'calendar-day-cell';
+        if (isSelected) cellClass += ' selected';
+        else if (isToday) cellClass += ' today';
+
+        html += `<div class="${cellClass}" onclick="selectCalendarDate('${fullDate}')">${d}</div>`;
+      }
+
+      document.getElementById('calDaysGrid').innerHTML = html;
+    }
+
+    function prevCalMonth() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderArabicCalendar();
+    }
+
+    function nextCalMonth() {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderArabicCalendar();
+    }
+
+    function closeArabicDatePicker() {
+      const popover = document.getElementById('arabicCalendarPopover');
+      if (popover) popover.style.display = 'none';
+      activeDatePickerInputId = null;
+    }
+
+    function selectCalendarDate(fullDate) {
+      if (activeDatePickerInputId) {
+        const input = document.getElementById(activeDatePickerInputId);
+        if (input) {
+          input.value = fullDate;
+          if (activeDatePickerInputId === 'techFilterDate') renderTechOrders();
+          if (activeDatePickerInputId === 'adminFilterDate') renderAdminOrders();
+        }
+      }
+      closeArabicDatePicker();
+    }
+
+    function selectYesterday() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      selectCalendarDate(getLocalDateStr(d));
+    }
+
+    function clearCurrentDatePicker() {
+      if (activeDatePickerInputId) {
+        const input = document.getElementById(activeDatePickerInputId);
+        if (input) input.value = '';
+        if (activeDatePickerInputId === 'techFilterDate') renderTechOrders();
+        if (activeDatePickerInputId === 'adminFilterDate') renderAdminOrders();
+      }
+      closeArabicDatePicker();
+    }
+
+    function clearDatePicker(inputId, callback) {
+      const input = document.getElementById(inputId);
+      if (input) input.value = '';
+      if (typeof callback === 'function') callback();
+    }
+
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('arabicCalendarPopover');
+      if (popover && popover.style.display === 'block') {
+        if (!popover.contains(e.target) && !e.target.closest('.date-click-input') && !e.target.closest('.input-group-text')) {
+          closeArabicDatePicker();
+        }
+      }
+    });
+
+    // Default Seed Data
+    const DEFAULT_TECHS = [
+      {
+        id: "T101",
+        code: "TECH-101",
+        name: "محمد عبد العزيز",
+        username: "mohamed",
+        password: "123",
+        phone: "01000000001",
+        specialty: "أجهزة منزلية وتبريد",
+        photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+        carnet: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=250&fit=crop",
+        isOnline: true,
+        lat: 30.0444,
+        lng: 31.2357,
+        lastLocationTime: "الآن"
+      },
+      {
+        id: "T102",
+        code: "TECH-102",
+        name: "أحمد حسني",
+        username: "ahmed",
+        password: "123",
+        phone: "01000000002",
+        specialty: "غسالات ومجففات",
+        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+        carnet: "",
+        isOnline: false,
+        lat: 30.0612,
+        lng: 31.3321,
+        lastLocationTime: "منذ 20 دقيقة"
+      }
+    ];
+
+    const todayDateLocal = getLocalDateStr();
+
+    const DEFAULT_ORDERS = [
+      {
+        id: "ORD-101",
+        clientName: "الحاج إبراهيم الدسوقي",
+        clientPhone: "01012345678",
+        clientAddress: "مدينة نصر - الحي السابع - عمارة 12",
+        device: "ثلاجة كيريازي 16 قدم نوفروست",
+        assignedTechId: "T101",
+        assignedTechName: "محمد عبد العزيز",
+        date: todayDateLocal,
+        status: "جديد",
+        statusDate: todayDateLocal,
+        updatedDate: todayDateLocal,
+        notes: "تبريد ضعيف في الكابينة السفلية وتراكم ثلوج",
+        invoice: null
+      },
+      {
+        id: "ORD-102",
+        clientName: "د. هبة الشناوي",
+        clientPhone: "01234567890",
+        clientAddress: "مصر الجديدة - ميدان الحجاز",
+        device: "غسالة زانوسي 7 كيلو تحميل أمامي",
+        assignedTechId: "T101",
+        assignedTechName: "محمد عبد العزيز",
+        date: todayDateLocal,
+        status: "كشف",
+        statusDate: todayDateLocal,
+        updatedDate: todayDateLocal,
+        notes: "صوت عالي عند مرحلة العصر - رولمان بلي",
+        invoice: null
+      },
+      {
+        id: "ORD-103",
+        clientName: "م. طارق عبد الوهاب",
+        clientPhone: "01122334455",
+        clientAddress: "المعادي - شارع النصر بجوار كارفور",
+        device: "ديب فريزر كيريازي 6 درج",
+        assignedTechId: "T101",
+        assignedTechName: "محمد عبد العزيز",
+        date: todayDateLocal,
+        status: "مرتجع",
+        statusDate: todayDateLocal,
+        updatedDate: todayDateLocal,
+        notes: "تم تغيير السخان ولا يزال يفصل - متابعة ضمان",
+        invoice: null
+      }
+    ];
+
+    function getStoredTechs() {
+      const data = localStorage.getItem('syana_techs');
+      return data ? JSON.parse(data) : DEFAULT_TECHS;
+    }
+    function saveStoredTechs(techs) {
+      localStorage.setItem('syana_techs', JSON.stringify(techs));
+    }
+
+    function getStoredOrders() {
+      const data = localStorage.getItem('syana_orders');
+      return data ? JSON.parse(data) : DEFAULT_ORDERS;
+    }
+    function saveStoredOrders(orders) {
+      localStorage.setItem('syana_orders', JSON.stringify(orders));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+
+      if (!localStorage.getItem('syana_techs')) saveStoredTechs(DEFAULT_TECHS);
+      if (!localStorage.getItem('syana_orders')) saveStoredOrders(DEFAULT_ORDERS);
+
+      const savedTech = localStorage.getItem('syana_current_tech');
+      const savedRole = localStorage.getItem('syana_role');
+
+      if (savedRole === 'admin') {
+        setRoleAdmin();
+      } else if (savedRole === 'technician' && savedTech) {
+        setRoleTechnician(JSON.parse(savedTech));
+      } else {
+        showLoginView();
+      }
+
+      setInterval(syncTechnicianGPS, 3 * 60 * 1000);
+    });
+
+    function showToast(message, isSuccess = true) {
+      const toastEl = document.getElementById('liveToast');
+      const toastMsg = document.getElementById('toastMessage');
+      toastEl.className = `toast align-items-center text-white border-0 shadow ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+      toastMsg.innerText = message;
+      const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+      toast.show();
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function showLoginView() {
+      currentRole = null;
+      currentTech = null;
+      document.getElementById('loginView').classList.remove('d-none');
+      document.getElementById('techMainView').classList.add('d-none');
+      document.getElementById('adminMainView').classList.add('d-none');
+      document.getElementById('switchRoleBtn').classList.remove('d-none');
+      document.getElementById('logoutBtn').classList.add('d-none');
+      document.getElementById('techUserHeader').classList.add('d-none');
+      document.getElementById('roleBadge').className = 'badge bg-secondary';
+      document.getElementById('roleBadge').innerText = 'تسجيل الدخول';
+    }
+
+    function setRoleAdmin() {
+      currentRole = 'admin';
+      currentTech = null;
+      localStorage.setItem('syana_role', 'admin');
+      localStorage.removeItem('syana_current_tech');
+
+      document.getElementById('loginView').classList.add('d-none');
+      document.getElementById('techMainView').classList.add('d-none');
+      document.getElementById('adminMainView').classList.remove('d-none');
+      document.getElementById('switchRoleBtn').classList.add('d-none');
+      document.getElementById('logoutBtn').classList.remove('d-none');
+      document.getElementById('techUserHeader').classList.add('d-none');
+      document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
+
+      renderAdminOrders();
+      renderAdminTechsGrid();
+    }
+
+    function setRoleTechnician(techObj) {
+      currentRole = 'technician';
+      currentTech = techObj;
+      localStorage.setItem('syana_role', 'technician');
+      localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
+
+      document.getElementById('loginView').classList.add('d-none');
+      document.getElementById('techMainView').classList.remove('d-none');
+      document.getElementById('adminMainView').classList.add('d-none');
+      document.getElementById('switchRoleBtn').classList.remove('d-none');
+      document.getElementById('logoutBtn').classList.remove('d-none');
+      
+      const userHeader = document.getElementById('techUserHeader');
+      userHeader.classList.remove('d-none');
+      document.getElementById('techHeaderName').innerText = techObj.name;
+      if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo;
+
+      document.getElementById('roleBadge').className = 'badge bg-success fw-bold';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
+
+      updateTechOnlineStatus(techObj.id, true);
+      renderTechOrders();
+    }
+
+    function performLogout() {
+      if (currentRole === 'technician' && currentTech) {
+        updateTechOnlineStatus(currentTech.id, false);
+      }
+      localStorage.removeItem('syana_role');
+      localStorage.removeItem('syana_current_tech');
+      showLoginView();
+      showToast('تم تسجيل الخروج بنجاح');
+    }
+
+    function handleTechLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUsername').value.trim().toLowerCase();
+      const p = document.getElementById('loginPassword').value.trim();
+      const techs = getStoredTechs();
+
+      const matched = techs.find(t => t.username.toLowerCase() === u && t.password === p);
+      if (matched) {
+        setRoleTechnician(matched);
+        showToast(`أهلاً بك يا فني: ${matched.name}`);
+      } else {
+        alert('خطأ: اسم المستخدم أو كلمة المرور غير صحيحة. يرجى مراجعة إدارة الشركة.');
+      }
+    }
+
+    function updateTechOnlineStatus(techId, isOnline) {
+      const techs = getStoredTechs();
+      const idx = techs.findIndex(t => t.id === techId);
+      if (idx !== -1) {
+        techs[idx].isOnline = isOnline;
+        saveStoredTechs(techs);
+      }
+    }
+
+    // Technician Orders
+    function setTechFilterTab(tabName) {
+      currentTechTab = tabName;
+      document.querySelectorAll('#techMainView .btn-group button').forEach(b => b.classList.remove('active'));
+      if (tabName === 'today') document.getElementById('tabTechToday').classList.add('active');
+      if (tabName === 'all') document.getElementById('tabTechAll').classList.add('active');
+      if (tabName === 'مرتجع') document.getElementById('tabTechReturns').classList.add('active');
+      renderTechOrders();
+    }
+
+    function resetTechFilters() {
+      document.getElementById('techFilterStatus').value = '';
+      document.getElementById('techFilterDate').value = '';
+      renderTechOrders();
+    }
+
+    function renderTechOrders() {
+      if (!currentTech) return;
+      const container = document.getElementById('techOrdersContainer');
+      const allOrders = getStoredOrders();
+      const techOrders = allOrders.filter(o => o.assignedTechId === currentTech.id);
+
+      const todayStr = getLocalDateStr();
+      const statusFilter = document.getElementById('techFilterStatus').value;
+      const dateFilter = document.getElementById('techFilterDate').value.trim();
+
+      const todayOrdersAll = techOrders.filter(o => 
+        o.date === todayStr || 
+        o.updatedDate === todayStr || 
+        o.statusDate === todayStr ||
+        (o.invoice && o.invoice.date === todayStr)
+      );
+      const todayDoneCount = todayOrdersAll.filter(o => o.status === 'تم').length;
+      const todayReturnsCount = todayOrdersAll.filter(o => o.status === 'مرتجع').length;
+      const totalReturnsCount = techOrders.filter(o => o.status === 'مرتجع').length;
+
+      document.getElementById('techTodayTotal').innerText = todayOrdersAll.length;
+      document.getElementById('techTodayDone').innerText = todayDoneCount;
+      document.getElementById('techTodayReturns').innerText = todayReturnsCount;
+
+      document.getElementById('countTechToday').innerText = todayOrdersAll.length;
+      document.getElementById('countTechAll').innerText = techOrders.length;
+      document.getElementById('countTechReturns').innerText = totalReturnsCount;
+
+      let filtered = techOrders.filter(order => {
+        if (currentTechTab === 'today') {
+          const isToday = (
+            order.date === todayStr || 
+            order.updatedDate === todayStr || 
+            order.statusDate === todayStr ||
+            (order.invoice && order.invoice.date === todayStr)
+          );
+          if (!isToday) return false;
+        } else if (currentTechTab === 'مرتجع') {
+          if (order.status !== 'مرتجع') return false;
+        }
+
+        if (statusFilter && order.status !== statusFilter) return false;
+        if (dateFilter && order.date !== dateFilter && order.statusDate !== dateFilter) return false;
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="fa-solid fa-clipboard-check fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted fw-bold">لا توجد بلاغات تظهر حالياً في هذا القسم</h5>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(order => {
+        const cleanName = order.clientName.replace(/#\w+/g, '').trim();
+
+        return `
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-order h-100 p-3 status-${order.status}">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h6 class="fw-bold mb-1 text-dark">${cleanName}</h6>
+                  <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date || todayStr}</small>
+                </div>
+                <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
+              </div>
+
+              <div class="mb-2 text-secondary small">
+                <div><i class="fa-solid fa-location-dot text-danger me-1"></i> ${order.clientAddress}</div>
+                <div><i class="fa-solid fa-wrench text-primary me-1"></i> ${order.device}</div>
+                ${order.notes ? `<div class="mt-1 text-dark bg-light p-1 rounded"><i class="fa-solid fa-comment-dots me-1 text-secondary"></i>${order.notes}</div>` : ''}
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                <div class="d-flex gap-2">
+                  <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call" title="اتصال بالعميل">
+                    <i class="fa-solid fa-phone"></i>
+                  </a>
+                  <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp" title="محادثة واتساب">
+                    <i class="fa-brands fa-whatsapp"></i>
+                  </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <select class="form-select form-select-sm fw-bold border-primary" style="width: 140px;" onchange="updateTechOrderStatus('${order.id}', this.value)">
+                    <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
+                    <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
+                    <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
+                    <option value="قيد الاستكمال" ${order.status === 'قيد الاستكمال' ? 'selected' : ''}>قيد الاستكمال</option>
+                    <option value="مؤجل" ${order.status === 'مؤجل' ? 'selected' : ''}>مؤجل</option>
+                    <option value="يحتاج متابعة" ${order.status === 'يحتاج متابعة' ? 'selected' : ''}>يحتاج متابعة</option>
+                    <option value="تم الإلغاء من العميل" ${order.status === 'تم الإلغاء من العميل' ? 'selected' : ''}>تم الإلغاء من العميل</option>
+                    ${order.status === 'مرتجع' ? '<option value="مرتجع" selected>مرتجع</option>' : ''}
+                  </select>
+
+                  <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة المعتمدة">
+                    <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateTechOrderStatus(orderId, newStatus) {
+      const orders = getStoredOrders();
+      const idx = orders.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        const todayStr = getLocalDateStr();
+        orders[idx].status = newStatus;
+        orders[idx].statusDate = todayStr;
+        orders[idx].updatedDate = todayStr;
+        orders[idx].lastActivity = new Date().toISOString();
+        saveStoredOrders(orders);
+        showToast(`تم تغيير حالة الأوردر إلى "${newStatus}" وسيظهر في اليوم الشامل`);
+        renderTechOrders();
+      }
+    }
+
+    // Admin Orders
+    function switchAdminSection(sectionName) {
+      document.getElementById('adminSectionOrders').classList.add('d-none');
+      document.getElementById('adminSectionTechs').classList.add('d-none');
+      document.getElementById('adminSectionMap').classList.add('d-none');
+
+      document.getElementById('btnAdminTabOrders').className = 'btn btn-outline-primary fw-bold';
+      document.getElementById('btnAdminTabTechs').className = 'btn btn-outline-primary fw-bold';
+      document.getElementById('btnAdminTabMap').className = 'btn btn-outline-primary fw-bold';
+
+      if (sectionName === 'orders') {
+        document.getElementById('adminSectionOrders').classList.remove('d-none');
+        document.getElementById('btnAdminTabOrders').className = 'btn btn-primary fw-bold';
+        renderAdminOrders();
+      } else if (sectionName === 'techs') {
+        document.getElementById('adminSectionTechs').classList.remove('d-none');
+        document.getElementById('btnAdminTabTechs').className = 'btn btn-primary fw-bold';
+        renderAdminTechsGrid();
+      } else if (sectionName === 'map') {
+        document.getElementById('adminSectionMap').classList.remove('d-none');
+        document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold';
+        setTimeout(initOrRefreshMap, 200);
+      }
+    }
+
+    function setAdminOrderFilter(filterType) {
+      currentAdminTab = filterType;
+      document.querySelectorAll('#adminSectionOrders .btn-group button').forEach(b => b.classList.remove('active'));
+      if (filterType === 'all') document.getElementById('pillAdminAll').classList.add('active');
+      if (filterType === 'today') document.getElementById('pillAdminToday').classList.add('active');
+      if (filterType === 'تم') document.getElementById('pillAdminDone').classList.add('active');
+      if (filterType === 'مرتجع') document.getElementById('pillAdminReturn').classList.add('active');
+      renderAdminOrders();
+    }
+
+    function resetAdminFilters() {
+      document.getElementById('adminSearchInput').value = '';
+      document.getElementById('adminFilterStatusSelect').value = '';
+      document.getElementById('adminFilterDate').value = '';
+      renderAdminOrders();
+    }
+
+    function renderAdminOrders() {
+      const container = document.getElementById('adminOrdersContainer');
+      const allOrders = getStoredOrders();
+      const allTechs = getStoredTechs();
+      const todayStr = getLocalDateStr();
+
+      document.getElementById('adminTotalOrders').innerText = allOrders.length;
+      document.getElementById('adminDoneOrders').innerText = allOrders.filter(o => o.status === 'تم').length;
+      document.getElementById('adminReturnOrders').innerText = allOrders.filter(o => o.status === 'مرتجع').length;
+      document.getElementById('adminTechCount').innerText = allTechs.length;
+
+      const searchTxt = document.getElementById('adminSearchInput').value.trim().toLowerCase();
+      const statusFilter = document.getElementById('adminFilterStatusSelect').value;
+      const dateFilter = document.getElementById('adminFilterDate').value.trim();
+
+      let filtered = allOrders.filter(order => {
+        if (currentAdminTab === 'today') {
+          const isToday = (
+            order.date === todayStr || 
+            order.updatedDate === todayStr || 
+            order.statusDate === todayStr ||
+            (order.invoice && order.invoice.date === todayStr)
+          );
+          if (!isToday) return false;
+        } else if (currentAdminTab === 'تم') {
+          if (order.status !== 'تم') return false;
+        } else if (currentAdminTab === 'مرتجع') {
+          if (order.status !== 'مرتجع') return false;
+        }
+
+        if (statusFilter && order.status !== statusFilter) return false;
+        if (dateFilter && order.date !== dateFilter && order.statusDate !== dateFilter) return false;
+
+        if (searchTxt) {
+          const matchClient = order.clientName.toLowerCase().includes(searchTxt);
+          const matchPhone = order.clientPhone.includes(searchTxt);
+          const matchTech = (order.assignedTechName || '').toLowerCase().includes(searchTxt);
+          const matchDevice = order.device.toLowerCase().includes(searchTxt);
+          if (!matchClient && !matchPhone && !matchTech && !matchDevice) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h5>لا توجد بلاغات مطابقة لبحثك</h5></div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(order => {
+        const cleanName = order.clientName.replace(/#\w+/g, '').trim();
+
+        return `
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-order h-100 p-3 status-${order.status}">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h6 class="fw-bold mb-1 text-dark">${cleanName}</h6>
+                  <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date || todayStr}</small>
+                </div>
+                <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
+              </div>
+
+              <div class="mb-2 text-secondary small">
+                <div><i class="fa-solid fa-user-gear text-primary me-1"></i> الفني: <strong>${order.assignedTechName || 'غير محدد'}</strong></div>
+                <div><i class="fa-solid fa-location-dot text-danger me-1"></i> ${order.clientAddress}</div>
+                <div><i class="fa-solid fa-wrench text-secondary me-1"></i> ${order.device}</div>
+                ${order.notes ? `<div class="mt-1 text-dark bg-light p-1 rounded small">${order.notes}</div>` : ''}
+              </div>
+
+              <div class="my-2 p-2 bg-light rounded d-flex justify-content-between align-items-center">
+                <span class="small fw-bold text-dark">تغيير الحالة:</span>
+                <select class="form-select form-select-sm fw-bold border-secondary" style="width: 170px;" onchange="adminUpdateOrderStatus('${order.id}', this.value)">
+                  <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
+                  <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
+                  <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
+                  <option value="قيد الاستكمال" ${order.status === 'قيد الاستكمال' ? 'selected' : ''}>قيد الاستكمال</option>
+                  <option value="مؤجل" ${order.status === 'مؤجل' ? 'selected' : ''}>مؤجل</option>
+                  <option value="يحتاج متابعة" ${order.status === 'يحتاج متابعة' ? 'selected' : ''}>يحتاج متابعة</option>
+                  <option value="مرتجع" ${order.status === 'مرتجع' ? 'selected' : ''}>مرتجع</option>
+                  <option value="تم الإلغاء من العميل" ${order.status === 'تم الإلغاء من العميل' ? 'selected' : ''}>تم الإلغاء من العميل</option>
+                </select>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                <div class="d-flex gap-2">
+                  <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call" title="اتصال"><i class="fa-solid fa-phone"></i></a>
+                  <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp" title="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                  <button class="btn btn-sm btn-outline-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة">
+                    <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
+                  </button>
+                </div>
+                
+                <div class="d-flex gap-1">
+                  <button class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="editOrderModal('${order.id}')" title="تعديل بيانات البلاغ">
+                    <i class="fa-solid fa-pen-to-square"></i> تعديل
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger fw-bold" onclick="deleteOrder('${order.id}')" title="حذف نهائي">
+                    <i class="fa-solid fa-trash"></i> حذف
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function adminUpdateOrderStatus(orderId, newStatus) {
+      const orders = getStoredOrders();
+      const idx = orders.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        const todayStr = getLocalDateStr();
+        orders[idx].status = newStatus;
+        orders[idx].statusDate = todayStr;
+        orders[idx].updatedDate = todayStr;
+        saveStoredOrders(orders);
+        showToast(`تم تحديث حالة الأوردر إلى "${newStatus}" وسيظهر في اليوم الشامل`);
+        renderAdminOrders();
+      }
+    }
+
+    function deleteOrder(orderId) {
+      if (confirm('هل أنت متأكد من رغبتك في حذف هذا البلاغ نهائياً؟')) {
+        let orders = getStoredOrders();
+        orders = orders.filter(o => o.id !== orderId);
+        saveStoredOrders(orders);
+        showToast('تم حذف البلاغ بنجاح');
+        renderAdminOrders();
+      }
+    }
+
+    // Add / Edit Order
+    function showAddOrderModal() {
+      document.getElementById('orderModalTitle').innerText = 'إضافة بلاغ صيانة جديد';
+      document.getElementById('orderFormId').value = '';
+      document.getElementById('orderForm').reset();
+      document.getElementById('orderDate').value = getLocalDateStr();
+      populateTechSelect('orderAssignedTech');
+      new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    function editOrderModal(orderId) {
+      const orders = getStoredOrders();
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      document.getElementById('orderModalTitle').innerText = 'تعديل بيانات البلاغ';
+      document.getElementById('orderFormId').value = order.id;
+      document.getElementById('orderClientName').value = order.clientName;
+      document.getElementById('orderClientPhone').value = order.clientPhone;
+      document.getElementById('orderClientAddress').value = order.clientAddress;
+      document.getElementById('orderDevice').value = order.device;
+      document.getElementById('orderDate').value = order.date;
+      document.getElementById('orderStatus').value = order.status;
+      document.getElementById('orderNotes').value = order.notes || '';
+      
+      populateTechSelect('orderAssignedTech', order.assignedTechId);
+      new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    function populateTechSelect(selectId, selectedTechId = '') {
+      const select = document.getElementById(selectId);
+      const techs = getStoredTechs();
+      select.innerHTML = '<option value="">-- اختر الفني المسؤول --</option>' + 
+        techs.map(t => `<option value="${t.id}" ${t.id === selectedTechId ? 'selected' : ''}>${t.name} (كود: ${t.code || t.id})</option>`).join('');
+    }
+
+    function saveOrder(e) {
+      e.preventDefault();
+      const id = document.getElementById('orderFormId').value;
+      const orders = getStoredOrders();
+      const techs = getStoredTechs();
+
+      const assignedId = document.getElementById('orderAssignedTech').value;
+      const assignedTech = techs.find(t => t.id === assignedId);
+      const statusVal = document.getElementById('orderStatus').value;
+      const todayStr = getLocalDateStr();
+
+      const orderData = {
+        id: id || 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+        clientName: document.getElementById('orderClientName').value.trim(),
+        clientPhone: document.getElementById('orderClientPhone').value.trim(),
+        clientAddress: document.getElementById('orderClientAddress').value.trim(),
+        device: document.getElementById('orderDevice').value.trim(),
+        assignedTechId: assignedId,
+        assignedTechName: assignedTech ? assignedTech.name : 'غير محدد',
+        date: document.getElementById('orderDate').value || todayStr,
+        status: statusVal,
+        statusDate: todayStr,
+        updatedDate: todayStr,
+        notes: document.getElementById('orderNotes').value.trim(),
+        invoice: null
+      };
+
+      if (id) {
+        const idx = orders.findIndex(o => o.id === id);
+        if (idx !== -1) {
+          orderData.invoice = orders[idx].invoice;
+          orders[idx] = orderData;
+        }
+      } else {
+        orders.unshift(orderData);
+      }
+
+      saveStoredOrders(orders);
+      bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+      showToast('تم حفظ البلاغ بنجاح');
+      renderAdminOrders();
+    }
+
+    // Technicians
+    function renderAdminTechsGrid() {
+      const container = document.getElementById('adminTechsGridContainer');
+      const techs = getStoredTechs();
+      const orders = getStoredOrders();
+
+      container.innerHTML = techs.map(t => {
+        const techOrders = orders.filter(o => o.assignedTechId === t.id);
+        const doneCount = techOrders.filter(o => o.status === 'تم').length;
+
+        return `
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm p-3 h-100 bg-white rounded-3 position-relative">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <img src="${t.photo || 'https://via.placeholder.com/80'}" class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #0d6efd;">
+                <div>
+                  <h6 class="fw-bold mb-0">${t.name}</h6>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle py-0 my-1" style="font-size: 0.72rem;">
+                    <i class="fa-solid fa-check-circle"></i> معتمد من الإدارة
+                  </span>
+                  <div class="small text-muted">${t.specialty}</div>
+                  <span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span>
+                  <small class="fw-bold ${t.isOnline ? 'text-success' : 'text-secondary'}">${t.isOnline ? 'متصل الآن' : 'غير متصل'}</small>
+                </div>
+              </div>
+
+              <div class="bg-light p-2 rounded small mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span><strong>كود الفني:</strong> <span class="badge bg-primary fs-6">${t.code || t.id}</span></span>
+                  <span><strong>المستخدم:</strong> <span class="badge bg-dark">${t.username}</span></span>
+                </div>
+                <div><strong>كلمة المرور:</strong> <span class="badge bg-secondary">${t.password}</span></div>
+                <div><strong>رقم الهاتف:</strong> ${t.phone}</div>
+                <div class="mt-1 text-primary"><strong>إجمالي البلاغات:</strong> ${techOrders.length} | <strong>المنجز:</strong> ${doneCount}</div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="showTechHistory('${t.id}')">
+                  <i class="fa-solid fa-list-check me-1"></i> سجل الأوردرات
+                </button>
+                <div class="d-flex gap-1">
+                  <button class="btn btn-sm btn-outline-warning text-dark" onclick="editTechModal('${t.id}')"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteTechnician('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showAddTechModal() {
+      document.getElementById('techModalTitle').innerText = 'إضافة فني جديد';
+      document.getElementById('techFormId').value = '';
+      document.getElementById('techForm').reset();
+      document.getElementById('techCodeInput').value = 'TECH-' + Math.floor(100 + Math.random() * 900);
+      new bootstrap.Modal(document.getElementById('techModal')).show();
+    }
+
+    function editTechModal(techId) {
+      const techs = getStoredTechs();
+      const t = techs.find(x => x.id === techId);
+      if (!t) return;
+
+      document.getElementById('techModalTitle').innerText = 'تعديل بيانات الفني';
+      document.getElementById('techFormId').value = t.id;
+      document.getElementById('techName').value = t.name;
+      document.getElementById('techCodeInput').value = t.code || ('TECH-' + t.id.replace(/\D/g,''));
+      document.getElementById('techUsername').value = t.username;
+      document.getElementById('techPassword').value = t.password;
+      document.getElementById('techPhone').value = t.phone;
+      document.getElementById('techSpecialty').value = t.specialty;
+      new bootstrap.Modal(document.getElementById('techModal')).show();
+    }
+
+    async function saveTechnician(e) {
+      e.preventDefault();
+      const id = document.getElementById('techFormId').value;
+      const techs = getStoredTechs();
+
+      const photoFile = document.getElementById('techPhotoFile').files[0];
+      const carnetFile = document.getElementById('techCarnetFile').files[0];
+
+      let photoBase64 = null;
+      let carnetBase64 = null;
+
+      if (photoFile) photoBase64 = await compressImage(photoFile, 200, 200);
+      if (carnetFile) carnetBase64 = await compressImage(carnetFile, 600, 400);
+
+      const generatedId = id || 'T' + Math.floor(100 + Math.random() * 900);
+      const techObj = {
+        id: generatedId,
+        code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + generatedId.replace(/\D/g,'')),
+        name: document.getElementById('techName').value.trim(),
+        username: document.getElementById('techUsername').value.trim().toLowerCase(),
+        password: document.getElementById('techPassword').value.trim(),
+        phone: document.getElementById('techPhone').value.trim(),
+        specialty: document.getElementById('techSpecialty').value.trim(),
+        isOnline: false,
+        lat: 30.0444 + (Math.random() - 0.5) * 0.05,
+        lng: 31.2357 + (Math.random() - 0.5) * 0.05,
+        lastLocationTime: "الآن"
+      };
+
+      if (id) {
+        const idx = techs.findIndex(x => x.id === id);
+        if (idx !== -1) {
+          techObj.photo = photoBase64 || techs[idx].photo;
+          techObj.carnet = carnetBase64 || techs[idx].carnet;
+          techObj.isOnline = techs[idx].isOnline;
+          techs[idx] = techObj;
+        }
+      } else {
+        techObj.photo = photoBase64 || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop';
+        techObj.carnet = carnetBase64 || '';
+        techs.push(techObj);
+      }
+
+      saveStoredTechs(techs);
+      bootstrap.Modal.getInstance(document.getElementById('techModal')).hide();
+      showToast('تم حفظ بيانات الفني بنجاح وتعيينه كفني معتمد');
+      renderAdminTechsGrid();
+    }
+
+    function deleteTechnician(techId) {
+      if (confirm('هل أنت متأكد من حذف هذا الفني نهائياً من النظام؟')) {
+        let techs = getStoredTechs();
+        techs = techs.filter(t => t.id !== techId);
+        saveStoredTechs(techs);
+        showToast('تم حذف الفني بنجاح');
+        renderAdminTechsGrid();
+      }
+    }
+
+    function compressImage(file, maxWidth, maxHeight) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+            if (h > maxHeight) { h = Math.round((h * maxHeight) / h); h = maxHeight; }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+        };
+      });
+    }
+
+    // Customer Trust ID Card Presentation
+    function showTechProfileModal() {
+      if (!currentTech) return;
+      document.getElementById('profileModalName').innerText = currentTech.name;
+      document.getElementById('profileModalCode').innerText = currentTech.code || ('TECH-' + currentTech.id);
+      document.getElementById('profileModalSpecialty').innerText = 'التخصص: ' + (currentTech.specialty || 'صيانة منزلية شاملة');
+      document.getElementById('profileModalPhone').innerText = currentTech.phone;
+      if (currentTech.photo) document.getElementById('profileModalPhoto').src = currentTech.photo;
+      if (currentTech.carnet) document.getElementById('profileModalCarnet').src = currentTech.carnet;
+      new bootstrap.Modal(document.getElementById('techProfileModal')).show();
+    }
+
+    function showTechHistory(techId) {
+      const techs = getStoredTechs();
+      const t = techs.find(x => x.id === techId);
+      const orders = getStoredOrders().filter(o => o.assignedTechId === techId);
+
+      document.getElementById('techHistoryTitle').innerText = `سجل أوردرات الفني: ${t ? t.name : ''} (كود: ${t ? (t.code || t.id) : ''})`;
+      const container = document.getElementById('techHistoryContainer');
+
+      if (orders.length === 0) {
+        container.innerHTML = `<div class="col-12 text-center py-4 text-muted">لا توجد أوردرات مسندة لهذا الفني حتى الآن</div>`;
+      } else {
+        container.innerHTML = orders.map(o => `
+          <div class="col-md-6">
+            <div class="card p-3 border shadow-sm">
+              <div class="d-flex justify-content-between">
+                <h6 class="fw-bold">${o.clientName}</h6>
+                <span class="badge ${getStatusBadgeClass(o.status)}">${o.status}</span>
+              </div>
+              <small class="text-muted"><i class="fa-solid fa-location-dot me-1"></i> ${o.clientAddress}</small>
+              <div class="small mt-1 text-secondary">الجهاز: ${o.device} | التاريخ: ${o.date}</div>
+              <div class="mt-2 text-end">
+                <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${o.id}')"><i class="fa-solid fa-receipt me-1"></i> عرض الفاتورة المنجزة</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      new bootstrap.Modal(document.getElementById('techHistoryModal')).show();
+    }
+
+    // Map & GPS
+    function initOrRefreshMap() {
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
+      if (!mapInstance) {
+        mapInstance = L.map('map').setView([30.0444, 31.2357], 12);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+          maxZoom: 20,
+          attribution: 'خرائط جوجل المباشرة'
+        }).addTo(mapInstance);
+      }
+
+      mapInstance.invalidateSize();
+      renderMapTechnicians();
+    }
+
+    function renderMapTechnicians() {
+      const techs = getStoredTechs();
+      const filterBar = document.getElementById('mapTechFilterBar');
+
+      for (let k in mapMarkers) {
+        mapInstance.removeLayer(mapMarkers[k]);
+      }
+      mapMarkers = {};
+
+      filterBar.innerHTML = `<span class="fw-bold small align-self-center me-2">التركيز على فني:</span>` + 
+        techs.map(t => `
+          <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onclick="flyToTechLocation(${t.lat}, ${t.lng})">
+            <span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'}"></span>
+            ${t.name} (${t.code || t.id})
+          </button>
+        `).join('');
+
+      techs.forEach(t => {
+        const customIcon = L.divIcon({
+          className: 'custom-map-avatar',
+          html: `
+            <div style="position: relative; width: 44px; height: 44px;">
+              <img src="${t.photo || 'https://via.placeholder.com/44'}" style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; box-shadow: 0 2px 8px rgba(0,0,0,0.3); object-fit: cover;">
+              <span style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: ${t.isOnline ? '#28a745' : '#6c757d'}; border-radius: 50%; border: 2px solid white;"></span>
+            </div>
+          `,
+          iconSize: [44, 44],
+          iconAnchor: [22, 22]
+        });
+
+        const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
+        marker.bindPopup(`
+          <div style="font-family: inherit;">
+            <h6 class="fw-bold mb-1">${t.name} <span class="badge bg-success" style="font-size: 0.65rem;">معتمد</span></h6>
+            <div class="small text-muted mb-1">كود الفني: <strong>${t.code || t.id}</strong></div>
+            <div class="small"><strong>الحالة:</strong> <span class="badge ${t.isOnline ? 'bg-success' : 'bg-secondary'}">${t.isOnline ? 'متصل وميداني' : 'غير متصل'}</span></div>
+            <div class="small mt-1">آخر تحديث: ${t.lastLocationTime}</div>
+          </div>
+        `);
+        mapMarkers[t.id] = marker;
+      });
+
+      document.getElementById('lastMapUpdateText').innerText = `تم التحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+    }
+
+    function flyToTechLocation(lat, lng) {
+      if (mapInstance) {
+        mapInstance.flyTo([lat, lng], 15, { animate: true, duration: 1.2 });
+      }
+    }
+
+    function syncTechnicianGPS() {
+      if (currentRole === 'technician' && currentTech) {
+        navigator.geolocation?.getCurrentPosition((pos) => {
+          const techs = getStoredTechs();
+          const idx = techs.findIndex(t => t.id === currentTech.id);
+          if (idx !== -1) {
+            techs[idx].lat = pos.coords.latitude;
+            techs[idx].lng = pos.coords.longitude;
+            techs[idx].isOnline = true;
+            techs[idx].lastLocationTime = new Date().toLocaleTimeString('ar-EG');
+            saveStoredTechs(techs);
+          }
+        }, () => {});
+      }
+    }
+
+    // Official Invoices
+    let officialInvoiceParts = [];
+    let currentInvoiceOrder = null;
+
+    function openOfficialInvoiceModal(orderId) {
+      const orders = getStoredOrders();
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      currentInvoiceOrder = order;
+      document.getElementById('invoiceOrderId').value = order.id;
+
+      document.getElementById('invSheetClientName').value = order.clientName;
+      document.getElementById('invSheetClientPhone').value = order.clientPhone;
+      document.getElementById('invSheetClientAddress').value = order.clientAddress;
+      document.getElementById('invSheetDeviceType').value = order.device;
+      document.getElementById('invSheetDeviceBrand').value = order.device.includes('كيريازي') ? 'كيريازي' : 'عام';
+      document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
+      document.getElementById('invSheetDate').value = getLocalDateStr();
+      document.getElementById('invSheetProblemDesc').value = order.notes || 'صيانة عامة وفحص دوري للجهاز';
+
+      if (order.invoice) {
+        document.getElementById('invSheetNumber').value = order.invoice.number;
+        document.getElementById('invoiceTemplateSelector').value = order.invoice.templateType || 'kiriazi';
+        officialInvoiceParts = JSON.parse(JSON.stringify(order.invoice.parts || []));
+      } else {
+        document.getElementById('invSheetNumber').value = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('invoiceTemplateSelector').value = order.device.includes('كيريازي') ? 'kiriazi' : 'authorized';
+        officialInvoiceParts = [
+          { name: 'فحص وصيانة عامة للجهاز', qty: 1, price: 150 },
+          { name: '', qty: 1, price: 0 },
+          { name: '', qty: 1, price: 0 },
+          { name: '', qty: 1, price: 0 }
+        ];
+      }
+
+      switchInvoiceDesignTheme();
+      renderOfficialPartsTable();
+      calculateOfficialInvoice();
+
+      new bootstrap.Modal(document.getElementById('officialInvoiceModal')).show();
+    }
+
+    function switchInvoiceDesignTheme() {
+      const type = document.getElementById('invoiceTemplateSelector').value;
+      const logoBox = document.getElementById('invLogoContainer');
+      const headerTitle = document.getElementById('invMainHeaderTitle');
+      const hotlineBox = document.getElementById('invHotlineBox');
+      const stampBox = document.getElementById('invSheetStamp');
+
+      if (type === 'kiriazi') {
+        logoBox.innerHTML = `
+          <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 14px; text-align: center; color: #ffeb3b; box-shadow: 0 3px 6px rgba(0,0,0,0.2);">
+            <div style="font-size: 0.65rem; color: #fff; font-weight: bold; line-height: 1;"><i class="fa-solid fa-gem text-warning"></i></div>
+            <div style="font-size: 1.45rem; font-weight: 900; letter-spacing: 1px; line-height: 1.1; color: #ffea00; font-family: 'Segoe UI', Tahoma;">كريــازى</div>
+          </div>
+        `;
+        headerTitle.innerText = "Electric for Home Appliances";
+        headerTitle.style.color = "#1b633b";
+        hotlineBox.classList.add('d-none');
+
+        stampBox.className = "stamp-kiriazi";
+        stampBox.innerHTML = `
+          <div style="font-size: 0.85rem; line-height: 1;">ضمان</div>
+          <div style="font-size: 1rem; line-height: 1.1;">لمدة عام</div>
+          <div style="font-size: 0.75rem;">★★★</div>
+        `;
+      } else {
+        logoBox.innerHTML = `
+          <div class="d-flex align-items-center gap-2">
+            <div style="width: 44px; height: 44px; background: #0b4f8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem;">
+              <i class="fa-solid fa-wrench"></i>
+            </div>
+            <div>
+              <div style="color: #b02a37; font-weight: 900; font-size: 0.95rem; line-height: 1.1;">قسم الخدمة والصيانة</div>
+              <div style="color: #333; font-size: 0.65rem; font-weight: bold;">Service & Maintenance Section</div>
+            </div>
+          </div>
+        `;
+        headerTitle.innerText = "Authorized Service Center";
+        headerTitle.style.color = "#125e36";
+        hotlineBox.classList.remove('d-none');
+
+        stampBox.className = "stamp-gold";
+        stampBox.innerHTML = `
+          <div style="font-size: 0.85rem; line-height: 1;">ضمان</div>
+          <div style="font-size: 1rem; line-height: 1.1;">لمدة عام</div>
+          <div style="font-size: 0.75rem;">★★★</div>
+        `;
+      }
+    }
+
+    function addOfficialPartRow() {
+      officialInvoiceParts.push({ name: '', qty: 1, price: 0 });
+      renderOfficialPartsTable();
+      calculateOfficialInvoice();
+    }
+
+    function removeOfficialPartRow(idx) {
+      if (officialInvoiceParts.length > 1) {
+        officialInvoiceParts.splice(idx, 1);
+        renderOfficialPartsTable();
+        calculateOfficialInvoice();
+      }
+    }
+
+    function renderOfficialPartsTable() {
+      const tbody = document.getElementById('invOfficialTableBody');
+      tbody.innerHTML = officialInvoiceParts.map((item, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td style="text-align: right; padding-right: 10px;">
+            <input type="text" value="${item.name}" placeholder="اكتب البيان / قطعة الغيار..." oninput="updateOfficialPartItem(${i}, 'name', this.value)" style="text-align: right;">
+          </td>
+          <td>
+            <input type="number" min="1" value="${item.qty}" oninput="updateOfficialPartItem(${i}, 'qty', this.value)">
+          </td>
+          <td>
+            <input type="number" min="0" value="${item.price}" oninput="updateOfficialPartItem(${i}, 'price', this.value)">
+          </td>
+          <td class="fw-bold" style="color: #0e5c36;">
+            ${(item.qty || 1) * (item.price || 0)}
+          </td>
+          <td class="no-print">
+            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" onclick="removeOfficialPartRow(${i})" title="حذف هذا السطر">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateOfficialPartItem(idx, key, val) {
+      if (key === 'qty' || key === 'price') val = parseFloat(val) || 0;
+      officialInvoiceParts[idx][key] = val;
+      calculateOfficialInvoice();
+      const row = document.getElementById('invOfficialTableBody').children[idx];
+      if (row) {
+        row.children[4].innerText = (officialInvoiceParts[idx].qty || 1) * (officialInvoiceParts[idx].price || 0);
+      }
+    }
+
+    function calculateOfficialInvoice() {
+      let subtotal = 0;
+      officialInvoiceParts.forEach(p => {
+        subtotal += (p.qty || 1) * (p.price || 0);
+      });
+      document.getElementById('invSheetSubtotalDisplay').innerText = subtotal;
+      document.getElementById('invSheetTotalDisplay').innerText = subtotal;
+    }
+
+    function getOfficialInvoicePayload() {
+      const todayStr = getLocalDateStr();
+      let total = 0;
+      officialInvoiceParts.forEach(p => total += (p.qty || 1) * (p.price || 0));
+
+      return {
+        number: document.getElementById('invSheetNumber').value || '1001',
+        templateType: document.getElementById('invoiceTemplateSelector').value,
+        date: document.getElementById('invSheetDate').value || todayStr,
+        clientName: document.getElementById('invSheetClientName').value,
+        clientPhone: document.getElementById('invSheetClientPhone').value,
+        clientAddress: document.getElementById('invSheetClientAddress').value,
+        device: document.getElementById('invSheetDeviceType').value,
+        problemDesc: document.getElementById('invSheetProblemDesc').value,
+        parts: officialInvoiceParts.filter(p => p.name.trim() !== '' || p.price > 0),
+        totalCost: total
+      };
+    }
+
+    function saveOfficialInvoice() {
+      const orderId = document.getElementById('invoiceOrderId').value;
+      const orders = getStoredOrders();
+      const idx = orders.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        const payload = getOfficialInvoicePayload();
+        const todayStr = getLocalDateStr();
+        orders[idx].invoice = payload;
+        orders[idx].status = 'تم';
+        orders[idx].statusDate = todayStr;
+        orders[idx].updatedDate = todayStr;
+        saveStoredOrders(orders);
+        showToast('تم اعتماد الفاتورة الرسمية وحفظها بنجاح!');
+        bootstrap.Modal.getInstance(document.getElementById('officialInvoiceModal')).hide();
+        if (currentRole === 'technician') renderTechOrders();
+        if (currentRole === 'admin') renderAdminOrders();
+      }
+    }
+
+    function sendOfficialInvoiceWhatsApp() {
+      if (!currentInvoiceOrder) return;
+      const payload = getOfficialInvoicePayload();
+      const order = currentInvoiceOrder;
+
+      saveOfficialInvoiceQuiet(order.id, payload);
+
+      const isKiriazi = payload.templateType === 'kiriazi';
+      const companyHeader = isKiriazi ? 'مركز صيانة كيريازي المعتمد' : 'المركز المعتمد للصيانة (الخط الساخن: 19387)';
+      const partsText = payload.parts.map((p, i) => `${i + 1}. ${p.name} - ${p.qty} × ${p.price} ج.م`).join('\n');
+
+      const msg = encodeURIComponent(
+        `*فاتورة صيانة معتمدة - ${companyHeader}*\n\n` +
+        `رقم الفاتورة: ${payload.number}\n` +
+        `التاريخ: ${payload.date}\n` +
+        `العميل: ${payload.clientName}\n` +
+        `الهاتف: ${payload.clientPhone}\n` +
+        `العنوان: ${payload.clientAddress}\n` +
+        `الجهاز: ${payload.device}\n` +
+        `وصف المشكلة: ${payload.problemDesc}\n\n` +
+        `*قطع الغيار وتفاصيل الإصلاح:*\n${partsText || 'صيانة عامة وفحص شامل'}\n\n` +
+        `*الإجمالي الكلي المطلوب دفعه: ${payload.totalCost} ج.م*\n\n` +
+        `• تم تسليم الجهاز بحالة جيدة.\n` +
+        `• ضمان معتمد لمدة عام من تاريخ الفاتورة.\n\n` +
+        `شكراً لاختياركم مركزنا المعتمد.`
+      );
+
+      window.open(`https://wa.me/2${payload.clientPhone.replace(/\D/g,'')}?text=${msg}`, '_blank');
+      showToast('جاري فتح واتساب وإرسال الفاتورة...');
+    }
+
+    function saveOfficialInvoiceQuiet(orderId, payload) {
+      const orders = getStoredOrders();
+      const idx = orders.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        const todayStr = getLocalDateStr();
+        orders[idx].invoice = payload;
+        orders[idx].status = 'تم';
+        orders[idx].statusDate = todayStr;
+        orders[idx].updatedDate = todayStr;
+        saveStoredOrders(orders);
+      }
+    }
+
+    function getStatusBadgeClass(status) {
+      switch (status) {
+        case 'تم': return 'bg-success';
+        case 'كشف': return 'bg-info text-dark';
+        case 'قيد الاستكمال': return 'bg-primary';
+        case 'مؤجل': return 'bg-warning text-dark';
+        case 'يحتاج متابعة': return 'bg-secondary';
+        case 'مرتجع': return 'bg-danger';
+        case 'تم الإلغاء من العميل': return 'bg-dark';
+        default: return 'bg-primary';
+      }
+    }
+
+    function manualRefresh() {
+      const icon = document.getElementById('refreshSpin');
+      icon.classList.add('fa-spin');
+      setTimeout(() => {
+        icon.classList.remove('fa-spin');
+        if (currentRole === 'technician') renderTechOrders();
+        if (currentRole === 'admin') {
+          renderAdminOrders();
+          renderAdminTechsGrid();
+          if (mapInstance) renderMapTechnicians();
+        }
+        showToast('تمت المزامنة وتحديث كافة البيانات لحظياً');
+      }, 500);
+    }
+  </script>
+</body>
+</html>
