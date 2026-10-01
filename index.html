@@ -421,6 +421,18 @@
 
   <!-- ==================== TECHNICIAN MAIN VIEW ==================== -->
   <div id="techMainView" class="container-fluid py-3 d-none">
+    <!-- شريط تفعيل إذن الموقع الجغرافي للفني -->
+    <div class="alert alert-primary d-flex justify-content-between align-items-center p-2 mb-3 shadow-sm rounded-3">
+      <div>
+        <i class="fa-solid fa-location-crosshairs text-primary me-2 fa-lg"></i>
+        <strong class="small">مشاركة الموقع المباشر (GPS) مع الإدارة:</strong>
+        <span id="gpsStatusText" class="badge bg-secondary ms-1">غير مفعل</span>
+      </div>
+      <button class="btn btn-sm btn-primary fw-bold" onclick="requestTechLiveGPS()">
+        <i class="fa-solid fa-satellite-dish me-1"></i> تفعيل GPS الآن
+      </button>
+    </div>
+
     <div class="row g-2 mb-3">
       <div class="col-4">
         <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-primary">
@@ -468,7 +480,7 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <!-- حقل تاريخ نظيف لا يعكس الكلمات نهائياً -->
+        <!-- حقل التاريخ المحمي من الانعكاس -->
         <div class="input-group input-group-sm" style="width: 175px;">
           <input type="text" class="form-control form-control-sm text-center fw-bold bg-white" id="techFilterDate" placeholder="اختر التاريخ..." readonly onclick="openDateModal('techFilterDate')">
           <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDateFilter('techFilterDate', renderTechOrders)"><i class="fa-solid fa-xmark"></i></button>
@@ -547,7 +559,7 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <!-- حقل التاريخ المحمي من الانعكاس ويسهل اختياره -->
+        <!-- حقل التاريخ المحمي من الانعكاس ويسهل اختياره بدقة بدون خروج عن الشاشة -->
         <div class="input-group input-group-sm" style="width: 185px;">
           <input type="text" class="form-control form-control-sm text-center fw-bold bg-white" id="adminFilterDate" placeholder="اختر التاريخ..." readonly onclick="openDateModal('adminFilterDate')">
           <button class="btn btn-outline-secondary" type="button" onclick="clearAdminDateFilter()" title="عرض كل التواريخ"><i class="fa-solid fa-xmark"></i></button>
@@ -600,7 +612,7 @@
         </div>
 
         <div class="modal-body p-2 bg-light">
-          <!-- حاوية التمرير -->
+          <!-- حاوية التمرير الأفقي -->
           <div class="invoice-scroll-container">
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
@@ -633,7 +645,7 @@
 
               <!-- مربعات بيانات العميل والتاريخ والجهاز (مطابقة بالكامل للصورة: الجهاز في اليمين، العميل في اليسار، التاريخ في المنتصف) -->
               <div class="inv-boxes-container">
-                <!-- مربع بيانات الجهاز (في اليمين كما بالصورة) -->
+                <!-- مربع بيانات الجهاز (في اليمين كما بالصورة المرفقة) -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات الجهاز</div>
                   <div class="inv-row-item"><span>نوع الجهاز :</span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
@@ -655,7 +667,7 @@
                   </div>
                 </div>
 
-                <!-- مربع بيانات العميل (في اليسار كما بالصورة) -->
+                <!-- مربع بيانات العميل (في اليسار كما بالصورة المرفقة) -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات العميل</div>
                   <div class="inv-row-item"><span>اسم العميل :</span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
@@ -723,6 +735,7 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
+            <!-- الزر الهام: مشاركة كصورة عبر الواتساب بدقة كاملة وبدون أي نقص -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إرسال عبر واتساب
             </button>
@@ -1139,7 +1152,7 @@
       });
     }
 
-    // ==================== مصادقة الفني ====================
+    // ==================== مصادقة الفني وطلب إذن الموقع GPS ====================
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -1153,10 +1166,43 @@
         if (matched) {
           setRoleTechnician(matched);
           showToast(`أهلاً بك يا فني: ${matched.name}`);
+          // طلب إذن الموقع تلقائياً بمجرد الدخول
+          requestTechLiveGPS();
         } else {
           alert('خطأ: اسم المستخدم أو كلمة المرور غير صحيحة.');
         }
       });
+    }
+
+    function requestTechLiveGPS() {
+      if (!navigator.geolocation) {
+        alert('جهازك لا يدعم نظام تحديد الموقع GPS.');
+        return;
+      }
+      const statusBadge = document.getElementById('gpsStatusText');
+      statusBadge.className = 'badge bg-warning text-dark ms-1';
+      statusBadge.innerText = 'جاري التحديد...';
+
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          if (currentTech) {
+            db.ref('techs/' + currentTech.id).update({
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              isOnline: true,
+              lastLocationTime: new Date().toLocaleTimeString('ar-EG')
+            });
+            statusBadge.className = 'badge bg-success ms-1';
+            statusBadge.innerText = 'نشط بالأقمار الصناعية ✔';
+          }
+        },
+        (err) => {
+          statusBadge.className = 'badge bg-danger ms-1';
+          statusBadge.innerText = 'تم رفض الإذن ✖';
+          alert('تنبيه للفني: يرجى السماح للمتصفح بالوصول للموقع (GPS) لتتمكن الإدارة من متابعة خط سيرك.');
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      );
     }
 
     function setRoleAdmin() {
@@ -1326,7 +1372,7 @@
       });
     }
 
-    // ==================== أوردرات الإدارة ====================
+    // ==================== أوردرات الإدارة (مع التعديل على بيانات العميل) ====================
     function switchAdminSection(sec) {
       document.getElementById('adminSectionOrders').classList.add('d-none');
       document.getElementById('adminSectionTechs').classList.add('d-none');
@@ -1410,7 +1456,6 @@
                 </button>
               </div>
               <div class="d-flex gap-1">
-                <!-- زر تعديل بيانات العميل والبلاغ -->
                 <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ والعميل">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -1811,7 +1856,7 @@
       });
     }
 
-    // ==================== تصدير الفاتورة بدقة 100% كصورة ====================
+    // ==================== الحل الجذري: تصدير صورة الفاتورة للواتساب ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -2105,7 +2150,7 @@
       bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide();
     }
 
-    // ==================== الخريطة مع ميزة عزل كل فني وخط سيره الميداني ====================
+    // ==================== الخريطة مع تتبع كل فني بمفرده ورسم خط سيره ====================
     function initMap() {
       const mapContainer = document.getElementById('map');
       if (!mapContainer) return;
@@ -2189,7 +2234,6 @@
         const techOrders = globalOrders.filter(o => o.assignedTechId === t.id && (o.date === todayStr || o.statusDate === todayStr));
 
         techOrders.forEach((ord, index) => {
-          // محاكاة إحداثيات البلاغات القريبة من الفني
           const ordLat = t.lat + (index + 1) * 0.007 * (index % 2 === 0 ? 1 : -1);
           const ordLng = t.lng + (index + 1) * 0.007 * (index % 2 === 0 ? -1 : 1);
           routePoints.push([ordLat, ordLng]);
