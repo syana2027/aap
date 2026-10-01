@@ -60,8 +60,8 @@
     .card-order.status-مؤجل { border-right-color: #ffc107 !important; }
     
     .action-circle-btn {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
@@ -114,7 +114,7 @@
       border: none;
     }
 
-    /* ==================== استايل الفاتورة الرسمي ==================== */
+    /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
     .invoice-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -131,7 +131,7 @@
       direction: rtl;
       position: relative;
       border: 1.5px solid #1c6841;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
     .inv-top-row {
       display: flex;
@@ -143,7 +143,8 @@
     .inv-main-title-box h2 {
       font-weight: 900;
       margin: 0;
-      font-size: 1.9rem;
+      font-size: 1.95rem;
+      letter-spacing: -0.5px;
     }
     .inv-main-subtitle {
       display: flex;
@@ -159,16 +160,16 @@
       content: '';
       display: inline-block;
       width: 40px;
-      height: 1px;
+      height: 1.5px;
       background: #333;
     }
     .inv-badge-pill {
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 4px 30px;
+      padding: 4px 32px;
       border-radius: 20px;
       font-weight: bold;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       display: inline-block;
     }
     .inv-dotted-input {
@@ -201,7 +202,7 @@
       right: 25px;
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 2px 22px;
+      padding: 2px 24px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: bold;
@@ -280,8 +281,6 @@
       justify-content: center;
       margin-left: 6px;
     }
-
-    /* الأختام الرسمية */
     .stamp-kiriazi-red {
       position: absolute;
       bottom: 25px;
@@ -462,7 +461,8 @@
           <option value="مؤجل">مؤجل</option>
           <option value="مرتجع">مرتجع</option>
         </select>
-        <input type="date" class="form-control form-control-sm" id="techFilterDate" onchange="renderTechOrders()">
+        <!-- خانة التاريخ مع محاذاة LTR لمنع قلب الأرقام -->
+        <input type="date" class="form-control form-control-sm" id="techFilterDate" style="direction: ltr !important; text-align: center;" onchange="renderTechOrders()">
       </div>
     </div>
 
@@ -526,8 +526,8 @@
 
     <!-- أوردرات الإدارة -->
     <div id="adminSectionOrders">
-      <div class="d-flex flex-wrap gap-2 mb-3 bg-white p-2 rounded-3 border">
-        <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم، الهاتف، الفني..." oninput="renderAdminOrders()">
+      <div class="d-flex flex-wrap gap-2 mb-3 bg-white p-2 rounded-3 border align-items-center">
+        <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم، الهاتف، الفني..." oninput="renderAdminOrders()" style="max-width: 240px;">
         <select class="form-select form-select-sm" id="adminFilterStatusSelect" onchange="renderAdminOrders()" style="width: 160px;">
           <option value="">كل الحالات</option>
           <option value="تم">تم</option>
@@ -536,7 +536,12 @@
           <option value="مؤجل">مؤجل</option>
           <option value="مرتجع">مرتجع</option>
         </select>
-        <input type="date" class="form-control form-control-sm" id="adminFilterDate" onchange="renderAdminOrders()" style="width: 170px;">
+        
+        <!-- خانة التاريخ مع اتجاه LTR لمنع قلب الأرقام والشرطات -->
+        <div class="d-flex align-items-center gap-1">
+          <input type="date" class="form-control form-control-sm" id="adminFilterDate" style="direction: ltr !important; text-align: center; width: 160px;" onchange="renderAdminOrders()">
+          <button class="btn btn-sm btn-outline-secondary" onclick="clearAdminDateFilter()" title="إلغاء فلتر التاريخ">الكل</button>
+        </div>
       </div>
       <div id="adminOrdersContainer" class="row g-3"></div>
     </div>
@@ -605,8 +610,9 @@
                 </div>
               </div>
 
-              <!-- مربعات بيانات العميل والتاريخ والجهاز -->
+              <!-- مربعات بيانات العميل والتاريخ والجهاز (مطابقة بالكامل للصورة) -->
               <div class="inv-boxes-container">
+                <!-- مربع بيانات العميل (في اليمين) -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات العميل</div>
                   <div class="inv-row-item"><span>اسم العميل :</span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
@@ -614,12 +620,21 @@
                   <div class="inv-row-item mb-0"><span>العنوان :</span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
                 </div>
 
-                <!-- مربع التاريخ مع تثبيت الاتجاه LTR لمنع قلب الأرقام -->
-                <div class="text-center px-1" style="min-width: 140px;">
-                  <div class="fw-bold mb-1" style="font-size: 0.95rem;">التاريخ :</div>
-                  <input type="text" id="invSheetDate" class="inv-dotted-input text-center fw-bold" style="direction: ltr !important; text-align: center !important; font-size: 1.05rem; width: 100%;" dir="ltr">
+                <!-- سطر التاريخ في المنتصف المطابق تماماً للصورة بدون انعكاس -->
+                <div class="text-center px-2" style="min-width: 180px;">
+                  <div class="d-flex align-items-baseline justify-content-center">
+                    <span class="fw-bold ms-1" style="font-size: 1rem;">التاريخ :</span>
+                    <div style="display: inline-flex; align-items: baseline; direction: ltr !important; unicode-bidi: isolate;">
+                      <input type="text" id="invDateDay" placeholder="  " class="inv-dotted-input text-center fw-bold" style="width: 38px; direction: ltr !important;">
+                      <span class="fw-bold mx-1">/</span>
+                      <input type="text" id="invDateMonth" placeholder="  " class="inv-dotted-input text-center fw-bold" style="width: 38px; direction: ltr !important;">
+                      <span class="fw-bold mx-1">/</span>
+                      <input type="text" id="invDateYear" placeholder="    " class="inv-dotted-input text-center fw-bold" style="width: 58px; direction: ltr !important;">
+                    </div>
+                  </div>
                 </div>
 
+                <!-- مربع بيانات الجهاز (في اليسار) -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات الجهاز</div>
                   <div class="inv-row-item"><span>نوع الجهاز :</span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
@@ -827,7 +842,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة أوردر ==================== -->
+  <!-- ==================== مودال إضافة وتعديل البلاغ ==================== -->
   <div class="modal fade" id="orderModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -861,7 +876,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">تاريخ البلاغ</label>
-                <input type="date" class="form-control" id="orderDate" required>
+                <input type="date" class="form-control" id="orderDate" style="direction: ltr !important; text-align: center;" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">حالة البلاغ</label>
@@ -881,7 +896,7 @@
             </div>
             <div class="mt-3 text-end">
               <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إلغاء</button>
-              <button type="submit" class="btn btn-primary fw-bold px-4">حفظ البلاغ سحابياً</button>
+              <button type="submit" class="btn btn-primary fw-bold px-4" id="btnSaveOrderSubmit">حفظ البلاغ سحابياً</button>
             </div>
           </form>
         </div>
@@ -1108,7 +1123,7 @@
       document.getElementById('logoutBtn').classList.remove('d-none');
       document.getElementById('techUserHeader').classList.add('d-none');
       document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold';
-      document.getElementById('roleBadge').innerText = 'الإدارة العامة';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
 
       renderAdminOrders();
       renderAdminTechsGrid();
@@ -1132,7 +1147,7 @@
       if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo;
 
       document.getElementById('roleBadge').className = 'badge bg-success fw-bold';
-      document.getElementById('roleBadge').innerText = 'فني معتمد';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
 
       renderTechOrders();
     }
@@ -1228,7 +1243,7 @@
               </div>
 
               <div class="d-flex align-items-center gap-1">
-                <select class="form-select form-select-sm fw-bold border-primary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
+                <select class="form-select form-select-sm fw-bold border-primary" style="width: 125px;" onchange="updateOrderStatus('${order.id}', this.value)">
                   <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
                   <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
                   <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
@@ -1237,8 +1252,8 @@
                   <option value="مرتجع" ${order.status === 'مرتجع' ? 'selected' : ''}>مرتجع</option>
                 </select>
 
-                <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')">
-                  <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
+                <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة">
+                  <i class="fa-solid fa-file-invoice"></i>
                 </button>
               </div>
             </div>
@@ -1257,7 +1272,7 @@
       });
     }
 
-    // ==================== أوردرات الإدارة ====================
+    // ==================== أوردرات الإدارة (مع التعديل على بيانات العميل) ====================
     function switchAdminSection(sec) {
       document.getElementById('adminSectionOrders').classList.add('d-none');
       document.getElementById('adminSectionTechs').classList.add('d-none');
@@ -1280,6 +1295,11 @@
         document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold';
         setTimeout(initMap, 200);
       }
+    }
+
+    function clearAdminDateFilter() {
+      document.getElementById('adminFilterDate').value = '';
+      renderAdminOrders();
     }
 
     function renderAdminOrders() {
@@ -1335,7 +1355,15 @@
                   <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
                 </button>
               </div>
-              <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')"><i class="fa-solid fa-trash"></i></button>
+              <div class="d-flex gap-1">
+                <!-- زر تعديل بيانات العميل والبلاغ -->
+                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')" title="حذف البلاغ">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1343,6 +1371,7 @@
     }
 
     function showAddOrderModal() {
+      document.getElementById('orderModalTitle').innerText = 'إضافة بلاغ صيانة جديد';
       document.getElementById('orderFormId').value = '';
       document.getElementById('orderForm').reset();
       document.getElementById('orderDate').value = getLocalDateStr();
@@ -1354,9 +1383,32 @@
       new bootstrap.Modal(document.getElementById('orderModal')).show();
     }
 
+    // فتح نافذة تعديل بيانات العميل والبلاغ
+    function openEditOrderModal(orderId) {
+      const order = globalOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      document.getElementById('orderModalTitle').innerText = 'تعديل بيانات البلاغ والعميل';
+      document.getElementById('orderFormId').value = order.id;
+      document.getElementById('orderClientName').value = order.clientName;
+      document.getElementById('orderClientPhone').value = order.clientPhone;
+      document.getElementById('orderClientAddress').value = order.clientAddress;
+      document.getElementById('orderDevice').value = order.device;
+      document.getElementById('orderDate').value = order.date;
+      document.getElementById('orderStatus').value = order.status;
+      document.getElementById('orderNotes').value = order.notes || '';
+
+      const select = document.getElementById('orderAssignedTech');
+      select.innerHTML = '<option value="">-- اختر الفني --</option>' + 
+        globalTechs.map(t => `<option value="${t.id}" ${t.id === order.assignedTechId ? 'selected' : ''}>${t.name} (${t.code || t.id})</option>`).join('');
+
+      new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
     function saveOrder(e) {
       e.preventDefault();
-      const id = document.getElementById('orderFormId').value || ('ORD-' + Math.floor(1000 + Math.random() * 9000));
+      const existingId = document.getElementById('orderFormId').value;
+      const id = existingId || ('ORD-' + Math.floor(1000 + Math.random() * 9000));
       const assignedId = document.getElementById('orderAssignedTech').value;
       const assignedTech = globalTechs.find(t => t.id === assignedId);
 
@@ -1373,9 +1425,9 @@
         notes: document.getElementById('orderNotes').value.trim()
       };
 
-      db.ref('orders/' + id).set(orderData).then(() => {
+      db.ref('orders/' + id).update(orderData).then(() => {
         bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-        showToast('تم حفظ البلاغ سحابياً بنجاح');
+        showToast(existingId ? 'تم تعديل بيانات البلاغ والعميل بنجاح!' : 'تم حفظ البلاغ سحابياً بنجاح');
       });
     }
 
@@ -1549,17 +1601,21 @@
       document.getElementById('invSheetDeviceType').value = order.device;
       document.getElementById('invSheetDeviceBrand').value = order.device.includes('كيريازي') ? 'كيريازي' : 'عام';
       document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
-      
-      // تنسيق التاريخ الافتراضي بصيغة YYYY / MM / DD
-      const todayStr = getLocalDateStr();
-      document.getElementById('invSheetDate').value = todayStr.replace(/-/g, ' / ');
       document.getElementById('invSheetProblemDesc').value = order.notes || 'صيانة وفحص دوري للجهاز';
+
+      // تجزئة التاريخ إلى يوم/شهر/سنة بدون أي انعكاس
+      const today = new Date();
+      let dayVal = String(today.getDate()).padStart(2, '0');
+      let monthVal = String(today.getMonth() + 1).padStart(2, '0');
+      let yearVal = String(today.getFullYear());
 
       if (order.invoice) {
         document.getElementById('invSheetNumber').value = order.invoice.number;
         document.getElementById('invoiceTemplateSelector').value = order.invoice.templateType || 'kiriazi';
-        if (order.invoice.date) {
-          document.getElementById('invSheetDate').value = order.invoice.date;
+        if (order.invoice.dateParts) {
+          dayVal = order.invoice.dateParts.day;
+          monthVal = order.invoice.dateParts.month;
+          yearVal = order.invoice.dateParts.year;
         }
         officialInvoiceParts = JSON.parse(JSON.stringify(order.invoice.parts || []));
       } else {
@@ -1570,6 +1626,10 @@
           { name: '', qty: 1, price: 0 }
         ];
       }
+
+      document.getElementById('invDateDay').value = dayVal;
+      document.getElementById('invDateMonth').value = monthVal;
+      document.getElementById('invDateYear').value = yearVal;
 
       switchInvoiceDesignTheme();
       renderOfficialPartsTable();
@@ -1667,10 +1727,15 @@
     function getOfficialInvoicePayload() {
       let total = 0;
       officialInvoiceParts.forEach(p => total += (p.qty || 1) * (p.price || 0));
+      const day = document.getElementById('invDateDay').value || '';
+      const month = document.getElementById('invDateMonth').value || '';
+      const year = document.getElementById('invDateYear').value || '';
+
       return {
         number: document.getElementById('invSheetNumber').value || '1001',
         templateType: document.getElementById('invoiceTemplateSelector').value,
-        date: document.getElementById('invSheetDate').value || getLocalDateStr().replace(/-/g, ' / '),
+        date: `${year}-${month}-${day}`,
+        dateParts: { day, month, year },
         clientName: document.getElementById('invSheetClientName').value,
         clientPhone: document.getElementById('invSheetClientPhone').value,
         clientAddress: document.getElementById('invSheetClientAddress').value,
@@ -1696,89 +1761,225 @@
       });
     }
 
-    // ==================== حل جذري: تحويل الفاتورة لصورة عالية الدقة للواتساب ====================
+    // ==================== الحل الجذري: تحويل الفاتورة لصورة عالية الدقة كاملة وبدون أي نقص ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
-      const invoiceOriginal = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone').value.replace(/\D/g, '');
       const clientName = document.getElementById('invSheetClientName').value;
       const invNumber = document.getElementById('invSheetNumber').value || '1001';
+      const templateType = document.getElementById('invoiceTemplateSelector').value;
 
-      showToast('جاري استخراج صورة الفاتورة بدقة عالية...');
+      showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
+
+      // 1. بناء حاوية مستقلة ومسطحة تماماً بعرض 920 بكسل وبنصوص عربية صريحة لمنع مشاكل تقطيع الحروف أو قص الشاشة
+      const container = document.createElement('div');
+      container.style.cssText = `
+        position: fixed;
+        left: -9999px;
+        top: 0;
+        width: 920px;
+        background: #ffffff;
+        padding: 30px;
+        border: 2px solid #1c6841;
+        border-radius: 12px;
+        direction: rtl;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #111111;
+        box-sizing: border-box;
+        z-index: -99999;
+      `;
+
+      // تجهيز اللوجو
+      let logoHtml = '';
+      let headerTitleText = '';
+      let hotlineHtml = '';
+      let stampHtml = '';
+
+      if (templateType === 'kiriazi') {
+        logoHtml = `
+          <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; display: inline-block;">
+            <div style="background:#e63946; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
+            <div style="font-size: 1.55rem; font-weight: 900; color: #ffeb3b;">كريــازى</div>
+          </div>
+        `;
+        headerTitleText = `<h2 style="font-weight:900; margin:0; font-size:1.95rem; color:#1b633b;">Electric for Home Appliances</h2>`;
+        hotlineHtml = '';
+        stampHtml = `
+          <div style="position: absolute; bottom: 25px; left: 30px; border: 3px dashed #d90429; color: #d90429; border-radius: 50%; width: 105px; height: 105px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; transform: rotate(-15deg); opacity: 0.9;">
+            <div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>
+          </div>
+        `;
+      } else {
+        logoHtml = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:48px; height:48px; background:linear-gradient(135deg, #0d6efd, #0b4f8a); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1.4rem;">
+              <i class="fa-solid fa-wrench"></i>
+            </div>
+            <div>
+              <div style="color:#b02a37; font-weight:900; font-size:1.05rem; line-height:1.2;">قسم الخدمة والصيانة</div>
+              <div style="color:#333; font-size:0.7rem; font-weight:bold;">Service &amp; Maintenance Section</div>
+            </div>
+          </div>
+        `;
+        headerTitleText = `<h2 style="font-weight:900; margin:0; font-size:1.95rem; color:#125e36;">Authorized Service Center</h2>`;
+        hotlineHtml = `<div style="text-align:left; margin-top:4px;"><span style="color:#dc3545; font-size:1.15rem;"><i class="fa-solid fa-phone-volume"></i></span> <span style="font-size:1.35rem; font-weight:900; color:#0d3b66; font-family:sans-serif;">19387</span></div>`;
+        stampHtml = `
+          <div style="position: absolute; bottom: 25px; left: 30px; background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%); color: #3d2800; border-radius: 50%; width: 105px; height: 105px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; transform: rotate(-10deg); border: 2px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.25);">
+            <div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>
+          </div>
+        `;
+      }
+
+      // قراءة القيم وتجهيز التاريخ غير المعكوس
+      const cName = document.getElementById('invSheetClientName').value;
+      const cPhone = document.getElementById('invSheetClientPhone').value;
+      const cAddr = document.getElementById('invSheetClientAddress').value;
+      const dType = document.getElementById('invSheetDeviceType').value;
+      const dBrand = document.getElementById('invSheetDeviceBrand').value;
+      const dModel = document.getElementById('invSheetDeviceModel').value;
+      const problem = document.getElementById('invSheetProblemDesc').value;
+      const day = document.getElementById('invDateDay').value || '  ';
+      const month = document.getElementById('invDateMonth').value || '  ';
+      const year = document.getElementById('invDateYear').value || '    ';
+
+      // بناء صفوف الجدول كنصوص ثابتة
+      let rowsHtml = '';
+      officialInvoiceParts.forEach((part, i) => {
+        const itemTotal = (part.qty || 1) * (part.price || 0);
+        rowsHtml += `
+          <tr>
+            <td style="border:1px solid #888; padding:8px; font-weight:bold;">${i + 1}</td>
+            <td style="border:1px solid #888; padding:8px; font-weight:bold; text-align:right;">${part.name}</td>
+            <td style="border:1px solid #888; padding:8px; font-weight:bold;">${part.qty || 1}</td>
+            <td style="border:1px solid #888; padding:8px; font-weight:bold;">${part.price || 0}</td>
+            <td style="border:1px solid #888; padding:8px; font-weight:bold; color:#0e5c36;">${itemTotal}</td>
+          </tr>
+        `;
+      });
+
+      const totalVal = document.getElementById('invSheetTotalDisplay').innerText;
+
+      container.innerHTML = `
+        <div style="position:relative;">
+          <!-- ترويسة -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div style="width:230px;">${logoHtml}</div>
+            <div style="text-align:center; flex:1;">
+              ${headerTitleText}
+              <div style="font-size:0.85rem; font-weight:bold; color:#333; margin-top:5px;">
+                <span>—•— Professional Repair &amp; Maintenance Services —•—</span>
+              </div>
+            </div>
+            <div style="width:230px; text-align:left;">
+              <div style="text-align:right; margin-bottom:2px;">
+                <span style="background-color:#0e5c36; color:#ffffff; padding:4px 30px; border-radius:20px; font-weight:bold; font-size:1.2rem; display:inline-block;">فاتورة</span>
+              </div>
+              <div style="text-align:right; font-weight:bold; font-size:0.95rem;">
+                <span>رقم الفاتورة : </span><span style="font-family:sans-serif; border-bottom:1.5px dotted #555; padding:0 8px;">${invNumber}</span>
+              </div>
+              ${hotlineHtml}
+            </div>
+          </div>
+
+          <!-- صناديق البيانات والتاريخ -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:12px;">
+            <!-- عميل -->
+            <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
+              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات العميل</div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>اسم العميل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cName}</span></div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>رقم الهاتف : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cPhone}</span></div>
+              <div style="font-size:0.92rem; font-weight:bold;"><span>العنوان : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cAddr}</span></div>
+            </div>
+
+            <!-- التاريخ المطابق تماماً وبدون أي انعكاس -->
+            <div style="min-width:180px; text-align:center;">
+              <div style="display:inline-flex; align-items:baseline; justify-content:center; font-size:1rem; font-weight:bold;">
+                <span style="margin-left:6px;">التاريخ :</span>
+                <span style="direction:ltr; unicode-bidi:isolate; font-family:sans-serif; border-bottom:1.5px dotted #555; padding:0 4px;">
+                  ${day} / ${month} / ${year}
+                </span>
+              </div>
+            </div>
+
+            <!-- جهاز -->
+            <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
+              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات الجهاز</div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>نوع الجهاز : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dType}</span></div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>الماركة : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dBrand}</span></div>
+              <div style="font-size:0.92rem; font-weight:bold;"><span>الموديل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dModel}</span></div>
+            </div>
+          </div>
+
+          <!-- وصف المشكلة -->
+          <div style="margin:10px 0; font-size:0.92rem; font-weight:bold;">
+            <span>وصف المشكلة : </span><span style="border-bottom:1.5px dotted #555; padding:0 8px;">${problem}</span>
+          </div>
+
+          <!-- الجدول -->
+          <table style="width:100%; border-collapse:collapse; margin-top:10px; border:1.5px solid #0e5c36; text-align:center;">
+            <thead>
+              <tr style="background-color:#0e5c36; color:#ffffff;">
+                <th style="padding:8px; width:45px; border:1px solid #0e5c36;">م</th>
+                <th style="padding:8px; border:1px solid #0e5c36;">البيان / قطع الغيار</th>
+                <th style="padding:8px; width:100px; border:1px solid #0e5c36;">الكمية</th>
+                <th style="padding:8px; width:130px; border:1px solid #0e5c36;">سعر الوحدة</th>
+                <th style="padding:8px; width:130px; border:1px solid #0e5c36;">الإجمالي</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" style="background:#fff; text-align:right; padding:8px 20px; font-weight:bold; border:1px solid #888;">المجموع الفرعي :</td>
+                <td style="font-weight:bold; border:1px solid #888; padding:8px;">${totalVal} ج.م</td>
+              </tr>
+              <tr style="background-color:#d1e7dd; color:#0f5132;">
+                <td colspan="4" style="text-align:right; padding:10px 20px; font-weight:900; font-size:1.15rem; border:1px solid #888;">الإجمالي الكلي :</td>
+                <td style="font-weight:900; font-size:1.15rem; border:1px solid #888; padding:10px;">${totalVal} ج.م</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- شروط الضمان -->
+          <div style="border:1.5px solid #212529; border-radius:12px; padding:10px 18px; margin-top:16px; display:flex; align-items:center; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
+            <div style="display:flex; align-items:center;">
+              <span style="background-color:#0e5c36; color:#fff; width:24px; height:24px; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; margin-left:6px;"><i class="fa-solid fa-check"></i></span>
+              <span>شروط الضمان :</span>
+            </div>
+            <div>• تم تسليم الجهاز بعمل بحالة جيدة</div>
+            <div>|</div>
+            <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
+          </div>
+
+          <!-- الختم -->
+          ${stampHtml}
+        </div>
+      `;
+
+      document.body.appendChild(container);
 
       try {
-        // 1. إنشاء نسخة كاملة خارج الشاشة لمنع قص الموبايل
-        const clone = invoiceOriginal.cloneNode(true);
-
-        // 2. تحويل جميع حقول الإدخال إلى نصوص عادية (حل مشكلة الحروف الناقصة في html2canvas)
-        const origInputs = invoiceOriginal.querySelectorAll('input');
-        const cloneInputs = clone.querySelectorAll('input');
-        origInputs.forEach((origInp, idx) => {
-          const textVal = origInp.value || '';
-          const textDiv = document.createElement('div');
-          textDiv.textContent = textVal;
-          textDiv.style.cssText = origInp.style.cssText;
-          textDiv.style.display = 'block';
-          textDiv.style.width = '100%';
-          textDiv.style.minHeight = '24px';
-          textDiv.style.lineHeight = '24px';
-          textDiv.style.fontWeight = 'bold';
-          textDiv.style.color = '#111111';
-          textDiv.style.border = 'none';
-          textDiv.style.borderBottom = '1.5px dotted #444';
-
-          if (origInp.id === 'invSheetDate') {
-            textDiv.style.direction = 'ltr';
-            textDiv.style.textAlign = 'center';
-          } else {
-            textDiv.style.textAlign = origInp.style.textAlign || 'right';
-          }
-
-          if (cloneInputs[idx] && cloneInputs[idx].parentNode) {
-            cloneInputs[idx].parentNode.replaceChild(textDiv, cloneInputs[idx]);
-          }
-        });
-
-        // 3. حذف أزرار الحذف من النسخة
-        clone.querySelectorAll('.no-print').forEach(el => el.remove());
-
-        // 4. وضع النسخة في حاوية ثابتة العرض (900px) لمنع اقتطاع الشاشة على الموبايل
-        const offscreenWrapper = document.createElement('div');
-        offscreenWrapper.style.position = 'fixed';
-        offscreenWrapper.style.top = '0';
-        offscreenWrapper.style.left = '-10000px';
-        offscreenWrapper.style.width = '920px';
-        offscreenWrapper.style.backgroundColor = '#ffffff';
-        offscreenWrapper.style.zIndex = '-99999';
-        offscreenWrapper.appendChild(clone);
-        document.body.appendChild(offscreenWrapper);
-
-        // 5. تصوير النسخة بالكامل بدقة HD مضاعفة
-        const canvas = await html2canvas(clone, {
+        const canvas = await html2canvas(container, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 900,
-          windowWidth: 1024,
-          scrollX: 0,
-          scrollY: 0
+          width: 920
         });
 
-        // إزالة الحاوية المؤقتة
-        document.body.removeChild(offscreenWrapper);
+        document.body.removeChild(container);
 
         canvas.toBlob(async (blob) => {
           const file = new File([blob], `فاتورة_${invNumber}.png`, { type: 'image/png' });
 
-          // مشاركة الصورة فوراً إن كان المتصفح يدعم (أندرويد / آيفون)
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
                 files: [file],
                 title: 'فاتورة صيانة معتمدة',
-                text: `فاتورة صيانة معتمدة للعميل: ${clientName}`
+                text: `فاتورة صيانة معتمدة للعميل: ${cName}`
               });
               showToast('تمت مشاركة صورة الفاتورة بنجاح!');
               return;
@@ -1787,7 +1988,7 @@
             }
           }
 
-          // بديل مباشر: تنزيل الصورة وفتح الواتساب
+          // تنزيل الصورة وفتح واتساب إذا لم يتوفر Web Share
           const downloadUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = downloadUrl;
@@ -1795,12 +1996,13 @@
           link.click();
           URL.revokeObjectURL(downloadUrl);
 
-          const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة وضمان لمدة عام.`);
+          const msg = encodeURIComponent(`مرحباً أستاذ ${cName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة وضمان لمدة عام.`);
           window.open(`https://wa.me/2${clientPhone}?text=${msg}`, '_blank');
-          showToast('تم حفظ صورة الفاتورة وجاري فتح محادثة الواتساب...');
+          showToast('تم حفظ الصورة بجهازك وجاري فتح محادثة الواتساب...');
         }, 'image/png');
-      } catch (err) {
-        alert('حدث خطأ أثناء استخراج الصورة: ' + err.message);
+      } catch (e) {
+        document.body.removeChild(container);
+        alert('حدث خطأ أثناء إنشاء الصورة: ' + e.message);
       }
     }
 
@@ -1849,7 +2051,7 @@
         case 'قيد الاستكمال': return 'bg-primary';
         case 'مؤجل': return 'bg-warning text-dark';
         case 'مرتجع': return 'bg-danger';
-        default: return 'bg-secondary';
+        default: return 'bg-primary';
       }
     }
 
