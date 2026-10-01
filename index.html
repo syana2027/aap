@@ -17,7 +17,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- HTML2Canvas لتحويل الفاتورة إلى صورة حقيقية للواتساب -->
+  <!-- HTML2Canvas لتحويل الفاتورة إلى صورة عالية الدقة للواتساب -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -144,7 +144,6 @@
       font-weight: 900;
       margin: 0;
       font-size: 1.9rem;
-      letter-spacing: -0.5px;
     }
     .inv-main-subtitle {
       display: flex;
@@ -281,6 +280,8 @@
       justify-content: center;
       margin-left: 6px;
     }
+
+    /* الأختام الرسمية */
     .stamp-kiriazi-red {
       position: absolute;
       bottom: 25px;
@@ -319,7 +320,7 @@
       pointer-events: none;
     }
 
-    /* الكارنيه المعتمد */
+    /* الكارنيه */
     .id-card-trust {
       background: #ffffff;
       border: 2px solid #198754;
@@ -573,7 +574,7 @@
         </div>
 
         <div class="modal-body p-2 bg-light">
-          <!-- الحاوية مع سكرول للموبايل -->
+          <!-- حاوية التمرير -->
           <div class="invoice-scroll-container">
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
@@ -599,7 +600,7 @@
                   </div>
                   <div id="invHotlineBox" class="d-none text-end mt-1">
                     <span style="color: #dc3545; font-size: 1.15rem;"><i class="fa-solid fa-phone-volume"></i></span>
-                    <span style="font-size: 1.35rem; font-weight: 900; color: #0d3b66; letter-spacing: 1px;"> 19387</span>
+                    <span style="font-size: 1.35rem; font-weight: 900; color: #0d3b66; font-family:sans-serif;"> 19387</span>
                   </div>
                 </div>
               </div>
@@ -613,9 +614,10 @@
                   <div class="inv-row-item mb-0"><span>العنوان :</span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
                 </div>
 
+                <!-- مربع التاريخ مع تثبيت الاتجاه LTR لمنع قلب الأرقام -->
                 <div class="text-center px-1" style="min-width: 140px;">
-                  <div class="fw-bold mb-1">التاريخ :</div>
-                  <input type="text" id="invSheetDate" class="inv-dotted-input text-center fw-bold w-100">
+                  <div class="fw-bold mb-1" style="font-size: 0.95rem;">التاريخ :</div>
+                  <input type="text" id="invSheetDate" class="inv-dotted-input text-center fw-bold" style="direction: ltr !important; text-align: center !important; font-size: 1.05rem; width: 100%;" dir="ltr">
                 </div>
 
                 <div class="inv-box-section">
@@ -683,7 +685,7 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر الهام: مشاركة كصورة عبر الواتساب -->
+            <!-- الزر الهام: مشاركة كصورة عبر الواتساب بدقة كاملة وبدون أي نقص -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> مشاركة كصورة عبر واتساب
             </button>
@@ -699,7 +701,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة وتعديل الفني (صورة شخصية + صورة الكارنيه) ==================== -->
+  <!-- ==================== مودال إضافة وتعديل الفني (الصورة الشخصية + صورة الكارنيه) ==================== -->
   <div class="modal fade" id="techModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -1106,7 +1108,7 @@
       document.getElementById('logoutBtn').classList.remove('d-none');
       document.getElementById('techUserHeader').classList.add('d-none');
       document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold';
-      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
+      document.getElementById('roleBadge').innerText = 'الإدارة العامة';
 
       renderAdminOrders();
       renderAdminTechsGrid();
@@ -1130,7 +1132,7 @@
       if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo;
 
       document.getElementById('roleBadge').className = 'badge bg-success fw-bold';
-      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
+      document.getElementById('roleBadge').innerText = 'فني معتمد';
 
       renderTechOrders();
     }
@@ -1547,12 +1549,18 @@
       document.getElementById('invSheetDeviceType').value = order.device;
       document.getElementById('invSheetDeviceBrand').value = order.device.includes('كيريازي') ? 'كيريازي' : 'عام';
       document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
-      document.getElementById('invSheetDate').value = getLocalDateStr();
+      
+      // تنسيق التاريخ الافتراضي بصيغة YYYY / MM / DD
+      const todayStr = getLocalDateStr();
+      document.getElementById('invSheetDate').value = todayStr.replace(/-/g, ' / ');
       document.getElementById('invSheetProblemDesc').value = order.notes || 'صيانة وفحص دوري للجهاز';
 
       if (order.invoice) {
         document.getElementById('invSheetNumber').value = order.invoice.number;
         document.getElementById('invoiceTemplateSelector').value = order.invoice.templateType || 'kiriazi';
+        if (order.invoice.date) {
+          document.getElementById('invSheetDate').value = order.invoice.date;
+        }
         officialInvoiceParts = JSON.parse(JSON.stringify(order.invoice.parts || []));
       } else {
         document.getElementById('invSheetNumber').value = Math.floor(1000 + Math.random() * 9000);
@@ -1578,9 +1586,11 @@
       const stampBox = document.getElementById('invSheetStamp');
 
       if (type === 'kiriazi') {
+        // لوجو كيريازي الأصلي المطابق تماماً
         logoBox.innerHTML = `
-          <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 14px; text-align: center; color: #ffeb3b; box-shadow: 0 3px 6px rgba(0,0,0,0.18);">
-            <div style="font-size: 1.45rem; font-weight: 900; letter-spacing: 1px; color: #ffea00;">كريــازى</div>
+          <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; box-shadow: 0 3px 6px rgba(0,0,0,0.18); display: inline-block;">
+            <div style="background:#e63946; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
+            <div style="font-size: 1.55rem; font-weight: 900; letter-spacing: 0; color: #ffeb3b;">كريــازى</div>
           </div>
         `;
         headerTitle.innerText = "Electric for Home Appliances";
@@ -1589,14 +1599,15 @@
         stampBox.className = "stamp-kiriazi-red";
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>`;
       } else {
+        // لوجو المركز المعتمد 19387 الأصلي
         logoBox.innerHTML = `
-          <div class="d-flex align-items-center gap-2">
-            <div style="width: 44px; height: 44px; background: #0b4f8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:48px; height:48px; background:linear-gradient(135deg, #0d6efd, #0b4f8a); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1.35rem; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
               <i class="fa-solid fa-wrench"></i>
             </div>
             <div>
-              <div style="color: #b02a37; font-weight: 900; font-size: 0.95rem;">قسم الخدمة والصيانة</div>
-              <div style="color: #333; font-size: 0.65rem; font-weight: bold;">Service & Maintenance</div>
+              <div style="color:#b02a37; font-weight:900; font-size:1.05rem; line-height:1.2;">قسم الخدمة والصيانة</div>
+              <div style="color:#333; font-size:0.7rem; font-weight:bold; letter-spacing:0.3px;">Service &amp; Maintenance Section</div>
             </div>
           </div>
         `;
@@ -1659,7 +1670,7 @@
       return {
         number: document.getElementById('invSheetNumber').value || '1001',
         templateType: document.getElementById('invoiceTemplateSelector').value,
-        date: document.getElementById('invSheetDate').value || getLocalDateStr(),
+        date: document.getElementById('invSheetDate').value || getLocalDateStr().replace(/-/g, ' / '),
         clientName: document.getElementById('invSheetClientName').value,
         clientPhone: document.getElementById('invSheetClientPhone').value,
         clientAddress: document.getElementById('invSheetClientAddress').value,
@@ -1685,27 +1696,83 @@
       });
     }
 
-    // ==================== تحويل الفاتورة لصورة حقيقية وإرسالها للواتساب ====================
+    // ==================== حل جذري: تحويل الفاتورة لصورة عالية الدقة للواتساب ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
-      const invoiceElement = document.getElementById('printableOfficialInvoice');
+
+      const invoiceOriginal = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone').value.replace(/\D/g, '');
       const clientName = document.getElementById('invSheetClientName').value;
       const invNumber = document.getElementById('invSheetNumber').value || '1001';
 
-      showToast('جاري استخراج صورة الفاتورة للواتساب...');
+      showToast('جاري استخراج صورة الفاتورة بدقة عالية...');
 
       try {
-        const canvas = await html2canvas(invoiceElement, {
+        // 1. إنشاء نسخة كاملة خارج الشاشة لمنع قص الموبايل
+        const clone = invoiceOriginal.cloneNode(true);
+
+        // 2. تحويل جميع حقول الإدخال إلى نصوص عادية (حل مشكلة الحروف الناقصة في html2canvas)
+        const origInputs = invoiceOriginal.querySelectorAll('input');
+        const cloneInputs = clone.querySelectorAll('input');
+        origInputs.forEach((origInp, idx) => {
+          const textVal = origInp.value || '';
+          const textDiv = document.createElement('div');
+          textDiv.textContent = textVal;
+          textDiv.style.cssText = origInp.style.cssText;
+          textDiv.style.display = 'block';
+          textDiv.style.width = '100%';
+          textDiv.style.minHeight = '24px';
+          textDiv.style.lineHeight = '24px';
+          textDiv.style.fontWeight = 'bold';
+          textDiv.style.color = '#111111';
+          textDiv.style.border = 'none';
+          textDiv.style.borderBottom = '1.5px dotted #444';
+
+          if (origInp.id === 'invSheetDate') {
+            textDiv.style.direction = 'ltr';
+            textDiv.style.textAlign = 'center';
+          } else {
+            textDiv.style.textAlign = origInp.style.textAlign || 'right';
+          }
+
+          if (cloneInputs[idx] && cloneInputs[idx].parentNode) {
+            cloneInputs[idx].parentNode.replaceChild(textDiv, cloneInputs[idx]);
+          }
+        });
+
+        // 3. حذف أزرار الحذف من النسخة
+        clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+        // 4. وضع النسخة في حاوية ثابتة العرض (900px) لمنع اقتطاع الشاشة على الموبايل
+        const offscreenWrapper = document.createElement('div');
+        offscreenWrapper.style.position = 'fixed';
+        offscreenWrapper.style.top = '0';
+        offscreenWrapper.style.left = '-10000px';
+        offscreenWrapper.style.width = '920px';
+        offscreenWrapper.style.backgroundColor = '#ffffff';
+        offscreenWrapper.style.zIndex = '-99999';
+        offscreenWrapper.appendChild(clone);
+        document.body.appendChild(offscreenWrapper);
+
+        // 5. تصوير النسخة بالكامل بدقة HD مضاعفة
+        const canvas = await html2canvas(clone, {
           scale: 2,
           useCORS: true,
-          backgroundColor: '#ffffff'
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: 900,
+          windowWidth: 1024,
+          scrollX: 0,
+          scrollY: 0
         });
+
+        // إزالة الحاوية المؤقتة
+        document.body.removeChild(offscreenWrapper);
 
         canvas.toBlob(async (blob) => {
           const file = new File([blob], `فاتورة_${invNumber}.png`, { type: 'image/png' });
 
-          // إذا كان الموبايل يدعم مشاركة الملفات مباشرة (سيرسل الصورة للواتساب مباشرة)
+          // مشاركة الصورة فوراً إن كان المتصفح يدعم (أندرويد / آيفون)
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
@@ -1720,7 +1787,7 @@
             }
           }
 
-          // إذا كان الجهاز لابتوب أو لا يدعم المشاركة المباشرة (يقوم بتنزيل الصورة ويفتح الواتساب)
+          // بديل مباشر: تنزيل الصورة وفتح الواتساب
           const downloadUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = downloadUrl;
@@ -1728,7 +1795,7 @@
           link.click();
           URL.revokeObjectURL(downloadUrl);
 
-          const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، تم تحميل صورة فاتورة الصيانة المعتمدة وضمان لمدة عام لإرسالها لحضرتك.`);
+          const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة وضمان لمدة عام.`);
           window.open(`https://wa.me/2${clientPhone}?text=${msg}`, '_blank');
           showToast('تم حفظ صورة الفاتورة وجاري فتح محادثة الواتساب...');
         }, 'image/png');
@@ -1757,7 +1824,6 @@
       mapMarkers = {};
 
       globalTechs.forEach(t => {
-        // أيقونة الفني الدائرية الأصلية مع النبض والحالة
         const customIcon = L.divIcon({
           className: 'custom-map-avatar',
           html: `
@@ -1783,7 +1849,7 @@
         case 'قيد الاستكمال': return 'bg-primary';
         case 'مؤجل': return 'bg-warning text-dark';
         case 'مرتجع': return 'bg-danger';
-        default: return 'bg-primary';
+        default: return 'bg-secondary';
       }
     }
 
