@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>منظومة الصيانة المعتمدة</title>
+  <title>نظام إدارة صيانة الأجهزة المنزلية المتكامل</title>
   <link rel="manifest" href="manifest.json">
   
   <!-- Bootstrap 5 RTL -->
@@ -25,22 +25,21 @@
       --primary-color: #0b2545;
       --secondary-color: #134074;
       --accent-green: #0e5c36;
-      --light-bg: #f8fafc;
+      --light-bg: #f4f7f6;
     }
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       background-color: var(--light-bg);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      user-select: none;
     }
     .header-bar {
       background: linear-gradient(135deg, #0b2545 0%, #134074 100%);
       color: white;
-      padding: 10px 14px;
+      padding: 12px 18px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .card-order {
@@ -49,50 +48,73 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       background: #ffffff;
       border-right: 5px solid #0d6efd;
-      transition: transform 0.2s;
+      transition: all 0.25s ease;
     }
     .card-order:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
       transform: translateY(-2px);
     }
-    .card-order.status-مرتجع { border-right-color: #dc3545 !important; background-color: #fff9f9; }
+    .card-order.status-مرتجع { border-right-color: #dc3545 !important; background-color: #fff8f8; }
     .card-order.status-تم { border-right-color: #198754 !important; }
     .card-order.status-كشف { border-right-color: #0dcaf0 !important; }
     .card-order.status-مؤجل { border-right-color: #ffc107 !important; }
     
     .action-circle-btn {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       text-decoration: none;
+      transition: transform 0.2s;
     }
+    .action-circle-btn:hover { transform: scale(1.1); }
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
     .tech-avatar-sm {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      cursor: pointer;
     }
     .online-indicator {
-      width: 10px; height: 10px; background-color: #28a745; border-radius: 50%; display: inline-block;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #28a745;
+      border-radius: 50%;
+      animation: pulse-online 1.8s infinite;
     }
     .offline-indicator {
-      width: 10px; height: 10px; background-color: #6c757d; border-radius: 50%; display: inline-block;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #6c757d;
+      border-radius: 50%;
+    }
+    @keyframes pulse-online {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
     }
 
     #map {
-      height: 450px;
+      height: 500px;
       border-radius: 12px;
       width: 100%;
     }
+    .custom-map-avatar {
+      background: transparent;
+      border: none;
+    }
 
-    /* ==================== استايل الفاتورة الرسمي المطابق 1:1 ==================== */
+    /* ==================== استايل الفاتورة الرسمي ==================== */
     .invoice-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -101,54 +123,51 @@
     .official-invoice-wrapper {
       background: #ffffff !important;
       color: #111111 !important;
-      padding: 24px;
-      border-radius: 12px;
-      width: 850px;
-      min-width: 850px;
+      padding: 30px;
+      border-radius: 10px;
+      width: 900px;
+      min-width: 900px;
       margin: auto;
       direction: rtl;
       position: relative;
       border: 1.5px solid #1c6841;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     .inv-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
-    .inv-main-title-box {
-      text-align: center;
-      flex: 1;
-    }
+    .inv-main-title-box { text-align: center; flex: 1; }
     .inv-main-title-box h2 {
       font-weight: 900;
       margin: 0;
-      font-size: 1.85rem;
+      font-size: 1.9rem;
       letter-spacing: -0.5px;
     }
     .inv-main-subtitle {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       font-size: 0.85rem;
-      font-weight: bold;
-      color: #333 !important;
-      margin-top: 4px;
+      font-weight: 600;
+      color: #2b2b2b !important;
+      margin-top: 5px;
     }
     .inv-main-subtitle::before, .inv-main-subtitle::after {
       content: '';
       display: inline-block;
-      width: 35px;
-      height: 1.5px;
+      width: 40px;
+      height: 1px;
       background: #333;
     }
     .inv-badge-pill {
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 4px 28px;
-      border-radius: 18px;
+      padding: 4px 30px;
+      border-radius: 20px;
       font-weight: bold;
       font-size: 1.15rem;
       display: inline-block;
@@ -167,13 +186,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 14px;
+      margin-bottom: 12px;
     }
     .inv-box-section {
       flex: 1;
-      border: 1.5px solid #222;
-      border-radius: 14px;
+      border: 1.5px solid #212529;
+      border-radius: 12px;
       padding: 16px 14px 10px 14px;
       position: relative;
     }
@@ -183,8 +202,8 @@
       right: 25px;
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 2px 20px;
-      border-radius: 15px;
+      padding: 2px 22px;
+      border-radius: 20px;
       font-size: 0.85rem;
       font-weight: bold;
     }
@@ -195,13 +214,11 @@
       font-size: 0.92rem;
       font-weight: bold;
     }
-    .inv-row-item span {
-      white-space: nowrap;
-    }
+    .inv-row-item span { white-space: nowrap; }
     .inv-table-custom {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 12px;
       border: 1.5px solid #0e5c36;
       text-align: center;
     }
@@ -231,7 +248,7 @@
     .inv-subtotal-row {
       background: #ffffff !important;
       text-align: right;
-      padding-right: 18px !important;
+      padding-right: 20px !important;
       font-weight: bold;
     }
     .inv-total-row {
@@ -240,13 +257,13 @@
       font-size: 1.15rem;
       font-weight: 900;
       text-align: right;
-      padding-right: 18px !important;
+      padding-right: 20px !important;
     }
     .inv-terms-bar {
-      border: 1.5px solid #222;
+      border: 1.5px solid #212529;
       border-radius: 12px;
-      padding: 10px 16px;
-      margin-top: 14px;
+      padding: 10px 18px;
+      margin-top: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -256,16 +273,14 @@
     .inv-check-badge {
       background-color: #0e5c36 !important;
       color: #fff !important;
-      width: 24px;
-      height: 24px;
-      border-radius: 5px;
+      width: 25px;
+      height: 25px;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       margin-left: 6px;
     }
-
-    /* أختام الفواتير */
     .stamp-kiriazi-red {
       position: absolute;
       bottom: 25px;
@@ -300,7 +315,7 @@
       font-weight: 900;
       transform: rotate(-10deg);
       border: 2px solid #ffffff;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
       pointer-events: none;
     }
 
@@ -310,13 +325,20 @@
       border: 2px solid #198754;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
     .id-card-top {
       background: linear-gradient(135deg, #0e5c36 0%, #198754 100%);
       color: white;
       padding: 12px;
       text-align: center;
+    }
+    .preview-box {
+      border: 2px dashed #0d6efd;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      background: #f8f9fa;
     }
   </style>
 </head>
@@ -325,13 +347,14 @@
   <!-- ==================== HEADER ==================== -->
   <header class="header-bar d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center gap-2">
-      <h6 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-1"></i>منظومة الصيانة</h6>
+      <h5 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-2"></i>منظومة الصيانة المعتمدة</h5>
       <span id="roleBadge" class="badge bg-light text-dark fw-bold">...</span>
+      <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud me-1"></i> سحابي متصل</span>
     </div>
     
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث">
-        <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i>
+      <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث البيانات">
+        <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i> تحديث
       </button>
 
       <div id="techUserHeader" class="d-none d-flex align-items-center gap-2">
@@ -340,11 +363,11 @@
       </div>
 
       <button id="switchRoleBtn" class="btn btn-sm btn-warning fw-bold d-none" onclick="openAdminLoginModal()">
-        <i class="fa-solid fa-user-shield"></i> الإدارة
+        <i class="fa-solid fa-user-shield me-1"></i> لوحة المدير
       </button>
 
       <button id="logoutBtn" class="btn btn-sm btn-danger fw-bold d-none" onclick="performLogout()">
-        <i class="fa-solid fa-right-from-bracket"></i>
+        <i class="fa-solid fa-right-from-bracket me-1"></i> خروج
       </button>
     </div>
   </header>
@@ -353,32 +376,37 @@
   <div id="loginView" class="container my-5">
     <div class="row justify-content-center">
       <div class="col-12 col-md-5">
-        <div class="card border-0 shadow-lg rounded-4 p-4 bg-white">
-          <div class="text-center mb-4">
-            <div class="d-inline-flex p-3 bg-primary bg-opacity-10 text-primary rounded-circle mb-2">
-              <i class="fa-solid fa-user-gear fa-2x"></i>
-            </div>
-            <h4 class="fw-bold">تسجيل دخول الفني</h4>
-            <small class="text-muted">ادخل اسم المستخدم وكلمة المرور الخاصة بك</small>
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+          <div class="card-header bg-primary text-white text-center py-4">
+            <h4 class="fw-bold mb-1"><i class="fa-solid fa-lock me-2"></i>تسجيل دخول الفني</h4>
+            <small class="text-light">ادخل اسم المستخدم وكلمة المرور المسلمة لك من الإدارة</small>
           </div>
-          <form onsubmit="handleTechLogin(event)">
-            <div class="mb-3">
-              <label class="form-label fw-bold small">اسم المستخدم</label>
-              <input type="text" id="loginUsername" class="form-control" required placeholder="مثال: ahmed">
+          <div class="card-body p-4 bg-white">
+            <form onsubmit="handleTechLogin(event)">
+              <div class="mb-3">
+                <label class="form-label fw-bold">اسم المستخدم</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                  <input type="text" id="loginUsername" class="form-control" required placeholder="مثال: ahmed">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">كلمة المرور</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                  <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>دخول للنظام
+              </button>
+            </form>
+            <hr class="my-4">
+            <div class="text-center">
+              <button class="btn btn-outline-dark btn-sm fw-bold w-100" onclick="openAdminLoginModal()">
+                <i class="fa-solid fa-user-gear me-1"></i> الدخول كمسؤول إدارة (Admin)
+              </button>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-bold small">كلمة المرور</label>
-              <input type="password" id="loginPassword" class="form-control" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
-              <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> دخول للنظام
-            </button>
-          </form>
-          <hr class="my-4">
-          <div class="text-center">
-            <button class="btn btn-outline-dark btn-sm fw-bold w-100" onclick="openAdminLoginModal()">
-              <i class="fa-solid fa-user-shield me-1"></i> الدخول كمسؤول إدارة (Admin)
-            </button>
           </div>
         </div>
       </div>
@@ -389,35 +417,44 @@
   <div id="techMainView" class="container-fluid py-3 d-none">
     <div class="row g-2 mb-3">
       <div class="col-4">
-        <div class="card border-0 shadow-sm p-2 bg-white rounded-3 text-center border-bottom border-3 border-primary">
-          <small class="text-muted fw-bold" style="font-size:0.75rem;">اليوم الشامل</small>
-          <h5 class="mb-0 fw-bold text-primary" id="techTodayTotal">0</h5>
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-primary">
+          <div class="text-muted small fw-bold">اليوم الشامل</div>
+          <h4 class="mb-0 fw-bold text-primary" id="techTodayTotal">0</h4>
         </div>
       </div>
       <div class="col-4">
-        <div class="card border-0 shadow-sm p-2 bg-white rounded-3 text-center border-bottom border-3 border-success">
-          <small class="text-muted fw-bold" style="font-size:0.75rem;">تم إنجازها</small>
-          <h5 class="mb-0 fw-bold text-success" id="techTodayDone">0</h5>
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-success">
+          <div class="text-muted small fw-bold">تم إنجازها</div>
+          <h4 class="mb-0 fw-bold text-success" id="techTodayDone">0</h4>
         </div>
       </div>
       <div class="col-4">
-        <div class="card border-0 shadow-sm p-2 bg-white rounded-3 text-center border-bottom border-3 border-danger">
-          <small class="text-muted fw-bold" style="font-size:0.75rem;">المرتجع</small>
-          <h5 class="mb-0 fw-bold text-danger" id="techTodayReturns">0</h5>
+        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-danger">
+          <div class="text-muted small fw-bold">المرتجع</div>
+          <h4 class="mb-0 fw-bold text-danger" id="techTodayReturns">0</h4>
         </div>
       </div>
     </div>
 
     <div class="d-flex flex-wrap gap-2 mb-3 justify-content-between align-items-center bg-white p-2 rounded-3 shadow-sm">
       <div class="btn-group btn-group-sm flex-wrap w-100 w-md-auto" role="group">
-        <button class="btn btn-outline-primary active fw-bold" id="tabTechToday" onclick="setTechFilterTab('today')">اليوم الشامل</button>
-        <button class="btn btn-outline-secondary fw-bold" id="tabTechAll" onclick="setTechFilterTab('all')">كل البلاغات</button>
-        <button class="btn btn-outline-danger fw-bold" id="tabTechReturns" onclick="setTechFilterTab('مرتجع')">المرتجعات</button>
+        <button class="btn btn-outline-primary active fw-bold" id="tabTechToday" onclick="setTechFilterTab('today')">
+          <i class="fa-solid fa-calendar-check me-1"></i> اليوم الشامل 
+          <span class="badge bg-primary text-white" id="countTechToday">0</span>
+        </button>
+        <button class="btn btn-outline-secondary fw-bold" id="tabTechAll" onclick="setTechFilterTab('all')">
+          <i class="fa-solid fa-list-check me-1"></i> كل البلاغات
+          <span class="badge bg-secondary text-white" id="countTechAll">0</span>
+        </button>
+        <button class="btn btn-outline-danger fw-bold" id="tabTechReturns" onclick="setTechFilterTab('مرتجع')">
+          <i class="fa-solid fa-rotate-left me-1"></i> تابة المرتجعات
+          <span class="badge bg-danger text-white" id="countTechReturns">0</span>
+        </button>
       </div>
       
       <div class="d-flex gap-2 w-100 w-md-auto mt-2 mt-md-0">
         <select class="form-select form-select-sm" id="techFilterStatus" onchange="renderTechOrders()">
-          <option value="">كل الحالات</option>
+          <option value="">البحث بحالة الاوردر</option>
           <option value="تم">تم</option>
           <option value="كشف">كشف</option>
           <option value="قيد الاستكمال">قيد الاستكمال</option>
@@ -435,53 +472,53 @@
   <div id="adminMainView" class="container-fluid py-3 d-none">
     <div class="row g-2 mb-3">
       <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center">
-          <small class="text-muted fw-bold" style="font-size:0.7rem;">الإجمالي</small>
-          <h5 class="fw-bold my-0 text-primary" id="adminTotalOrders">0</h5>
+        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-primary">
+          <div class="text-muted small fw-bold">إجمالي البلاغات</div>
+          <h4 class="fw-bold my-1 text-primary" id="adminTotalOrders">0</h4>
         </div>
       </div>
       <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center">
-          <small class="text-muted fw-bold" style="font-size:0.7rem;">تمت</small>
-          <h5 class="fw-bold my-0 text-success" id="adminDoneOrders">0</h5>
+        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-success">
+          <div class="text-muted small fw-bold">تم إنجازها</div>
+          <h4 class="fw-bold my-1 text-success" id="adminDoneOrders">0</h4>
         </div>
       </div>
       <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center">
-          <small class="text-muted fw-bold" style="font-size:0.7rem;">المرتجع</small>
-          <h5 class="fw-bold my-0 text-danger" id="adminReturnOrders">0</h5>
+        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-danger">
+          <div class="text-muted small fw-bold">المرتجعات</div>
+          <h4 class="fw-bold my-1 text-danger" id="adminReturnOrders">0</h4>
         </div>
       </div>
       <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center">
-          <small class="text-muted fw-bold" style="font-size:0.7rem;">الفنيين</small>
-          <h5 class="fw-bold my-0 text-info" id="adminTechCount">0</h5>
+        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-info">
+          <div class="text-muted small fw-bold">الفنيين</div>
+          <h4 class="fw-bold my-1 text-info" id="adminTechCount">0</h4>
         </div>
       </div>
     </div>
 
-    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3 bg-white p-2 rounded-3 shadow-sm">
-      <div class="btn-group btn-group-sm" role="group">
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3 bg-white p-3 rounded-3 shadow-sm">
+      <div class="btn-group" role="group">
         <button class="btn btn-primary fw-bold" id="btnAdminTabOrders" onclick="switchAdminSection('orders')">
-          <i class="fa-solid fa-list me-1"></i> البلاغات
+          <i class="fa-solid fa-clipboard-list me-1"></i> البلاغات والعملاء
         </button>
         <button class="btn btn-outline-primary fw-bold" id="btnAdminTabTechs" onclick="switchAdminSection('techs')">
-          <i class="fa-solid fa-users me-1"></i> الفنيين
+          <i class="fa-solid fa-users-gear me-1"></i> إدارة الفنيين
         </button>
         <button class="btn btn-outline-primary fw-bold" id="btnAdminTabMap" onclick="switchAdminSection('map')">
-          <i class="fa-solid fa-map-location-dot me-1"></i> الخريطة
+          <i class="fa-solid fa-map-location-dot me-1"></i> تتبع خط السير
         </button>
       </div>
 
-      <div class="d-flex gap-1">
-        <button class="btn btn-sm btn-warning fw-bold" onclick="showSecurityModal()" title="أمان الإدارة">
-          <i class="fa-solid fa-shield-halved"></i>
+      <div class="d-flex gap-2">
+        <button class="btn btn-warning text-dark fw-bold shadow-sm" onclick="showSecurityModal()">
+          <i class="fa-solid fa-shield-halved me-1"></i> أمان الإدارة
         </button>
-        <button class="btn btn-sm btn-success fw-bold" onclick="showAddOrderModal()">
-          <i class="fa-solid fa-plus"></i> بلاغ جديد
+        <button class="btn btn-success fw-bold" onclick="showAddOrderModal()">
+          <i class="fa-solid fa-plus-circle me-1"></i> إضافة بلاغ
         </button>
-        <button class="btn btn-sm btn-info text-white fw-bold" onclick="showAddTechModal()">
-          <i class="fa-solid fa-user-plus"></i> فني جديد
+        <button class="btn btn-info text-white fw-bold" onclick="showAddTechModal()">
+          <i class="fa-solid fa-user-plus me-1"></i> إضافة فني
         </button>
       </div>
     </div>
@@ -489,8 +526,8 @@
     <!-- أوردرات الإدارة -->
     <div id="adminSectionOrders">
       <div class="d-flex flex-wrap gap-2 mb-3 bg-white p-2 rounded-3 border">
-        <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم أو الهاتف..." oninput="renderAdminOrders()">
-        <select class="form-select form-select-sm" id="adminFilterStatusSelect" onchange="renderAdminOrders()">
+        <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم، الهاتف، الفني..." oninput="renderAdminOrders()">
+        <select class="form-select form-select-sm" id="adminFilterStatusSelect" onchange="renderAdminOrders()" style="width: 160px;">
           <option value="">كل الحالات</option>
           <option value="تم">تم</option>
           <option value="كشف">كشف</option>
@@ -498,19 +535,23 @@
           <option value="مؤجل">مؤجل</option>
           <option value="مرتجع">مرتجع</option>
         </select>
-        <input type="date" class="form-control form-control-sm" id="adminFilterDate" onchange="renderAdminOrders()">
+        <input type="date" class="form-control form-control-sm" id="adminFilterDate" onchange="renderAdminOrders()" style="width: 170px;">
       </div>
       <div id="adminOrdersContainer" class="row g-3"></div>
     </div>
 
-    <!-- فنيين الإدارة -->
+    <!-- شبكة الفنيين -->
     <div id="adminSectionTechs" class="d-none">
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- الخريطة -->
+    <!-- خريطة الفنيين -->
     <div id="adminSectionMap" class="d-none">
-      <div class="card border-0 shadow-sm p-2 bg-white">
+      <div class="card border-0 shadow-sm p-3 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold m-0"><i class="fa-solid fa-satellite-dish text-primary me-2"></i>خريطة تتبع مواقع الفنيين الحية</h6>
+          <small class="text-muted" id="lastMapUpdateText">مزامنة...</small>
+        </div>
         <div id="map"></div>
       </div>
     </div>
@@ -523,7 +564,7 @@
         <div class="modal-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center">
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold small">قالب الفاتورة:</span>
-            <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 220px;" onchange="switchInvoiceDesignTheme()">
+            <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 240px;" onchange="switchInvoiceDesignTheme()">
               <option value="kiriazi">صيانة كيريازي المعتمد</option>
               <option value="authorized">المركز المعتمد (19387)</option>
             </select>
@@ -532,17 +573,15 @@
         </div>
 
         <div class="modal-body p-2 bg-light">
-          <!-- الحاوية القابلة للتمرير على الموبايل -->
+          <!-- الحاوية مع سكرول للموبايل -->
           <div class="invoice-scroll-container">
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
 
               <!-- الترويسة العليا -->
               <div class="inv-top-row">
-                <!-- اللوجو الأيمن -->
                 <div id="invLogoContainer" style="width: 220px;"></div>
 
-                <!-- العنوان الإنجليزي بالوسط -->
                 <div class="inv-main-title-box">
                   <h2 id="invMainHeaderTitle">Electric for Home Appliances</h2>
                   <div class="inv-main-subtitle">
@@ -550,7 +589,6 @@
                   </div>
                 </div>
 
-                <!-- الجهة اليسرى (رقم الفاتورة والخط الساخن) -->
                 <div class="text-start" style="width: 220px;">
                   <div class="text-end mb-1">
                     <span class="inv-badge-pill">فاتورة</span>
@@ -568,7 +606,6 @@
 
               <!-- مربعات بيانات العميل والتاريخ والجهاز -->
               <div class="inv-boxes-container">
-                <!-- مربع بيانات العميل -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات العميل</div>
                   <div class="inv-row-item"><span>اسم العميل :</span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
@@ -576,13 +613,11 @@
                   <div class="inv-row-item mb-0"><span>العنوان :</span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
                 </div>
 
-                <!-- التاريخ بالوسط -->
-                <div class="text-center px-1" style="min-width: 130px;">
+                <div class="text-center px-1" style="min-width: 140px;">
                   <div class="fw-bold mb-1">التاريخ :</div>
                   <input type="text" id="invSheetDate" class="inv-dotted-input text-center fw-bold w-100">
                 </div>
 
-                <!-- مربع بيانات الجهاز -->
                 <div class="inv-box-section">
                   <div class="inv-box-pill-title">بيانات الجهاز</div>
                   <div class="inv-row-item"><span>نوع الجهاز :</span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
@@ -591,13 +626,12 @@
                 </div>
               </div>
 
-              <!-- وصف المشكلة -->
               <div class="d-flex align-items-baseline my-2">
                 <span class="fw-bold" style="white-space:nowrap;">وصف المشكلة :</span>
                 <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
               </div>
 
-              <!-- جدول قطع الغيار -->
+              <!-- جدول البنود -->
               <table class="inv-table-custom">
                 <thead>
                   <tr>
@@ -639,18 +673,17 @@
                 <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
               </div>
 
-              <!-- الختم الرسمي في الأسفل -->
+              <!-- الختم الرسمي -->
               <div id="invSheetStamp"></div>
             </div>
           </div>
         </div>
 
-        <!-- أزرار الإجراءات والمشاركة -->
         <div class="modal-footer justify-content-between bg-white p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر المهم: إرسال صورة أصلية للواتساب -->
+            <!-- الزر الهام: مشاركة كصورة عبر الواتساب -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> مشاركة كصورة عبر واتساب
             </button>
@@ -666,27 +699,46 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة وتعديل الفني (شاملاً رفع الصورة) ==================== -->
+  <!-- ==================== مودال إضافة وتعديل الفني (صورة شخصية + صورة الكارنيه) ==================== -->
   <div class="modal fade" id="techModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-info text-white">
           <h5 class="modal-title fw-bold" id="techModalTitle">إضافة فني جديد</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body p-3">
           <form id="techForm" onsubmit="saveTechnician(event)">
             <input type="hidden" id="techFormId">
             <input type="hidden" id="techPhotoBase64">
+            <input type="hidden" id="techIdCardBase64">
 
-            <!-- معاينة ورفع الصورة -->
-            <div class="text-center mb-3">
-              <img id="techPhotoPreview" src="https://via.placeholder.com/100" class="rounded-circle shadow-sm mb-2" style="width:90px;height:90px;object-fit:cover;border:3px solid #0d6efd;">
-              <div>
-                <label class="btn btn-sm btn-outline-primary fw-bold">
-                  <i class="fa-solid fa-camera me-1"></i> اختيار صورة الفني
-                  <input type="file" id="techPhotoFileInput" accept="image/*" class="d-none" onchange="handleTechPhotoSelect(this)">
-                </label>
+            <!-- معاينة ورفع الصورتين -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6 text-center">
+                <div class="preview-box">
+                  <label class="form-label fw-bold small d-block">الصورة الشخصية للفني</label>
+                  <img id="techPhotoPreview" src="https://via.placeholder.com/90" class="rounded-circle shadow-sm mb-2" style="width:85px;height:85px;object-fit:cover;border:2px solid #0d6efd;">
+                  <div>
+                    <label class="btn btn-sm btn-outline-primary fw-bold">
+                      <i class="fa-solid fa-camera me-1"></i> رفع الصورة الشخصية
+                      <input type="file" accept="image/*" class="d-none" onchange="handleImageFileSelect(this, 'techPhotoBase64', 'techPhotoPreview')">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 text-center">
+                <div class="preview-box">
+                  <label class="form-label fw-bold small d-block">صورة الكارنيه / البطاقة</label>
+                  <img id="techIdCardPreview" src="https://via.placeholder.com/130x85?text=ID+Card" class="rounded shadow-sm mb-2" style="width:130px;height:85px;object-fit:cover;border:2px solid #198754;">
+                  <div>
+                    <label class="btn btn-sm btn-outline-success fw-bold">
+                      <i class="fa-solid fa-id-card me-1"></i> رفع صورة الكارنيه
+                      <input type="file" accept="image/*" class="d-none" onchange="handleImageFileSelect(this, 'techIdCardBase64', 'techIdCardPreview')">
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -702,7 +754,7 @@
             </div>
             <div class="row g-2 mb-2">
               <div class="col-6">
-                <label class="form-label fw-bold small">اسم المستخدم (للدخول)</label>
+                <label class="form-label fw-bold small">اسم المستخدم</label>
                 <input type="text" class="form-control" id="techUsername" required placeholder="ahmed">
               </div>
               <div class="col-6">
@@ -722,7 +774,7 @@
             </div>
             <div class="text-end">
               <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إلغاء</button>
-              <button type="submit" class="btn btn-info text-white fw-bold px-4">حفظ البيانات سحابياً</button>
+              <button type="submit" class="btn btn-info text-white fw-bold px-4">حفظ بيانات الفني سحابياً</button>
             </div>
           </form>
         </div>
@@ -738,13 +790,24 @@
           <div class="id-card-top">
             <h6 class="m-0 fw-bold"><i class="fa-solid fa-id-card-clip me-1"></i> بطاقة إثبات شخصية واعتماد فني</h6>
           </div>
-          <div class="p-4 text-center">
-            <div class="mb-3">
+          <div class="p-3 text-center">
+            <div class="mb-2">
               <span class="badge bg-success-subtle text-success border border-success p-2 rounded-pill fw-bold">
                 <i class="fa-solid fa-certificate me-1"></i> معتمد رسمياً من الإدارة العامة للصيانة
               </span>
             </div>
-            <img id="profileModalPhoto" src="https://via.placeholder.com/110" class="rounded-circle shadow mb-2" style="width: 105px; height: 105px; object-fit: cover; border: 4px solid #198754;">
+            
+            <div class="d-flex justify-content-center gap-3 align-items-center mb-3">
+              <div>
+                <small class="d-block text-muted fw-bold mb-1">الصورة الشخصية</small>
+                <img id="profileModalPhoto" src="https://via.placeholder.com/90" class="rounded-circle shadow" style="width: 85px; height: 85px; object-fit: cover; border: 3px solid #198754;">
+              </div>
+              <div id="profileModalIdCardBox">
+                <small class="d-block text-muted fw-bold mb-1">صورة الكارنيه</small>
+                <img id="profileModalIdCard" src="https://via.placeholder.com/120x85" class="rounded shadow" style="width: 120px; height: 85px; object-fit: cover; border: 2px solid #0b2545;">
+              </div>
+            </div>
+
             <h4 class="fw-bold mb-1 text-dark" id="profileModalName">اسم الفني</h4>
             <div class="mb-2">
               <span class="badge bg-dark fs-6 px-3 py-1">
@@ -752,7 +815,7 @@
               </span>
             </div>
             <p class="text-muted fw-bold mb-2" id="profileModalSpecialty">التخصص</p>
-            <div class="bg-light p-2 rounded-pill d-inline-block px-3">
+            <div class="bg-light p-2 rounded-pill d-inline-block px-3 border">
               <span class="small fw-bold">هاتف التواصل: </span>
               <strong id="profileModalPhone">010XXXXXXXX</strong>
             </div>
@@ -762,7 +825,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال إضافة بلاغ ==================== -->
+  <!-- ==================== مودال إضافة أوردر ==================== -->
   <div class="modal fade" id="orderModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -824,7 +887,7 @@
     </div>
   </div>
 
-  <!-- مودال دخول الإدارة وأمان الرمز -->
+  <!-- مودال الإدارة وأمان الرمز -->
   <div class="modal fade" id="adminLoginModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -845,12 +908,11 @@
     </div>
   </div>
 
-  <!-- مودال تغيير رمز الإدارة -->
   <div class="modal fade" id="adminSecurityModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-warning text-dark">
-          <h6 class="modal-title fw-bold">تغيير رمز مرور الإدارة</h6>
+          <h6 class="modal-title fw-bold">تغيير رمز مرور الإدارة السحابي</h6>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-3">
@@ -867,7 +929,7 @@
               <label class="form-label small fw-bold">تأكيد الرمز الجديد</label>
               <input type="password" id="secConfirmPass" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-warning fw-bold w-100">تحديث الرمز سحابياً</button>
+            <button type="submit" class="btn btn-warning fw-bold w-100">تحديث الرمز سحابياً لجميع الأجهزة</button>
           </form>
         </div>
       </div>
@@ -878,17 +940,16 @@
   <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 99999;">
     <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert">
       <div class="d-flex">
-        <div class="toast-body" id="toastMessage">تم الحفظ بنجاح</div>
+        <div class="toast-body" id="toastMessage">تم بنجاح</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- ==================== JAVASCRIPT ==================== -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCvX-EuH1HhS8XFi71Q-UYFkmrJD8NtztQ",
@@ -922,7 +983,7 @@
     let globalOrders = [];
     let globalTechs = [];
 
-    // مزامنة سحابية
+    // مزامنة Firebase الحية
     db.ref('orders').on('value', (snap) => {
       const val = snap.val();
       globalOrders = val ? Object.values(val) : [];
@@ -959,7 +1020,7 @@
       }
     });
 
-    // ==================== مصادقة الإدارة ====================
+    // ==================== أمان الإدارة ====================
     function openAdminLoginModal() {
       document.getElementById('adminInputPass').value = '';
       new bootstrap.Modal(document.getElementById('adminLoginModal')).show();
@@ -1012,7 +1073,7 @@
       });
     }
 
-    // ==================== دخول الفني ====================
+    // ==================== مصادقة الفني ====================
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -1045,7 +1106,7 @@
       document.getElementById('logoutBtn').classList.remove('d-none');
       document.getElementById('techUserHeader').classList.add('d-none');
       document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold';
-      document.getElementById('roleBadge').innerText = 'الإدارة العامة';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
 
       renderAdminOrders();
       renderAdminTechsGrid();
@@ -1069,7 +1130,7 @@
       if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo;
 
       document.getElementById('roleBadge').className = 'badge bg-success fw-bold';
-      document.getElementById('roleBadge').innerText = 'فني معتمد';
+      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
 
       renderTechOrders();
     }
@@ -1119,6 +1180,10 @@
       document.getElementById('techTodayDone').innerText = todayOrdersAll.filter(o => o.status === 'تم').length;
       document.getElementById('techTodayReturns').innerText = todayOrdersAll.filter(o => o.status === 'مرتجع').length;
 
+      document.getElementById('countTechToday').innerText = todayOrdersAll.length;
+      document.getElementById('countTechAll').innerText = techOrders.length;
+      document.getElementById('countTechReturns').innerText = techOrders.filter(o => o.status === 'مرتجع').length;
+
       let filtered = techOrders.filter(order => {
         if (currentTechTab === 'today') {
           if (order.date !== todayStr && order.statusDate !== todayStr) return false;
@@ -1133,7 +1198,7 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات تظهر حالياً</h6></div>`;
+        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مسجلة</h6></div>`;
         return;
       }
 
@@ -1145,7 +1210,7 @@
                 <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
                 <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
               </div>
-              <span class="badge ${getStatusBadgeClass(order.status)}">${order.status}</span>
+              <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
             </div>
 
             <div class="mb-2 text-secondary small">
@@ -1161,7 +1226,7 @@
               </div>
 
               <div class="d-flex align-items-center gap-1">
-                <select class="form-select form-select-sm fw-bold border-primary" style="width: 125px;" onchange="updateOrderStatus('${order.id}', this.value)">
+                <select class="form-select form-select-sm fw-bold border-primary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
                   <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
                   <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
                   <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
@@ -1171,7 +1236,7 @@
                 </select>
 
                 <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')">
-                  <i class="fa-solid fa-file-invoice"></i>
+                  <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
                 </button>
               </div>
             </div>
@@ -1239,7 +1304,7 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مطابقة</h6></div>`;
+        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مسجلة</h6></div>`;
         return;
       }
 
@@ -1251,7 +1316,7 @@
                 <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
                 <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
               </div>
-              <span class="badge ${getStatusBadgeClass(order.status)}">${order.status}</span>
+              <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
             </div>
 
             <div class="mb-2 text-secondary small">
@@ -1318,7 +1383,7 @@
       }
     }
 
-    // ==================== إدارة الفنيين (إضافة + تعديل + رفع صورة) ====================
+    // ==================== إدارة الفنيين (الصورة الشخصية + صورة الكارنيه + التعديل) ====================
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => `
@@ -1330,6 +1395,10 @@
                 <h6 class="fw-bold mb-0">${t.name}</h6>
                 <span class="badge bg-success-subtle text-success py-0 my-1 small"><i class="fa-solid fa-check-circle"></i> معتمد سحابياً</span>
                 <div class="small text-muted">${t.specialty || 'صيانة عامة'}</div>
+                <div class="small">
+                  <span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span>
+                  <span class="${t.isOnline ? 'text-success fw-bold' : 'text-secondary'}">${t.isOnline ? 'متصل الآن' : 'غير متصل'}</span>
+                </div>
               </div>
             </div>
 
@@ -1344,10 +1413,10 @@
 
             <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
               <button class="btn btn-sm btn-outline-success fw-bold" onclick="viewTechIdCard('${t.id}')">
-                <i class="fa-solid fa-id-badge me-1"></i> الكارنيه
+                <i class="fa-solid fa-id-badge me-1"></i> الكارنيه والبطاقة
               </button>
               <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-primary" onclick="openEditTechModal('${t.id}')">
+                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditTechModal('${t.id}')">
                   <i class="fa-solid fa-pen-to-square me-1"></i> تعديل
                 </button>
                 <button class="btn btn-sm btn-outline-danger" onclick="deleteTechnician('${t.id}')">
@@ -1364,13 +1433,14 @@
       document.getElementById('techModalTitle').innerText = 'إضافة فني جديد';
       document.getElementById('techFormId').value = '';
       document.getElementById('techPhotoBase64').value = '';
-      document.getElementById('techPhotoPreview').src = 'https://via.placeholder.com/100';
+      document.getElementById('techIdCardBase64').value = '';
+      document.getElementById('techPhotoPreview').src = 'https://via.placeholder.com/90';
+      document.getElementById('techIdCardPreview').src = 'https://via.placeholder.com/130x85?text=ID+Card';
       document.getElementById('techForm').reset();
       document.getElementById('techCodeInput').value = 'TECH-' + Math.floor(100 + Math.random() * 900);
       new bootstrap.Modal(document.getElementById('techModal')).show();
     }
 
-    // فتح مودال التعديل وتعبئة البيانات السابقة
     function openEditTechModal(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
@@ -1383,19 +1453,22 @@
       document.getElementById('techPassword').value = tech.password;
       document.getElementById('techPhone').value = tech.phone;
       document.getElementById('techSpecialty').value = tech.specialty || '';
+      
       document.getElementById('techPhotoBase64').value = tech.photo || '';
-      document.getElementById('techPhotoPreview').src = tech.photo || 'https://via.placeholder.com/100';
+      document.getElementById('techPhotoPreview').src = tech.photo || 'https://via.placeholder.com/90';
+
+      document.getElementById('techIdCardBase64').value = tech.idCardPhoto || '';
+      document.getElementById('techIdCardPreview').src = tech.idCardPhoto || 'https://via.placeholder.com/130x85?text=ID+Card';
 
       new bootstrap.Modal(document.getElementById('techModal')).show();
     }
 
-    // قراءة الصورة وتحويلها إلى Base64 للحفظ السحابي
-    function handleTechPhotoSelect(input) {
+    function handleImageFileSelect(input, hiddenInputId, previewImgId) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          document.getElementById('techPhotoBase64').value = e.target.result;
-          document.getElementById('techPhotoPreview').src = e.target.result;
+          document.getElementById(hiddenInputId).value = e.target.result;
+          document.getElementById(previewImgId).src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
       }
@@ -1414,7 +1487,8 @@
         password: document.getElementById('techPassword').value.trim(),
         phone: document.getElementById('techPhone').value.trim(),
         specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة',
-        photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/100',
+        photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90',
+        idCardPhoto: document.getElementById('techIdCardBase64').value || '',
         isOnline: true,
         lat: 30.0444 + (Math.random() - 0.5) * 0.04,
         lng: 31.2357 + (Math.random() - 0.5) * 0.04
@@ -1439,7 +1513,16 @@
       document.getElementById('profileModalCode').innerText = tech.code || tech.id;
       document.getElementById('profileModalSpecialty').innerText = 'التخصص: ' + (tech.specialty || 'صيانة عامة');
       document.getElementById('profileModalPhone').innerText = tech.phone;
-      document.getElementById('profileModalPhoto').src = tech.photo || 'https://via.placeholder.com/110';
+      document.getElementById('profileModalPhoto').src = tech.photo || 'https://via.placeholder.com/90';
+      
+      const idCardBox = document.getElementById('profileModalIdCardBox');
+      if (tech.idCardPhoto) {
+        idCardBox.style.display = 'block';
+        document.getElementById('profileModalIdCard').src = tech.idCardPhoto;
+      } else {
+        idCardBox.style.display = 'none';
+      }
+
       new bootstrap.Modal(document.getElementById('techProfileModal')).show();
     }
 
@@ -1447,7 +1530,7 @@
       if (currentTech) viewTechIdCard(currentTech.id);
     }
 
-    // ==================== الفاتورة الرسمية المطابقة ====================
+    // ==================== الفاتورة الرسمية المطابقة 1:1 ====================
     let officialInvoiceParts = [];
     let currentInvoiceOrder = null;
 
@@ -1504,7 +1587,7 @@
         headerTitle.style.color = "#1b633b";
         hotlineBox.classList.add('d-none');
         stampBox.className = "stamp-kiriazi-red";
-        stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 1rem;">لمدة عام</div><div>★★★</div>`;
+        stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>`;
       } else {
         logoBox.innerHTML = `
           <div class="d-flex align-items-center gap-2">
@@ -1521,7 +1604,7 @@
         headerTitle.style.color = "#125e36";
         hotlineBox.classList.remove('d-none');
         stampBox.className = "stamp-golden-seal";
-        stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 1rem;">لمدة عام</div><div>★★★</div>`;
+        stampBox.innerHTML = `<div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>`;
       }
     }
 
@@ -1597,24 +1680,24 @@
         status: 'تم',
         statusDate: todayStr
       }).then(() => {
-        showToast('تم حفظ الفاتورة بنجاح!');
+        showToast('تم اعتماد الفاتورة سحابياً بنجاح!');
         bootstrap.Modal.getInstance(document.getElementById('officialInvoiceModal')).hide();
       });
     }
 
     // ==================== تحويل الفاتورة لصورة حقيقية وإرسالها للواتساب ====================
     async function sendOfficialInvoiceAsImage() {
-      saveOfficialInvoice(); // حفظ البيانات أولاً
+      saveOfficialInvoice();
       const invoiceElement = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone').value.replace(/\D/g, '');
       const clientName = document.getElementById('invSheetClientName').value;
       const invNumber = document.getElementById('invSheetNumber').value || '1001';
 
-      showToast('جاري استخراج صورة الفاتورة بدقة عالية...');
+      showToast('جاري استخراج صورة الفاتورة للواتساب...');
 
       try {
         const canvas = await html2canvas(invoiceElement, {
-          scale: 2, // دقة مضاعفة فائقة الوضوح
+          scale: 2,
           useCORS: true,
           backgroundColor: '#ffffff'
         });
@@ -1622,7 +1705,7 @@
         canvas.toBlob(async (blob) => {
           const file = new File([blob], `فاتورة_${invNumber}.png`, { type: 'image/png' });
 
-          // التحقق من دعم المتصفح لمشاركة الملفات مباشرة (يدعم الموبايل بنسبة 100%)
+          // إذا كان الموبايل يدعم مشاركة الملفات مباشرة (سيرسل الصورة للواتساب مباشرة)
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
@@ -1637,7 +1720,7 @@
             }
           }
 
-          // بديل احترافي إذا كان المتصفح لابتوب أو لا يدعم المشاركة المباشرة:
+          // إذا كان الجهاز لابتوب أو لا يدعم المشاركة المباشرة (يقوم بتنزيل الصورة ويفتح الواتساب)
           const downloadUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = downloadUrl;
@@ -1645,18 +1728,20 @@
           link.click();
           URL.revokeObjectURL(downloadUrl);
 
-          // فتح الواتساب مع رسالة تنبيه
-          const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة وضمان لمدة عام.`);
+          const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، تم تحميل صورة فاتورة الصيانة المعتمدة وضمان لمدة عام لإرسالها لحضرتك.`);
           window.open(`https://wa.me/2${clientPhone}?text=${msg}`, '_blank');
-          showToast('تم حفظ صورة الفاتورة على هاتفك وجاري فتح واتساب...');
+          showToast('تم حفظ صورة الفاتورة وجاري فتح محادثة الواتساب...');
         }, 'image/png');
       } catch (err) {
-        alert('حدث خطأ أثناء تصدير الصورة: ' + err.message);
+        alert('حدث خطأ أثناء استخراج الصورة: ' + err.message);
       }
     }
 
-    // ==================== الخريطة ====================
+    // ==================== الخريطة مع استرجاع صورة الفني الدائرية ====================
     function initMap() {
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
       if (!mapInstance) {
         mapInstance = L.map('map').setView([30.0444, 31.2357], 12);
         L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
@@ -1672,10 +1757,23 @@
       mapMarkers = {};
 
       globalTechs.forEach(t => {
-        const marker = L.marker([t.lat, t.lng]).addTo(mapInstance);
-        marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}`);
+        // أيقونة الفني الدائرية الأصلية مع النبض والحالة
+        const customIcon = L.divIcon({
+          className: 'custom-map-avatar',
+          html: `
+            <div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;">
+              <img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+          `,
+          iconSize: [44, 44],
+          iconAnchor: [22, 22]
+        });
+
+        const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
+        marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`);
         mapMarkers[t.id] = marker;
       });
+      document.getElementById('lastMapUpdateText').innerText = `تم التحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
     }
 
     function getStatusBadgeClass(status) {
@@ -1685,7 +1783,7 @@
         case 'قيد الاستكمال': return 'bg-primary';
         case 'مؤجل': return 'bg-warning text-dark';
         case 'مرتجع': return 'bg-danger';
-        default: return 'bg-secondary';
+        default: return 'bg-primary';
       }
     }
 
@@ -1702,7 +1800,7 @@
         icon.classList.remove('fa-spin');
         if (currentRole === 'technician') renderTechOrders();
         if (currentRole === 'admin') { renderAdminOrders(); renderAdminTechsGrid(); }
-        showToast('تم تحديث البيانات');
+        showToast('تمت المزامنة بنجاح');
       }, 500);
     }
   </script>
