@@ -105,7 +105,7 @@
     }
 
     #map {
-      height: 500px;
+      height: 520px;
       border-radius: 12px;
       width: 100%;
     }
@@ -114,7 +114,7 @@
       border: none;
     }
 
-    /* ==================== استايل الفاتورة الرسمي ==================== */
+    /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
     .invoice-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -125,8 +125,8 @@
       color: #111111 !important;
       padding: 30px;
       border-radius: 10px;
-      width: 920px;
-      min-width: 920px;
+      width: 900px;
+      min-width: 900px;
       margin: auto;
       direction: rtl;
       position: relative;
@@ -346,15 +346,6 @@
       padding: 12px;
       text-align: center;
     }
-    
-    /* منع الانعكاس في حقول التاريخ */
-    .date-input-rtl {
-      direction: rtl;
-      text-align: right;
-    }
-    .date-input-rtl::-webkit-datetime-edit {
-      direction: rtl;
-    }
   </style>
 </head>
 <body>
@@ -477,8 +468,11 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <input type="date" class="form-control form-control-sm date-input-rtl" id="techFilterDate" onchange="renderTechOrders()" style="width: 175px;">
-        <button class="btn btn-sm btn-outline-secondary" onclick="clearDateFilter('techFilterDate', renderTechOrders)"><i class="fa-solid fa-xmark"></i></button>
+        <!-- حقل تاريخ نظيف لا يعكس الكلمات نهائياً -->
+        <div class="input-group input-group-sm" style="width: 175px;">
+          <input type="text" class="form-control form-control-sm text-center fw-bold bg-white" id="techFilterDate" placeholder="اختر التاريخ..." readonly onclick="openDateModal('techFilterDate')">
+          <button class="btn btn-outline-secondary btn-sm" type="button" onclick="clearDateFilter('techFilterDate', renderTechOrders)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
       </div>
     </div>
 
@@ -553,8 +547,11 @@
           <option value="مرتجع">مرتجع</option>
         </select>
         
-        <input type="date" class="form-control form-control-sm date-input-rtl" id="adminFilterDate" style="width: 175px;" onchange="renderAdminOrders()">
-        <button class="btn btn-sm btn-outline-secondary" onclick="clearDateFilter('adminFilterDate', renderAdminOrders)" title="إلغاء الفلتر"><i class="fa-solid fa-xmark"></i></button>
+        <!-- حقل التاريخ المحمي من الانعكاس ويسهل اختياره -->
+        <div class="input-group input-group-sm" style="width: 185px;">
+          <input type="text" class="form-control form-control-sm text-center fw-bold bg-white" id="adminFilterDate" placeholder="اختر التاريخ..." readonly onclick="openDateModal('adminFilterDate')">
+          <button class="btn btn-outline-secondary" type="button" onclick="clearAdminDateFilter()" title="عرض كل التواريخ"><i class="fa-solid fa-xmark"></i></button>
+        </div>
       </div>
       <div id="adminOrdersContainer" class="row g-3"></div>
     </div>
@@ -564,13 +561,24 @@
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- خريطة الفنيين -->
+    <!-- خريطة الفنيين مع ميزة عزل كل فني وخط سيره -->
     <div id="adminSectionMap" class="d-none">
       <div class="card border-0 shadow-sm p-3 bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="fw-bold m-0"><i class="fa-solid fa-satellite-dish text-primary me-2"></i>خريطة تتبع مواقع الفنيين الحية</h6>
-          <small class="text-muted" id="lastMapUpdateText">مزامنة...</small>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <h6 class="fw-bold m-0"><i class="fa-solid fa-satellite-dish text-primary me-1"></i> تتبع خط السير الميداني</h6>
+            <small class="text-muted" id="lastMapUpdateText"></small>
+          </div>
+          
+          <!-- قائمة اختيار الفني لعرضه بمفرده -->
+          <div class="d-flex align-items-center gap-2">
+            <label class="small fw-bold text-nowrap">تحديد الفني:</label>
+            <select class="form-select form-select-sm fw-bold border-primary" id="mapTechFilterSelect" style="min-width: 220px;" onchange="filterMapByTech(this.value)">
+              <option value="all">📍 عرض جميع الفنيين</option>
+            </select>
+          </div>
         </div>
+
         <div id="map"></div>
       </div>
     </div>
@@ -623,7 +631,7 @@
                 </div>
               </div>
 
-              <!-- مربعات بيانات العميل والتاريخ والجهاز -->
+              <!-- مربعات بيانات العميل والتاريخ والجهاز (مطابقة بالكامل للصورة: الجهاز في اليمين، العميل في اليسار، التاريخ في المنتصف) -->
               <div class="inv-boxes-container">
                 <!-- مربع بيانات الجهاز (في اليمين كما بالصورة) -->
                 <div class="inv-box-section">
@@ -715,7 +723,6 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر الهام: مشاركة كصورة عبر الواتساب -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إرسال عبر واتساب
             </button>
@@ -726,6 +733,32 @@
               <i class="fa-solid fa-floppy-disk me-1"></i> حفظ واعتماد
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== مودال التاريخ السليم المركزي ==================== -->
+  <div class="modal fade" id="datePickerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white py-2">
+          <h6 class="modal-title fw-bold m-0" id="dateModalTitle">أكتوبر 2026</h6>
+          <div class="d-flex gap-1">
+            <button type="button" class="btn btn-sm btn-light py-0 px-2" onclick="prevCalMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+            <button type="button" class="btn btn-sm btn-light py-0 px-2" onclick="nextCalMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+          </div>
+        </div>
+        <div class="modal-body p-2">
+          <div class="d-grid mb-1 text-center small fw-bold text-muted" style="grid-template-columns: repeat(7, 1fr);">
+            <div>س</div><div>ح</div><div>ن</div><div>ث</div><div>ر</div><div>خ</div><div>ج</div>
+          </div>
+          <div id="dateModalDaysGrid" class="d-grid gap-1 text-center" style="grid-template-columns: repeat(7, 1fr);"></div>
+        </div>
+        <div class="modal-footer justify-content-between p-2 bg-light">
+          <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="selectCalendarDate(getLocalDateStr())">اليوم</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" onclick="selectYesterday()">أمس</button>
+          <button type="button" class="btn btn-sm btn-outline-danger fw-bold" onclick="clearCurrentDatePicker()">الكل</button>
         </div>
       </div>
     </div>
@@ -890,7 +923,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">تاريخ البلاغ</label>
-                <input type="date" class="form-control date-input-rtl" id="orderDate" required>
+                <input type="text" class="form-control text-center fw-bold bg-white" id="orderDate" readonly onclick="openDateModal('orderDate')" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold small">حالة البلاغ</label>
@@ -1010,6 +1043,7 @@
     let currentAdminTab = 'all'; 
     let mapInstance = null;
     let mapMarkers = {};
+    let mapRoutePolyline = null;
 
     let globalOrders = [];
     let globalTechs = [];
@@ -1027,7 +1061,8 @@
       globalTechs = val ? Object.values(val) : [];
       if (currentRole === 'admin') {
         renderAdminTechsGrid();
-        if (mapInstance) renderMapTechnicians();
+        populateMapTechFilterSelect();
+        if (mapInstance) filterMapByTech(document.getElementById('mapTechFilterSelect')?.value || 'all');
       }
       if (currentRole === 'technician' && currentTech) {
         const updated = globalTechs.find(t => t.id === currentTech.id);
@@ -1291,7 +1326,7 @@
       });
     }
 
-    // ==================== أوردرات الإدارة (مع التعديل على بيانات العميل) ====================
+    // ==================== أوردرات الإدارة ====================
     function switchAdminSection(sec) {
       document.getElementById('adminSectionOrders').classList.add('d-none');
       document.getElementById('adminSectionTechs').classList.add('d-none');
@@ -1314,6 +1349,11 @@
         document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold';
         setTimeout(initMap, 200);
       }
+    }
+
+    function clearAdminDateFilter() {
+      document.getElementById('adminFilterDate').value = '';
+      renderAdminOrders();
     }
 
     function renderAdminOrders() {
@@ -1370,7 +1410,8 @@
                 </button>
               </div>
               <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ">
+                <!-- زر تعديل بيانات العميل والبلاغ -->
+                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ والعميل">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')" title="حذف البلاغ">
@@ -1449,7 +1490,7 @@
       }
     }
 
-    // ==================== إدارة الفنيين (إضافة وتعديل ورفع الصور) ====================
+    // ==================== إدارة الفنيين (الصورة الشخصية + صورة الكارنيه + التعديل) ====================
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => `
@@ -1615,7 +1656,6 @@
       document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
       document.getElementById('invSheetProblemDesc').value = order.notes || 'صيانة وفحص دوري للجهاز';
 
-      // تجزئة التاريخ بدون أي انعكاس
       const today = new Date();
       let dayVal = String(today.getDate()).padStart(2, '0');
       let monthVal = String(today.getMonth() + 1).padStart(2, '0');
@@ -1771,11 +1811,10 @@
       });
     }
 
-    // ==================== الحل الجذري: تحويل الفاتورة لصورة عالية الدقة كاملة وبدون أي نقص ====================
+    // ==================== تصدير الفاتورة بدقة 100% كصورة ====================
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
-      const invoiceOriginal = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone').value.replace(/\D/g, '');
       const clientName = document.getElementById('invSheetClientName').value;
       const invNumber = document.getElementById('invSheetNumber').value || '1001';
@@ -1783,13 +1822,12 @@
 
       showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
 
-      // بناء حاوية مستقلة ومسطحة تماماً بعرض 920 بكسل لمنع قص الشاشة في الموبايل
       const container = document.createElement('div');
       container.style.cssText = `
         position: fixed;
         left: -9999px;
         top: 0;
-        width: 920px;
+        width: 900px;
         background: #ffffff;
         padding: 30px;
         border: 2px solid #1c6841;
@@ -1816,7 +1854,7 @@
         headerTitleText = `<h2 style="font-weight:900; margin:0; font-size:1.95rem; color:#1b633b;">Electric for Home Appliances</h2>`;
         hotlineHtml = '';
         stampHtml = `
-          <div style="position: absolute; bottom: 25px; left: 30px; border: 3px dashed #d90429; color: #d90429; border-radius: 50%; width: 105px; height: 105px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; transform: rotate(-15deg); opacity: 0.9;">
+          <div style="position: absolute; bottom: 25px; left: 30px; background: #d90429; color: #ffffff; border-radius: 15px; padding: 10px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; transform: rotate(-15deg); border: 2px dashed #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.25);">
             <div>ضمان</div><div style="font-size: 0.95rem;">لمدة عام</div><div>★★★</div>
           </div>
         `;
@@ -1852,7 +1890,6 @@
       const month = document.getElementById('invDateMonth').value || '  ';
       const year = document.getElementById('invDateYear').value || '    ';
 
-      // تحويل الجداول لنصوص صريحة لمنع مشاكل الصور
       let rowsHtml = '';
       officialInvoiceParts.forEach((part, i) => {
         const itemTotal = (part.qty || 1) * (part.price || 0);
@@ -1891,14 +1928,15 @@
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:12px;">
+            <!-- بيانات الجهاز يمين -->
             <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
-              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات العميل</div>
-              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>اسم العميل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cName}</span></div>
-              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>رقم الهاتف : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cPhone}</span></div>
-              <div style="font-size:0.92rem; font-weight:bold;"><span>العنوان : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cAddr}</span></div>
+              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات الجهاز</div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>نوع الجهاز : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dType}</span></div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>الماركة : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dBrand}</span></div>
+              <div style="font-size:0.92rem; font-weight:bold;"><span>الموديل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dModel}</span></div>
             </div>
 
-            <!-- التاريخ في المنتصف غير معكوس -->
+            <!-- التاريخ منتصف -->
             <div style="min-width:180px; text-align:center;">
               <div style="display:inline-flex; align-items:baseline; justify-content:center; font-size:1rem; font-weight:bold;">
                 <span style="margin-left:6px;">التاريخ :</span>
@@ -1908,11 +1946,12 @@
               </div>
             </div>
 
+            <!-- بيانات العميل يسار -->
             <div style="flex:1; border:1.5px solid #212529; border-radius:12px; padding:16px 14px 10px 14px; position:relative;">
-              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات الجهاز</div>
-              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>نوع الجهاز : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dType}</span></div>
-              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>الماركة : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dBrand}</span></div>
-              <div style="font-size:0.92rem; font-weight:bold;"><span>الموديل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${dModel}</span></div>
+              <div style="position:absolute; top:-13px; right:25px; background-color:#0e5c36; color:#fff; padding:2px 24px; border-radius:20px; font-size:0.85rem; font-weight:bold;">بيانات العميل</div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>اسم العميل : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cName}</span></div>
+              <div style="margin-bottom:8px; font-size:0.92rem; font-weight:bold;"><span>رقم الهاتف : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cPhone}</span></div>
+              <div style="font-size:0.92rem; font-weight:bold;"><span>العنوان : </span><span style="border-bottom:1.5px dotted #555; padding:0 6px;">${cAddr}</span></div>
             </div>
           </div>
 
@@ -1967,7 +2006,7 @@
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          width: 920
+          width: 900
         });
 
         document.body.removeChild(container);
@@ -2006,7 +2045,67 @@
       }
     }
 
-    // ==================== الخريطة مع استرجاع صورة الفني الدائرية ====================
+    // ==================== نافذة التقويم الوسطية (تحل مشكلة الخروج والانعكاس) ====================
+    let activeDateInputId = null;
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+
+    function openDateModal(inputId) {
+      activeDateInputId = inputId;
+      renderDateModalCalendar();
+      new bootstrap.Modal(document.getElementById('datePickerModal')).show();
+    }
+
+    function renderDateModalCalendar() {
+      document.getElementById('dateModalTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
+      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); 
+      const firstDayEgypt = (firstDayJs + 1) % 7;
+      const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayStr = getLocalDateStr();
+      const currentVal = activeDateInputId ? document.getElementById(activeDateInputId)?.value : '';
+
+      let html = '';
+      for (let i = 0; i < firstDayEgypt; i++) html += '<div></div>';
+
+      for (let d = 1; d <= totalDays; d++) {
+        const fullDate = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        let bg = 'btn-outline-secondary';
+        if (fullDate === currentVal) bg = 'btn-primary text-white';
+        else if (fullDate === todayStr) bg = 'btn-outline-primary fw-bold';
+
+        html += `<button type="button" class="btn btn-sm ${bg} p-1" onclick="selectCalendarDate('${fullDate}')">${d}</button>`;
+      }
+      document.getElementById('dateModalDaysGrid').innerHTML = html;
+    }
+
+    function prevCalMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderDateModalCalendar(); }
+    function nextCalMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderDateModalCalendar(); }
+
+    function selectCalendarDate(dateStr) {
+      if (activeDateInputId) {
+        document.getElementById(activeDateInputId).value = dateStr;
+        if (activeDateInputId === 'techFilterDate') renderTechOrders();
+        if (activeDateInputId === 'adminFilterDate') renderAdminOrders();
+      }
+      bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide();
+    }
+
+    function selectYesterday() {
+      const d = new Date(); d.setDate(d.getDate() - 1);
+      selectCalendarDate(getLocalDateStr(d));
+    }
+
+    function clearCurrentDatePicker() {
+      if (activeDateInputId) {
+        document.getElementById(activeDateInputId).value = '';
+        if (activeDateInputId === 'techFilterDate') renderTechOrders();
+        if (activeDateInputId === 'adminFilterDate') renderAdminOrders();
+      }
+      bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide();
+    }
+
+    // ==================== الخريطة مع ميزة عزل كل فني وخط سيره الميداني ====================
     function initMap() {
       const mapContainer = document.getElementById('map');
       if (!mapContainer) return;
@@ -2018,30 +2117,101 @@
         }).addTo(mapInstance);
       }
       mapInstance.invalidateSize();
-      renderMapTechnicians();
+      populateMapTechFilterSelect();
+      filterMapByTech('all');
     }
 
-    function renderMapTechnicians() {
+    function populateMapTechFilterSelect() {
+      const sel = document.getElementById('mapTechFilterSelect');
+      if (!sel) return;
+      const currentVal = sel.value;
+      sel.innerHTML = `<option value="all">📍 عرض جميع الفنيين على الخريطة</option>` +
+        globalTechs.map(t => `<option value="${t.id}">👤 ${t.name} (${t.code || t.id})</option>`).join('');
+      if (currentVal) sel.value = currentVal;
+    }
+
+    function filterMapByTech(techId) {
+      if (!mapInstance) return;
+
+      // مسح العلامات وخط السير القديم
       for (let k in mapMarkers) mapInstance.removeLayer(mapMarkers[k]);
       mapMarkers = {};
+      if (mapRoutePolyline) {
+        mapInstance.removeLayer(mapRoutePolyline);
+        mapRoutePolyline = null;
+      }
 
-      globalTechs.forEach(t => {
+      if (techId === 'all') {
+        // عرض جميع الفنيين
+        globalTechs.forEach(t => {
+          const customIcon = L.divIcon({
+            className: 'custom-map-avatar',
+            html: `
+              <div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;">
+                <img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;">
+              </div>
+            `,
+            iconSize: [44, 44],
+            iconAnchor: [22, 22]
+          });
+
+          const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
+          marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`);
+          mapMarkers[t.id] = marker;
+        });
+        mapInstance.setView([30.0444, 31.2357], 12);
+        document.getElementById('lastMapUpdateText').innerText = `تم عرض جميع الفنيين (${globalTechs.length})`;
+      } else {
+        // عزل الفني المختار فقط ورسم خط سيره وبلاغاته اليوم
+        const t = globalTechs.find(x => x.id === techId);
+        if (!t) return;
+
         const customIcon = L.divIcon({
           className: 'custom-map-avatar',
           html: `
-            <div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;">
-              <img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;">
+            <div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;">
+              <img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;">
             </div>
           `,
-          iconSize: [44, 44],
-          iconAnchor: [22, 22]
+          iconSize: [48, 48],
+          iconAnchor: [24, 24]
         });
 
-        const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
-        marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`);
-        mapMarkers[t.id] = marker;
-      });
-      document.getElementById('lastMapUpdateText').innerText = `تم التحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+        const techMarker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
+        techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code}<br>هاتف: ${t.phone}`).openPopup();
+        mapMarkers['tech'] = techMarker;
+
+        // إحداثيات خط السير بدءاً من موقع الفني
+        const routePoints = [[t.lat, t.lng]];
+
+        // جلب بلاغات الفني لليوم ورسمها على الخريطة
+        const todayStr = getLocalDateStr();
+        const techOrders = globalOrders.filter(o => o.assignedTechId === t.id && (o.date === todayStr || o.statusDate === todayStr));
+
+        techOrders.forEach((ord, index) => {
+          // محاكاة إحداثيات البلاغات القريبة من الفني
+          const ordLat = t.lat + (index + 1) * 0.007 * (index % 2 === 0 ? 1 : -1);
+          const ordLng = t.lng + (index + 1) * 0.007 * (index % 2 === 0 ? -1 : 1);
+          routePoints.push([ordLat, ordLng]);
+
+          const orderMarker = L.marker([ordLat, ordLng]).addTo(mapInstance);
+          orderMarker.bindPopup(`<b>عميل رقم ${index + 1}: ${ord.clientName}</b><br>${ord.device}<br>الحالة: ${ord.status}`);
+          mapMarkers['ord_' + ord.id] = orderMarker;
+        });
+
+        // رسم خط السير الواصل بينهم
+        if (routePoints.length > 1) {
+          mapRoutePolyline = L.polyline(routePoints, {
+            color: '#0d6efd',
+            weight: 4,
+            opacity: 0.8,
+            dashArray: '8, 8'
+          }).addTo(mapInstance);
+        }
+
+        mapInstance.setView([t.lat, t.lng], 14);
+        document.getElementById('lastMapUpdateText').innerText = `خط سير: ${t.name} (لديه ${techOrders.length} بلاغات اليوم)`;
+      }
     }
 
     function getStatusBadgeClass(status) {
