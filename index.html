@@ -165,7 +165,7 @@
       border: none;
     }
 
-    /* ==================== استايل الفاتورة الرسمي ==================== */
+    /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
     .invoice-scroll-container {
       width: 100%;
       overflow-x: auto;
@@ -175,7 +175,7 @@
       background: #ffffff !important;
       color: #111111 !important;
       padding: 0;
-      border-radius: 12px;
+      border-radius: 14px;
       width: 950px;
       min-width: 950px;
       margin: auto;
@@ -184,15 +184,6 @@
       box-shadow: 0 6px 25px rgba(0,0,0,0.12);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
-    }
-    .k2-green-header {
-      background: linear-gradient(135deg, #052e18 0%, #0a4d29 50%, #052e18 100%);
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 3.5px solid #d4af37;
-      color: #ffffff;
     }
     .inv-content-body {
       padding: 24px 28px;
@@ -247,12 +238,12 @@
       position: relative;
     }
     .inv-table-custom th {
-      background-color: #d8dee4 !important;
-      color: #111111 !important;
-      padding: 8px;
-      font-size: 1rem;
+      background-color: #0e5c36 !important;
+      color: #ffffff !important;
+      padding: 10px;
+      font-size: 1.05rem;
       font-weight: bold;
-      border: 1px solid #888;
+      border: 1px solid #0e5c36;
     }
     .inv-table-custom td {
       border: 1px solid #888;
@@ -293,63 +284,8 @@
       margin-left: 6px;
     }
 
-    .stamp-k2-seal {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      border: 2.5px solid #c99738;
-      border-radius: 50%;
-      width: 115px;
-      height: 115px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #8c6314;
-      font-weight: 900;
-      background: radial-gradient(circle, rgba(255,249,230,0.95) 0%, rgba(247,232,185,0.95) 100%);
-      transform: rotate(-8deg);
-      box-shadow: 0 4px 12px rgba(140,99,20,0.2);
-      pointer-events: none;
-    }
-    .stamp-golden-seal {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
-      color: #3d2800 !important;
-      border-radius: 50%;
-      width: 110px;
-      height: 110px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      transform: rotate(-10deg);
-      border: 2px solid #ffffff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      pointer-events: none;
-    }
-    .stamp-kiriazi-red {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      background: #d90429 !important;
-      color: #ffffff !important;
-      border-radius: 15px;
-      padding: 10px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      transform: rotate(-15deg);
-      border: 2px dashed #ffffff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      pointer-events: none;
-    }
-    .stamp-k4-seal {
+    /* أختام الفواتير */
+    .stamp-electronic-seal {
       position: absolute;
       bottom: 25px;
       left: 35px;
@@ -805,10 +741,10 @@
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold small text-warning">قالب الفاتورة المعتمد:</span>
             <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 290px;" onchange="renderActiveInvoiceLayout()">
-              <option value="kiriazi2" selected>1. قالب كريازي 2 (الأصلي المعتمد)</option>
-              <option value="kiriazi_electronic">2. فاتورة إصلاح وضمان إلكترونية (الجديد)</option>
+              <option value="kiriazi_electronic" selected>1. فاتورة إصلاح وضمان إلكترونية (المطابق للأصل)</option>
+              <option value="kiriazi2">2. قالب كريازي 2 الكلاسيكي</option>
               <option value="authorized">3. المركز المعتمد (19387)</option>
-              <option value="kiriazi">4. صيانة كيريازي الكلاسيكي</option>
+              <option value="kiriazi">4. صيانة كيريازي الأصلي</option>
             </select>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -1724,7 +1660,7 @@
       `).join('');
     }
 
-    // ==================== بطاقة تفاصيل البلاغ عند الضغط على الكارت ====================
+    // ==================== بطاقة تفاصيل البلاغ ====================
     function openOrderDetailsModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -1977,7 +1913,7 @@
       if (currentTech) viewTechIdCard(currentTech.id);
     }
 
-    // ==================== بناء وتطابق الفواتير (1، 2، 3، 4) ====================
+    // ==================== بناء وتطابق الفواتير ====================
     let officialInvoiceParts = [];
     let currentInvoiceOrder = null;
 
@@ -2028,20 +1964,11 @@
       document.getElementById('invDateDay').value = dayVal;
       document.getElementById('invDateMonth').value = monthVal;
       document.getElementById('invDateYear').value = yearVal;
-      syncDateMirror();
 
       renderOfficialPartsTable();
       calculateOfficialInvoice();
 
       new bootstrap.Modal(document.getElementById('officialInvoiceModal')).show();
-    }
-
-    function syncDateMirror() {
-      const d = document.getElementById('invDateDay')?.value || '01';
-      const m = document.getElementById('invDateMonth')?.value || '10';
-      const y = document.getElementById('invDateYear')?.value || '2026';
-      const mirror = document.getElementById('invDateMirrorText');
-      if (mirror) mirror.innerText = `${y} / ${m} / ${d}`;
     }
 
     function renderActiveInvoiceLayout() {
@@ -2056,7 +1983,7 @@
       const thElements = document.querySelectorAll('#invTableHeaderRow th');
 
       if (template === 'kiriazi_electronic') {
-        // النموذج الرابع الجديد (1000183766.jpg)
+        // النموذج الرابع الجديد المطلوب بالملي (1000183766.jpg)
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
@@ -2120,14 +2047,12 @@
           </div>
         `;
 
-        // رأس الجدول الأخضر المتطابق
         thElements.forEach(th => { th.style.backgroundColor = "#0e5c36"; th.style.color = "#ffffff"; });
         subtotalLabel.innerHTML = `<span>المجموع الفرعي :</span> <i class="fa-solid fa-coins text-warning ms-1"></i>`;
         totalLabel.innerHTML = `<span>الإجمالي الكلي :</span> <i class="fa-solid fa-sack-dollar text-warning ms-1"></i>`;
         totalRow.style.backgroundColor = "#0e5c36";
         totalRow.style.color = "#ffffff";
 
-        // شروط الضمان الكاملة مع "راحتك .. هدفنا"
         termsContainer.innerHTML = `
           <div class="inv-terms-bar mt-3 py-2 px-3">
             <div class="d-flex align-items-center">
@@ -2146,173 +2071,15 @@
           </div>
         `;
 
-        stampBox.className = "stamp-k4-seal";
+        stampBox.className = "stamp-electronic-seal";
         stampBox.innerHTML = `
           <div style="font-size:0.95rem;">ضمان</div>
           <div style="font-size:0.9rem;">لمدة عام</div>
           <div style="font-size:0.85rem;">★★★</div>
         `;
 
-      } else if (template === 'kiriazi2') {
-        // قالب كيريازي 2 (1000170298.png)
-        headerContainer.className = "k2-green-header";
-        headerContainer.innerHTML = `
-          <div style="width: 220px; text-align: left;">
-            <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 45px; padding: 6px 20px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); display: inline-block;">
-              <div style="background:#d90429; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
-              <div style="font-size: 1.65rem; font-weight: 900; color: #ffeb3b;">صـيـانـة</div>
-            </div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <h2 style="font-weight: 900; margin: 0; font-size: 2.3rem; letter-spacing: -0.5px; color: #ffffff;">Electric for Home Appliances</h2>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #f0f0f0; margin-top: 5px;">
-              <span>—•— Professional Repair &amp; Maintenance Services —•—</span>
-            </div>
-          </div>
-          <div style="width: 220px; text-align: right;">
-            <div style="background: linear-gradient(135deg, #f0c975 0%, #d49c3d 100%); border: 1.5px solid #a67215; border-radius: 12px; padding: 6px 14px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
-              <div style="font-size: 1.45rem; font-weight: 900; color: #111;">فاتورة</div>
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold; color: #222; margin-top: 2px;">
-                <span>FATORA NO.</span>
-                <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold fs-6" style="width: 75px; margin: 0 4px; color:#111 !important;" value="3502">
-                <span>رقم الفاتورة :</span>
-              </div>
-            </div>
-          </div>
-        `;
-
-        boxesContainer.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-            <div class="inv-box-section">
-              <div class="inv-box-pill-title"><i class="fa-solid fa-mobile-screen me-1"></i> بيانات الجهاز</div>
-              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
-            </div>
-
-            <div style="min-width: 200px; text-align: center;">
-              <div style="margin-bottom: 6px;">
-                <span style="background: #0d4a2b; color: #ffffff; padding: 4px 14px; border-radius: 10px; font-weight: bold; font-size: 0.95rem; display: inline-block;">
-                  Date : <span id="invDateMirrorText">2026 / 10 / 01</span> 📅
-                </span>
-              </div>
-              <div style="display: inline-flex; align-items: baseline; justify-content: center; font-size: 1rem; font-weight: bold;">
-                <span style="margin-left: 6px;">التاريخ : </span>
-                <div style="display: inline-flex; align-items: baseline; direction: ltr !important; unicode-bidi: isolate;">
-                  <input type="text" id="invDateDay" placeholder="01" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;" oninput="syncDateMirror()">
-                  <span class="fw-bold mx-1 fs-5">/</span>
-                  <input type="text" id="invDateMonth" placeholder="10" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;" oninput="syncDateMirror()">
-                  <span class="fw-bold mx-1 fs-5">/</span>
-                  <input type="text" id="invDateYear" placeholder="2026" class="inv-dotted-input text-center fw-bold fs-5" style="width: 60px; direction: ltr !important;" oninput="syncDateMirror()">
-                </div>
-              </div>
-            </div>
-
-            <div class="inv-box-section">
-              <div class="inv-box-pill-title"><i class="fa-solid fa-user me-1"></i> بيانات العميل</div>
-              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item"><span>رقم الهاتف <i class="fa-solid fa-phone ms-1 small"></i> : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item mb-0"><span>العنوان <i class="fa-solid fa-location-dot ms-1 small"></i> : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
-            </div>
-          </div>
-        `;
-
-        thElements.forEach(th => { th.style.backgroundColor = "#d8dee4"; th.style.color = "#111111"; });
-        subtotalLabel.innerHTML = `<span class="float-start ps-3 fw-bold">Sub-total</span> <span>المجموع الفرعي :</span>`;
-        totalLabel.innerHTML = `<span class="float-start ps-3 fw-bold text-white">Grand Total</span> <span class="text-white">الإجمالي الكلي :</span>`;
-        totalRow.style.backgroundColor = "#0e5c36";
-        totalRow.style.color = "#ffffff";
-
-        termsContainer.innerHTML = `
-          <div class="inv-terms-bar">
-            <div class="d-flex align-items-center">
-              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
-              <span class="me-1">شروط الضمان :</span>
-            </div>
-            <div>• تم تسليم الجهاز بعمل بحالة جيدة</div>
-            <div>|</div>
-            <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
-          </div>
-        `;
-
-        stampBox.className = "stamp-k2-seal";
-        stampBox.innerHTML = `
-          <div style="font-size:0.95rem;">ضمان لمدة عام</div>
-          <div style="font-size:0.75rem; letter-spacing:0.5px;">1-year Warranty</div>
-          <div style="font-size:0.8rem;">★★★</div>
-        `;
-
-      } else if (template === 'authorized') {
-        // المركز المعتمد 19387
-        headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
-        headerContainer.style.background = "#ffffff";
-        headerContainer.innerHTML = `
-          <div style="width: 220px; text-align: right;">
-            <div class="inv-badge-pill">فاتورة</div>
-            <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
-            <div class="mt-1 text-danger fw-bold fs-5"><i class="fa-solid fa-phone-volume me-1"></i> 19387</div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <h2 style="font-weight: 900; color: #125e36; margin: 0;">Authorized Service Center</h2>
-            <div class="text-muted small fw-bold">Professional Repair & Maintenance Services</div>
-          </div>
-          <div style="width: 220px; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-            <div style="text-align: left;">
-              <div style="color: #b02a37; font-weight: 900;">قسم الخدمة والصيانة</div>
-              <div style="font-size: 0.7rem; font-weight: bold;">Service & Maintenance</div>
-            </div>
-            <div style="width: 44px; height: 44px; background: #0b4f8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-wrench"></i></div>
-          </div>
-        `;
-
-        boxesContainer.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-            <div class="inv-box-section">
-              <div class="inv-box-pill-title">بيانات الجهاز</div>
-              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
-            </div>
-            <div style="min-width: 180px; text-align: center;">
-              <div class="fw-bold mb-1">التاريخ :</div>
-              <div style="display: inline-flex; direction: ltr !important;">
-                <input type="text" id="invDateDay" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
-                <input type="text" id="invDateMonth" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
-                <input type="text" id="invDateYear" class="inv-dotted-input text-center fw-bold" style="width: 55px;">
-              </div>
-            </div>
-            <div class="inv-box-section">
-              <div class="inv-box-pill-title">بيانات العميل</div>
-              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item"><span>رقم الهاتف : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
-              <div class="inv-row-item mb-0"><span>العنوان : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
-            </div>
-          </div>
-        `;
-
-        thElements.forEach(th => { th.style.backgroundColor = "#d8dee4"; th.style.color = "#111111"; });
-        subtotalLabel.innerHTML = `المجموع الفرعي :`;
-        totalLabel.innerHTML = `الإجمالي الكلي :`;
-        totalRow.style.backgroundColor = "#d1e7dd";
-        totalRow.style.color = "#0f5132";
-
-        termsContainer.innerHTML = `
-          <div class="inv-terms-bar">
-            <div class="d-flex align-items-center">
-              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
-              <span class="me-1">شروط الضمان :</span>
-            </div>
-            <div>• تم تسليم الجهاز بعمل بحالة جيدة</div>
-            <div>|</div>
-            <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
-          </div>
-        `;
-
-        stampBox.className = "stamp-golden-seal";
-        stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
-
       } else {
-        // كيريازي الكلاسيكي
+        // القوالب الأخرى
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
@@ -2462,7 +2229,7 @@
       });
     }
 
-    // تصدير الصورة للواتساب بدقة عالية
+    // تصدير الصورة للواتساب بدقة متطابقة مع التصميم الفعلي
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -2471,7 +2238,7 @@
       const clientName = document.getElementById('invSheetClientName')?.value || '';
       const invNumber = document.getElementById('invSheetNumber')?.value || '1001';
 
-      showToast('جاري استخراج صورة الفاتورة للواتساب...');
+      showToast('جاري استخراج صورة الفاتورة للواتساب بدقة عالية...');
 
       try {
         const clone = invoiceElement.cloneNode(true);
