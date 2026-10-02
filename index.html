@@ -76,168 +76,42 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .kpi-card:hover, .kpi-card.active {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-    }
-    .kpi-card.active {
-      border-color: currentColor !important;
-      background: #ffffff;
-      box-shadow: 0 0 0 2px currentColor;
-    }
+    .kpi-card:hover, .kpi-card.active { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+    .kpi-card.active { border-color: currentColor !important; background: #ffffff; box-shadow: 0 0 0 2px currentColor; }
     
     .action-circle-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.15rem;
-      text-decoration: none;
-      transition: transform 0.2s;
+      width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none; transition: transform 0.2s;
     }
     .action-circle-btn:hover { transform: scale(1.1); }
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
     .tech-header-profile-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 3px 10px 3px 6px;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      cursor: pointer;
+      display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.12); padding: 3px 10px 3px 6px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer;
     }
-    .tech-avatar-sm {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #28a745;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-      flex-shrink: 0;
-    }
-
+    .tech-avatar-sm { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; box-shadow: 0 2px 5px rgba(0,0,0,0.25); flex-shrink: 0; }
     #map { height: 520px; border-radius: 12px; width: 100%; }
     .custom-map-avatar { background: transparent; border: none; }
 
     /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
-    .invoice-scroll-container {
-      width: 100%;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
+    .invoice-scroll-container { width: 100%; overflow-x: auto; padding-bottom: 10px; }
     .official-invoice-wrapper {
-      background: #ffffff !important;
-      color: #111111 !important;
-      padding: 0;
-      border-radius: 14px;
-      width: 950px;
-      min-width: 950px;
-      margin: auto;
-      position: relative;
-      border: 2px solid #06381e;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.12);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow: hidden;
+      background: #ffffff !important; color: #111111 !important; padding: 0; border-radius: 14px; width: 950px; min-width: 950px; margin: auto; position: relative; border: 2px solid #06381e; box-shadow: 0 6px 25px rgba(0,0,0,0.12); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden;
     }
-    .inv-content-body {
-      padding: 20px 24px;
-      background: #ffffff;
-      position: relative;
-    }
-    .inv-dotted-input {
-      border: none;
-      border-bottom: 1.5px dotted #555;
-      background: transparent;
-      padding: 2px 4px;
-      font-size: 1rem;
-      font-weight: bold;
-      outline: none;
-      color: #111 !important;
-    }
-    .inv-box-section {
-      flex: 1;
-      border: 1.5px solid #212529;
-      border-radius: 14px;
-      padding: 16px 14px 10px 14px;
-      position: relative;
-      background: #ffffff;
-    }
-    .inv-box-pill-title {
-      position: absolute;
-      top: -14px;
-      right: 25px;
-      background-color: #0e5c36 !important;
-      color: #ffffff !important;
-      padding: 2px 22px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      border: 1px solid #1c6841;
-    }
-    .inv-row-item {
-      display: flex;
-      align-items: baseline;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-      font-weight: bold;
-    }
+    .inv-content-body { padding: 24px 28px; background: #ffffff; position: relative; }
+    .inv-dotted-input { border: none; border-bottom: 1.5px dotted #555; background: transparent; padding: 2px 4px; font-size: 1rem; font-weight: bold; outline: none; color: #111 !important; }
+    .inv-box-section { flex: 1; border: 1.5px solid #212529; border-radius: 14px; padding: 18px 14px 10px 14px; position: relative; background: #ffffff; }
+    .inv-box-pill-title { position: absolute; top: -14px; right: 25px; background-color: #0e5c36 !important; color: #ffffff !important; padding: 2px 22px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid #1c6841; }
+    .inv-row-item { display: flex; align-items: baseline; margin-bottom: 8px; font-size: 0.95rem; font-weight: bold; }
     .inv-row-item span { white-space: nowrap; }
 
-    .inv-table-custom {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 14px;
-      border: 1.5px solid #0e5c36;
-      text-align: center;
-      position: relative;
-    }
-    .inv-table-custom th {
-      background-color: #0e5c36 !important;
-      color: #ffffff !important;
-      padding: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: 1px solid #0e5c36;
-    }
-    .inv-table-custom td {
-      border: 1px solid #888;
-      padding: 6px 8px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      color: #111 !important;
-    }
-    .inv-table-custom input {
-      border: none;
-      background: transparent;
-      text-align: center;
-      width: 100%;
-      font-weight: bold;
-      outline: none;
-    }
+    .inv-table-custom { width: 100%; border-collapse: collapse; margin-top: 14px; border: 1.5px solid #0e5c36; text-align: center; position: relative; }
+    .inv-table-custom th { background-color: #0e5c36 !important; color: #ffffff !important; padding: 10px; font-size: 1.05rem; font-weight: bold; border: 1px solid #0e5c36; }
+    .inv-table-custom td { border: 1px solid #888; padding: 8px; font-size: 0.95rem; font-weight: bold; color: #111 !important; }
+    .inv-table-custom input { border: none; background: transparent; text-align: center; width: 100%; font-weight: bold; outline: none; }
 
     .stamp-electronic-seal {
-      position: absolute;
-      bottom: 65px;
-      left: 35px;
-      background: radial-gradient(circle, #ffd166 0%, #e09f18 100%);
-      color: #0b381e;
-      border-radius: 50%;
-      width: 105px;
-      height: 105px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      border: 3px double #ffffff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      transform: rotate(-12deg);
-      pointer-events: none;
+      position: absolute; bottom: 25px; left: 35px; background: radial-gradient(circle, #ffd166 0%, #e09f18 100%); color: #0b381e; border-radius: 50%; width: 110px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border: 3px double #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transform: rotate(-12deg); pointer-events: none;
     }
 
     .preview-box { border: 2px dashed #0d6efd; border-radius: 10px; padding: 8px; text-align: center; background: #f8f9fa; }
@@ -248,7 +122,7 @@
     /* الوضع الليلي */
     body.dark-mode { background-color: #121417 !important; color: #e2e8f0 !important; }
     body.dark-mode .header-bar { background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important; }
-    body.dark-mode .card-order, body.dark-mode .bg-white, body.dark-mode .kpi-card, body.dark-mode .detail-section-card, body.dark-mode .id-card-trust {
+    body.dark-mode .card-order, body.dark-mode .modal-content:not(.official-invoice-modal-content), body.dark-mode .bg-white, body.dark-mode .kpi-card, body.dark-mode .detail-section-card, body.dark-mode .id-card-trust {
       background-color: #1c2128 !important; color: #f1f5f9 !important; border-color: #2d333b !important;
     }
     body.dark-mode .text-dark { color: #f8fafc !important; }
@@ -634,8 +508,9 @@
             <span class="fw-bold small text-warning">قالب الفاتورة المعتمد:</span>
             <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 290px;" onchange="renderActiveInvoiceLayout()">
               <option value="kiriazi_electronic" selected>1. فاتورة إصلاح وضمان إلكترونية (المعتمد)</option>
-              <option value="authorized">2. المركز المعتمد (19387)</option>
-              <option value="kiriazi">3. صيانة كيريازي الأصلي</option>
+              <option value="kiriazi2">2. قالب كريازي 2 الكلاسيكي</option>
+              <option value="authorized">3. المركز المعتمد (19387)</option>
+              <option value="kiriazi">4. صيانة كيريازي الأصلي</option>
             </select>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -643,7 +518,7 @@
 
         <div class="modal-body p-2 bg-light">
           <div class="invoice-scroll-container">
-            <!-- الحاوية المعتمدة التي يتم تصويرها مباشرة للواتساب -->
+            <!-- الفاتورة الأصلية المعروضة هي التي سيتم تصويرها مباشرة للواتساب -->
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
 
@@ -655,7 +530,7 @@
                 <div id="invDynamicBoxesContainer"></div>
 
                 <div class="d-flex align-items-baseline my-3">
-                  <span class="fw-bold fs-6" style="white-space:nowrap;">وصف المشكلة :</span>
+                  <span class="fw-bold fs-6" style="white-space:nowrap;" id="invProblemLabel">وصف المشكلة :</span>
                   <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
                 </div>
 
@@ -691,9 +566,8 @@
                   </button>
                 </div>
 
-                <!-- شروط الضمان الديناميكية -->
+                <!-- شروط الضمان والختم -->
                 <div id="invDynamicTermsContainer"></div>
-
                 <div id="invSheetStamp"></div>
               </div>
             </div>
@@ -1550,6 +1424,7 @@
       `).join('');
     }
 
+    // ==================== بطاقة تفاصيل البلاغ ====================
     function openOrderDetailsModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -2040,11 +1915,93 @@
           </div>
         `;
 
-        stampBox.className = "stamp-electronic-seal";
+        stampBox.className = "stamp-golden-seal";
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
 
+      } else if (template === 'kiriazi2') {
+        // قالب كيريازي 2 القديم
+        headerContainer.className = "k2-green-header";
+        headerContainer.innerHTML = `
+          <div style="width: 230px; text-align: left;">
+            ${kiriaziOfficialLogoHtml}
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <h2 style="font-weight: 900; margin: 0; font-size: 2.3rem; letter-spacing: -0.5px; color: #ffffff;">Electric for Home Appliances</h2>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #f0f0f0; margin-top: 5px;">
+              <span>—•— Professional Repair &amp; Maintenance Services —•—</span>
+            </div>
+          </div>
+          <div style="width: 230px; text-align: right;">
+            <div style="background: linear-gradient(135deg, #f0c975 0%, #d49c3d 100%); border: 1.5px solid #a67215; border-radius: 12px; padding: 6px 14px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
+              <div style="font-size: 1.45rem; font-weight: 900; color: #111;">فاتورة</div>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold; color: #222; margin-top: 2px;">
+                <span>FATORA NO.</span>
+                <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold fs-6" style="width: 75px; margin: 0 4px; color:#111 !important;" value="3502">
+                <span>رقم الفاتورة :</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        boxesContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title"><i class="fa-solid fa-mobile-screen me-1"></i> بيانات الجهاز</div>
+              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+
+            <div style="min-width: 200px; text-align: center;">
+              <div style="display: inline-flex; align-items: baseline; justify-content: center; font-size: 1.05rem; font-weight: bold;">
+                <span class="me-2"><i class="fa-solid fa-calendar-days text-success"></i> التاريخ : </span>
+                <div style="display: inline-flex; align-items: baseline; direction: ltr !important;">
+                  <input type="text" id="invDateDay" placeholder="01" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;">
+                  <span class="fw-bold mx-1 fs-5">/</span>
+                  <input type="text" id="invDateMonth" placeholder="10" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;">
+                  <span class="fw-bold mx-1 fs-5">/</span>
+                  <input type="text" id="invDateYear" placeholder="2026" class="inv-dotted-input text-center fw-bold fs-5" style="width: 60px; direction: ltr !important;">
+                </div>
+              </div>
+            </div>
+
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title"><i class="fa-solid fa-user me-1"></i> بيانات العميل</div>
+              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>رقم الهاتف <i class="fa-solid fa-phone ms-1 small"></i> : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>العنوان <i class="fa-solid fa-location-dot ms-1 small"></i> : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+          </div>
+        `;
+
+        thElements.forEach(th => { th.style.backgroundColor = "#d8dee4"; th.style.color = "#111111"; });
+        subtotalLabel.innerHTML = `<span>المجموع الفرعي :</span>`;
+        totalLabel.innerHTML = `<span>الإجمالي الكلي :</span>`;
+        totalRow.style.backgroundColor = "#0e5c36";
+        totalRow.style.color = "#ffffff";
+
+        termsContainer.innerHTML = `
+          <div class="inv-terms-bar mt-3 py-2 px-3">
+            <div class="d-flex align-items-center">
+              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
+              <span class="me-1">شروط الضمان :</span>
+            </div>
+            <div><i class="fa-solid fa-wrench text-success me-1"></i> تم تسليم الجهاز يعمل بحالة جيدة</div>
+            <div>|</div>
+            <div><i class="fa-solid fa-clock text-primary me-1"></i> خدمة 24/7</div>
+            <div>|</div>
+            <div><i class="fa-solid fa-shield-halved text-success me-1"></i> ضمان لمدة عام من تاريخ الفاتورة</div>
+          </div>
+        `;
+
+        stampBox.className = "stamp-electronic-seal";
+        stampBox.innerHTML = `
+          <div style="font-size:0.95rem;">ضمان</div>
+          <div style="font-size:0.9rem;">لمدة عام</div>
+          <div style="font-size:0.85rem;">★★★</div>
+        `;
       } else {
-        // صيانة كيريازي الأصلي
+        // صيانة كيريازي الأصلي الأول
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
@@ -2104,7 +2061,7 @@
           </div>
         `;
 
-        stampBox.className = "stamp-electronic-seal";
+        stampBox.className = "stamp-kiriazi-red";
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
       }
     }
@@ -2195,58 +2152,59 @@
       });
     }
 
-    // تصوير الفاتورة الأصلية المعروضة أمامك مباشرة بدون استبدال
+    // استخراج الفاتورة كما هي على الشاشة 100%
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
+      // أخذ حاوية الفاتورة المرئية مباشرة وليس استنساخ فارغ
       const invoiceElement = document.getElementById('printableOfficialInvoice');
       const clientPhone = document.getElementById('invSheetClientPhone')?.value.replace(/\D/g, '') || '';
       const clientName = document.getElementById('invSheetClientName')?.value || '';
       const invNumber = document.getElementById('invSheetNumber')?.value || '1001';
 
-      showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
+      showToast('جاري تصوير الفاتورة بدقة عالية للواتساب...');
 
       try {
-        const clone = invoiceElement.cloneNode(true);
+        // إزالة أزرار الحذف من الجداول قبل التصوير
+        const trashBtns = invoiceElement.querySelectorAll('.no-print');
+        trashBtns.forEach(btn => btn.style.display = 'none');
 
-        const origInputs = invoiceElement.querySelectorAll('input');
-        const cloneInputs = clone.querySelectorAll('input');
-        origInputs.forEach((origInp, idx) => {
-          const textDiv = document.createElement('span');
-          textDiv.textContent = origInp.value || ' ';
-          textDiv.style.fontWeight = 'bold';
-          textDiv.style.borderBottom = '1.5px dotted #333';
-          textDiv.style.padding = '0 6px';
-          textDiv.style.display = 'inline-block';
-          if (origInp.id === 'invDateDay' || origInp.id === 'invDateMonth' || origInp.id === 'invDateYear' || origInp.id === 'invSheetNumber') {
-            textDiv.style.direction = 'ltr';
-          }
-          if (cloneInputs[idx] && cloneInputs[idx].parentNode) {
-            cloneInputs[idx].parentNode.replaceChild(textDiv, cloneInputs[idx]);
+        // تحويل الـ input إلى span للحفاظ على التصميم أثناء التصوير
+        const inputs = invoiceElement.querySelectorAll('input');
+        const replacements = [];
+        
+        inputs.forEach(inp => {
+          if (inp.type !== 'hidden') {
+            const span = document.createElement('span');
+            span.textContent = inp.value || ' ';
+            span.style.fontWeight = 'bold';
+            span.style.borderBottom = '1.5px dotted #333';
+            span.style.padding = '0 6px';
+            span.style.display = 'inline-block';
+            span.style.textAlign = 'center';
+            if (inp.id === 'invDateDay' || inp.id === 'invDateMonth' || inp.id === 'invDateYear' || inp.id === 'invSheetNumber') {
+              span.style.direction = 'ltr';
+            }
+            inp.parentNode.insertBefore(span, inp);
+            inp.style.display = 'none';
+            replacements.push({ input: inp, span: span });
           }
         });
 
-        clone.querySelectorAll('.no-print').forEach(el => el.remove());
-
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'fixed';
-        wrapper.style.left = '-10000px';
-        wrapper.style.top = '0';
-        wrapper.style.width = '950px';
-        wrapper.style.backgroundColor = '#ffffff';
-        wrapper.style.zIndex = '-99999';
-        wrapper.appendChild(clone);
-        document.body.appendChild(wrapper);
-
-        const canvas = await html2canvas(clone, {
+        // التقاط الصورة مباشرة من العنصر المعروض
+        const canvas = await html2canvas(invoiceElement, {
           scale: 2.2,
           useCORS: true,
           allowTaint: true,
-          backgroundColor: '#ffffff',
-          width: 950
+          backgroundColor: '#ffffff'
         });
 
-        document.body.removeChild(wrapper);
+        // إعادة كل شيء لأصله بعد التصوير
+        trashBtns.forEach(btn => btn.style.display = '');
+        replacements.forEach(rep => {
+          rep.input.style.display = '';
+          rep.span.remove();
+        });
 
         canvas.toBlob(async (blob) => {
           const file = new File([blob], `فاتورة_${invNumber}.png`, { type: 'image/png' });
@@ -2341,16 +2299,14 @@
       bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide();
     }
 
-    // ==================== الخريطة مع تتبع كل فني بمفرده ====================
+    // ==================== الخريطة ====================
     function initMap() {
       const mapContainer = document.getElementById('map');
       if (!mapContainer) return;
 
       if (!mapInstance) {
         mapInstance = L.map('map').setView([30.0444, 31.2357], 12);
-        L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-          maxZoom: 20
-        }).addTo(mapInstance);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(mapInstance);
       }
       mapInstance.invalidateSize();
       populateMapTechFilterSelect();
@@ -2371,24 +2327,15 @@
 
       for (let k in mapMarkers) mapInstance.removeLayer(mapMarkers[k]);
       mapMarkers = {};
-      if (mapRoutePolyline) {
-        mapInstance.removeLayer(mapRoutePolyline);
-        mapRoutePolyline = null;
-      }
+      if (mapRoutePolyline) { mapInstance.removeLayer(mapRoutePolyline); mapRoutePolyline = null; }
 
       if (techId === 'all') {
         globalTechs.forEach(t => {
           const customIcon = L.divIcon({
             className: 'custom-map-avatar',
-            html: `
-              <div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;">
-                <img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;">
-              </div>
-            `,
-            iconSize: [44, 44],
-            iconAnchor: [22, 22]
+            html: `<div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;"></div>`,
+            iconSize: [44, 44], iconAnchor: [22, 22]
           });
-
           const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
           marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`);
           mapMarkers[t.id] = marker;
@@ -2398,18 +2345,11 @@
       } else {
         const t = globalTechs.find(x => x.id === techId);
         if (!t) return;
-
         const customIcon = L.divIcon({
           className: 'custom-map-avatar',
-          html: `
-            <div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;">
-              <img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-          `,
-          iconSize: [48, 48],
-          iconAnchor: [24, 24]
+          html: `<div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;"></div>`,
+          iconSize: [48, 48], iconAnchor: [24, 24]
         });
-
         const techMarker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
         techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code}<br>هاتف: ${t.phone}`).openPopup();
         mapMarkers['tech'] = techMarker;
@@ -2422,34 +2362,16 @@
           const ordLat = t.lat + (index + 1) * 0.007 * (index % 2 === 0 ? 1 : -1);
           const ordLng = t.lng + (index + 1) * 0.007 * (index % 2 === 0 ? -1 : 1);
           routePoints.push([ordLat, ordLng]);
-
           const orderMarker = L.marker([ordLat, ordLng]).addTo(mapInstance);
           orderMarker.bindPopup(`<b>عميل رقم ${index + 1}: ${ord.clientName}</b><br>${ord.device}<br>الحالة: ${ord.status}`);
           mapMarkers['ord_' + ord.id] = orderMarker;
         });
 
         if (routePoints.length > 1) {
-          mapRoutePolyline = L.polyline(routePoints, {
-            color: '#0d6efd',
-            weight: 4,
-            opacity: 0.8,
-            dashArray: '8, 8'
-          }).addTo(mapInstance);
+          mapRoutePolyline = L.polyline(routePoints, { color: '#0d6efd', weight: 4, opacity: 0.8, dashArray: '8, 8' }).addTo(mapInstance);
         }
-
         mapInstance.setView([t.lat, t.lng], 14);
         document.getElementById('lastMapUpdateText').innerText = `خط سير: ${t.name} (لديه ${techOrders.length} بلاغات اليوم)`;
-      }
-    }
-
-    function getStatusBadgeClass(status) {
-      switch (status) {
-        case 'تم': return 'bg-success';
-        case 'كشف': return 'bg-info text-dark';
-        case 'قيد الاستكمال': return 'bg-primary';
-        case 'مؤجل': return 'bg-warning text-dark';
-        case 'مرتجع': return 'bg-danger';
-        default: return 'bg-secondary';
       }
     }
 
