@@ -1,11 +1,14 @@
 name: Build Android APK with GPS
 
 on:
-  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً بضغطة زر
+  workflow_dispatch:
   push:
     branches:
       - main
       - master
+
+permissions:
+  contents: write
 
 jobs:
   build:
