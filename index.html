@@ -35,6 +35,7 @@
       padding: 0;
       overflow-x: hidden;
       user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .header-bar {
       background: linear-gradient(135deg, #0b2545 0%, #134074 100%);
@@ -74,14 +75,28 @@
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
+    /* مظهر صورة الفني الجديد بدون الشكل البيضاوي المشوه */
+    .tech-header-profile-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 3px 10px 3px 6px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tech-header-profile-box:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
     .tech-avatar-sm {
       width: 38px;
       height: 38px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #28a745;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       flex-shrink: 0;
     }
     .online-indicator {
@@ -135,8 +150,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
     }
-
-    /* الترويسة الخضراء المطابقة للأصل */
     .k2-green-header {
       background: linear-gradient(135deg, #052e18 0%, #0a4d29 50%, #052e18 100%);
       padding: 16px 24px;
@@ -146,13 +159,11 @@
       border-bottom: 3.5px solid #d4af37;
       color: #ffffff;
     }
-
     .inv-content-body {
       padding: 24px 28px;
       background: #ffffff;
       position: relative;
     }
-
     .inv-dotted-input {
       border: none;
       border-bottom: 1.5px dotted #555;
@@ -163,7 +174,6 @@
       outline: none;
       color: #111 !important;
     }
-
     .inv-box-section {
       flex: 1;
       border: 1.5px solid #212529;
@@ -192,7 +202,6 @@
       font-weight: bold;
     }
     .inv-row-item span { white-space: nowrap; }
-
     .inv-table-custom {
       width: 100%;
       border-collapse: collapse;
@@ -224,7 +233,6 @@
       font-weight: bold;
       outline: none;
     }
-
     .inv-terms-bar {
       border: 1.5px solid #212529;
       border-radius: 12px;
@@ -247,29 +255,6 @@
       justify-content: center;
       margin-left: 6px;
     }
-
-    .preview-box {
-      border: 2px dashed #0d6efd;
-      border-radius: 10px;
-      padding: 8px;
-      text-align: center;
-      background: #f8f9fa;
-    }
-    .id-card-trust {
-      background: #ffffff;
-      border: 2px solid #198754;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-    .id-card-top {
-      background: linear-gradient(135deg, #0e5c36 0%, #198754 100%);
-      color: white;
-      padding: 12px;
-      text-align: center;
-    }
-
-    /* ختم كيريازي 2 */
     .stamp-k2-seal {
       position: absolute;
       bottom: 25px;
@@ -289,43 +274,61 @@
       box-shadow: 0 4px 12px rgba(140,99,20,0.2);
       pointer-events: none;
     }
-    .stamp-kiriazi-red {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      background: #d90429 !important;
-      color: #ffffff !important;
-      border-radius: 15px;
-      padding: 10px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      transform: rotate(-15deg);
-      border: 2px dashed #ffffff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      pointer-events: none;
+    .preview-box {
+      border: 2px dashed #0d6efd;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      background: #f8f9fa;
     }
-    .stamp-golden-seal {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
-      color: #3d2800 !important;
-      border-radius: 50%;
-      width: 110px;
-      height: 110px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      transform: rotate(-10deg);
-      border: 2px solid #ffffff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      pointer-events: none;
+    .id-card-trust {
+      background: #ffffff;
+      border: 2px solid #198754;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
+    .id-card-top {
+      background: linear-gradient(135deg, #0e5c36 0%, #198754 100%);
+      color: white;
+      padding: 12px 18px;
+    }
+
+    /* ==================== استايل الوضع الليلي DARK MODE ==================== */
+    body.dark-mode {
+      background-color: #121417 !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark-mode .header-bar {
+      background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important;
+    }
+    body.dark-mode .card-order,
+    body.dark-mode .modal-content:not(.official-invoice-modal-content),
+    body.dark-mode .bg-white,
+    body.dark-mode .trust-id-card,
+    body.dark-mode .id-card-trust {
+      background-color: #1c2128 !important;
+      color: #f1f5f9 !important;
+      border-color: #2d333b !important;
+    }
+    body.dark-mode .card-order {
+      background: #1c2128 !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    }
+    body.dark-mode .text-dark { color: #f8fafc !important; }
+    body.dark-mode .text-muted, body.dark-mode .text-secondary { color: #94a3b8 !important; }
+    body.dark-mode .bg-light { background-color: #242931 !important; color: #f1f5f9 !important; }
+    body.dark-mode .form-control, body.dark-mode .form-select {
+      background-color: #272d36 !important;
+      color: #f8fafc !important;
+      border-color: #3b434e !important;
+    }
+    body.dark-mode .btn-light {
+      background-color: #272d36 !important;
+      color: #f8fafc !important;
+      border-color: #3b434e !important;
+    }
+    body.dark-mode .border { border-color: #2d333b !important; }
   </style>
 </head>
 <body>
@@ -333,20 +336,28 @@
   <!-- ==================== HEADER ==================== -->
   <header class="header-bar">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <!-- الجهة اليمنى: اسم النظام والشارات -->
+      <!-- الجهة اليمنى: اسم المنظومة والشارات -->
       <div class="d-flex align-items-center gap-2">
         <h6 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-1"></i>منظومة الصيانة</h6>
         <span id="roleBadge" class="badge bg-light text-dark fw-bold">...</span>
-        <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud"></i> <span class="d-none d-sm-inline">متصل</span></span>
+        <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud"></i> <span class="d-none d-sm-inline">سحابي متصل</span></span>
       </div>
       
-      <!-- الجهة اليسرى: صورة الفني البارزة والأزرار بدون أي قص -->
+      <!-- الجهة اليسرى: صورة الفني النظيفة وأزرار الإدارة والوضع الليلي -->
       <div class="d-flex align-items-center gap-2">
-        <!-- كارت الفني مع صورته الكاملة -->
-        <div id="techUserHeader" class="d-none d-flex align-items-center gap-2 bg-white bg-opacity-15 py-1 px-2 rounded-pill border border-light border-opacity-25" style="cursor: pointer;" onclick="showTechProfileModal()" title="اضغط لعرض الكارنيه">
+        <!-- كارت الفني الأنيق والبارز بدون الشكل البيضاوي الأبيض -->
+        <div id="techUserHeader" class="d-none tech-header-profile-box" onclick="showTechProfileModal()" title="اضغط لعرض بطاقة الكارنيه">
           <img id="techHeaderAvatar" src="https://via.placeholder.com/45" class="tech-avatar-sm">
-          <span id="techHeaderName" class="fw-bold small text-white d-inline"></span>
+          <div class="d-flex flex-column text-end lh-1">
+            <span id="techHeaderName" class="fw-bold text-white small" style="font-size:0.85rem;"></span>
+            <small class="text-warning fw-bold mt-1" style="font-size:0.65rem;"><i class="fa-solid fa-certificate"></i> معتمد</small>
+          </div>
         </div>
+
+        <!-- زر التبديل للوضع الليلي -->
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDarkMode()" id="btnDarkModeToggle" title="تبديل الوضع الليلي">
+          <i class="fa-solid fa-moon" id="darkModeIcon"></i>
+        </button>
 
         <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث البيانات">
           <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i>
@@ -406,7 +417,7 @@
 
   <!-- ==================== TECHNICIAN MAIN VIEW ==================== -->
   <div id="techMainView" class="container-fluid py-3 d-none">
-    <!-- شريط تفعيل إذن الموقع الجغرافي للفني بدون تنبيهات مزعجة -->
+    <!-- شريط تفعيل إذن الموقع الجغرافي للفني بدون تنبيهات معطلة مسبقاً -->
     <div class="alert alert-primary d-flex justify-content-between align-items-center p-2 mb-3 shadow-sm rounded-3">
       <div>
         <i class="fa-solid fa-location-crosshairs text-primary me-2 fa-lg"></i>
@@ -595,7 +606,6 @@
         </div>
 
         <div class="modal-body p-2 bg-light">
-          <!-- حاوية التمرير الأفقي -->
           <div class="invoice-scroll-container">
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
@@ -822,13 +832,13 @@
               <strong id="profileModalPhone">010XXXXXXXX</strong>
             </div>
 
-            <!-- عرض كارنيه الفني بالحجم الكبير والكامل بدون أي تصغير -->
+            <!-- عرض كارنيه الفني بالحجم الكامل والواضح -->
             <div id="profileModalIdCardBox" class="mt-2 p-2 bg-light rounded-3 border text-center">
               <div class="d-flex justify-content-between align-items-center mb-2 px-1">
                 <span class="small fw-bold text-dark"><i class="fa-solid fa-id-card text-success me-1"></i> صورة كارنيه / بطاقة الاعتماد:</span>
                 <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" onclick="window.open(document.getElementById('profileModalIdCard').src, '_blank')">عرض كامل <i class="fa-solid fa-expand"></i></button>
               </div>
-              <img id="profileModalIdCard" src="" class="img-fluid rounded shadow-sm border w-100" style="max-height: 280px; object-fit: contain; background: #fff;">
+              <img id="profileModalIdCard" src="" class="img-fluid rounded shadow-sm border w-100" style="max-height: 320px; object-fit: contain; background: #fff;">
             </div>
           </div>
         </div>
@@ -1021,6 +1031,8 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+
       const savedRole = localStorage.getItem('syana_role');
       const savedTech = localStorage.getItem('syana_current_tech');
 
@@ -1032,6 +1044,25 @@
         showLoginView();
       }
     });
+
+    // ==================== ميزات الوضع الليلي DARK MODE ====================
+    function initTheme() {
+      const savedTheme = localStorage.getItem('syana_theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeIcon').className = 'fa-solid fa-sun text-warning';
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('darkModeIcon').className = 'fa-solid fa-moon';
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('syana_theme', isDark ? 'dark' : 'light');
+      document.getElementById('darkModeIcon').className = isDark ? 'fa-solid fa-sun text-warning' : 'fa-solid fa-moon';
+      showToast(isDark ? 'تم تفعيل الوضع الليلي 🌙' : 'تم تفعيل الوضع النهاري ☀️');
+    }
 
     // ==================== أمان الإدارة ====================
     function openAdminLoginModal() {
@@ -1086,7 +1117,7 @@
       });
     }
 
-    // ==================== مصادقة الفني وطلب إذن الموقع GPS بسلاسة ====================
+    // ==================== مصادقة الفني وطلب إذن الموقع GPS ====================
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -1136,7 +1167,6 @@
         }
       }
 
-      // طلب الإحداثيات مع دعم Fallback التلقائي لمنع الخطأ
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           handlePosSuccess(pos);
@@ -1148,7 +1178,6 @@
           );
         },
         (err) => {
-          // إذا تعذر الـ GPS عالي الدقة، التبديل تلقائياً للموقع عبر الشبكة بدون إظهار رسائل خطأ مزعجة
           navigator.geolocation.getCurrentPosition(
             handlePosSuccess,
             (err2) => {
@@ -1617,7 +1646,6 @@
       }
     }
 
-    // عرض الكارنيه الكبير
     function viewTechIdCard(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
