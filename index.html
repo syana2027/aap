@@ -44,7 +44,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
-    /* كروت البلاغات الملونة حسب الحالة */
     .card-order {
       border: 1px solid #e2e8f0;
       border-radius: 14px;
@@ -58,41 +57,15 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
       transform: translateY(-2px);
     }
-    .card-order.status-تم {
-      border-right-color: #198754 !important;
-      background: linear-gradient(180deg, #ffffff 0%, #f6fdf9 100%);
-    }
-    .card-order.status-كشف {
-      border-right-color: #0dcaf0 !important;
-      background: linear-gradient(180deg, #ffffff 0%, #f3fcfe 100%);
-    }
-    .card-order.status-مرتجع {
-      border-right-color: #dc3545 !important;
-      background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%);
-    }
-    .card-order.status-مؤجل {
-      border-right-color: #ffc107 !important;
-      background: linear-gradient(180deg, #ffffff 0%, #fffdf4 100%);
-    }
-    .card-order.status-متابعة {
-      border-right-color: #6f42c1 !important;
-      background: linear-gradient(180deg, #ffffff 0%, #faf6ff 100%);
-    }
-    .card-order.status-لاغي {
-      border-right-color: #6c757d !important;
-      background: linear-gradient(180deg, #ffffff 0%, #f7f8f9 100%);
-      opacity: 0.92;
-    }
-    .card-order.status-استكمال {
-      border-right-color: #0d6efd !important;
-      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
-    }
-    .card-order.status-جديد {
-      border-right-color: #0b2545 !important;
-      background: #ffffff;
-    }
+    .card-order.status-تم { border-right-color: #198754 !important; background: linear-gradient(180deg, #ffffff 0%, #f6fdf9 100%); }
+    .card-order.status-كشف { border-right-color: #0dcaf0 !important; background: linear-gradient(180deg, #ffffff 0%, #f3fcfe 100%); }
+    .card-order.status-مرتجع { border-right-color: #dc3545 !important; background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%); }
+    .card-order.status-مؤجل { border-right-color: #ffc107 !important; background: linear-gradient(180deg, #ffffff 0%, #fffdf4 100%); }
+    .card-order.status-متابعة { border-right-color: #6f42c1 !important; background: linear-gradient(180deg, #ffffff 0%, #faf6ff 100%); }
+    .card-order.status-لاغي { border-right-color: #6c757d !important; background: linear-gradient(180deg, #ffffff 0%, #f7f8f9 100%); opacity: 0.92; }
+    .card-order.status-استكمال { border-right-color: #0d6efd !important; background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%); }
+    .card-order.status-جديد { border-right-color: #0b2545 !important; background: #ffffff; }
 
-    /* كروت العدادات العلوية التفاعلية */
     .kpi-card {
       border: 1px solid #e5e9f0;
       border-radius: 12px;
@@ -102,8 +75,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
       cursor: pointer;
       transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
     }
     .kpi-card:hover, .kpi-card.active {
       transform: translateY(-2px);
@@ -130,7 +101,6 @@
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
-    /* مظهر صورة الفني بالترويسة */
     .tech-header-profile-box {
       display: flex;
       align-items: center;
@@ -140,10 +110,6 @@
       border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.25);
       cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .tech-header-profile-box:hover {
-      background: rgba(255, 255, 255, 0.22);
     }
     .tech-avatar-sm {
       width: 38px;
@@ -155,15 +121,8 @@
       flex-shrink: 0;
     }
 
-    #map {
-      height: 520px;
-      border-radius: 12px;
-      width: 100%;
-    }
-    .custom-map-avatar {
-      background: transparent;
-      border: none;
-    }
+    #map { height: 520px; border-radius: 12px; width: 100%; }
+    .custom-map-avatar { background: transparent; border: none; }
 
     /* ==================== استايل الفاتورة الرسمي 1:1 ==================== */
     .invoice-scroll-container {
@@ -186,7 +145,7 @@
       overflow: hidden;
     }
     .inv-content-body {
-      padding: 24px 28px;
+      padding: 20px 24px;
       background: #ffffff;
       position: relative;
     }
@@ -204,7 +163,7 @@
       flex: 1;
       border: 1.5px solid #212529;
       border-radius: 14px;
-      padding: 18px 14px 10px 14px;
+      padding: 16px 14px 10px 14px;
       position: relative;
       background: #ffffff;
     }
@@ -240,14 +199,14 @@
     .inv-table-custom th {
       background-color: #0e5c36 !important;
       color: #ffffff !important;
-      padding: 10px;
-      font-size: 1.05rem;
+      padding: 8px;
+      font-size: 1rem;
       font-weight: bold;
       border: 1px solid #0e5c36;
     }
     .inv-table-custom td {
       border: 1px solid #888;
-      padding: 8px;
+      padding: 6px 8px;
       font-size: 0.95rem;
       font-weight: bold;
       color: #111 !important;
@@ -261,39 +220,15 @@
       outline: none;
     }
 
-    .inv-terms-bar {
-      border: 1.5px solid #212529;
-      border-radius: 12px;
-      padding: 10px 18px;
-      margin-top: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.92rem;
-      font-weight: bold;
-    }
-    .inv-check-badge {
-      background-color: #0e5c36 !important;
-      color: #fff !important;
-      width: 25px;
-      height: 25px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 6px;
-    }
-
-    /* أختام الفواتير */
     .stamp-electronic-seal {
       position: absolute;
-      bottom: 25px;
+      bottom: 65px;
       left: 35px;
       background: radial-gradient(circle, #ffd166 0%, #e09f18 100%);
       color: #0b381e;
       border-radius: 50%;
-      width: 110px;
-      height: 110px;
+      width: 105px;
+      height: 105px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -305,61 +240,21 @@
       pointer-events: none;
     }
 
-    .preview-box {
-      border: 2px dashed #0d6efd;
-      border-radius: 10px;
-      padding: 8px;
-      text-align: center;
-      background: #f8f9fa;
-    }
-    .id-card-trust {
-      background: #ffffff;
-      border: 2px solid #198754;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-    .id-card-top {
-      background: linear-gradient(135deg, #0e5c36 0%, #198754 100%);
-      color: white;
-      padding: 12px 18px;
-    }
-
-    /* بطاقة تفاصيل البلاغ */
-    .detail-section-card {
-      background: #f8fafc;
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-    }
+    .preview-box { border: 2px dashed #0d6efd; border-radius: 10px; padding: 8px; text-align: center; background: #f8f9fa; }
+    .id-card-trust { background: #ffffff; border: 2px solid #198754; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .id-card-top { background: linear-gradient(135deg, #0e5c36 0%, #198754 100%); color: white; padding: 12px 18px; }
+    .detail-section-card { background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; padding: 12px 14px; margin-bottom: 12px; }
 
     /* الوضع الليلي */
-    body.dark-mode {
-      background-color: #121417 !important;
-      color: #e2e8f0 !important;
-    }
-    body.dark-mode .header-bar {
-      background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important;
-    }
-    body.dark-mode .card-order,
-    body.dark-mode .modal-content:not(.official-invoice-modal-content),
-    body.dark-mode .bg-white,
-    body.dark-mode .kpi-card,
-    body.dark-mode .detail-section-card,
-    body.dark-mode .id-card-trust {
-      background-color: #1c2128 !important;
-      color: #f1f5f9 !important;
-      border-color: #2d333b !important;
+    body.dark-mode { background-color: #121417 !important; color: #e2e8f0 !important; }
+    body.dark-mode .header-bar { background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important; }
+    body.dark-mode .card-order, body.dark-mode .bg-white, body.dark-mode .kpi-card, body.dark-mode .detail-section-card, body.dark-mode .id-card-trust {
+      background-color: #1c2128 !important; color: #f1f5f9 !important; border-color: #2d333b !important;
     }
     body.dark-mode .text-dark { color: #f8fafc !important; }
     body.dark-mode .text-muted, body.dark-mode .text-secondary { color: #94a3b8 !important; }
     body.dark-mode .bg-light { background-color: #242931 !important; color: #f1f5f9 !important; }
-    body.dark-mode .form-control, body.dark-mode .form-select {
-      background-color: #272d36 !important;
-      color: #f8fafc !important;
-      border-color: #3b434e !important;
-    }
+    body.dark-mode .form-control, body.dark-mode .form-select { background-color: #272d36 !important; color: #f8fafc !important; border-color: #3b434e !important; }
   </style>
 </head>
 <body>
@@ -748,7 +643,7 @@
 
         <div class="modal-body p-2 bg-light">
           <div class="invoice-scroll-container">
-            <!-- هذه هي الحاوية الحقيقية التي تظهر على الشاشة وتُصور للواتساب مباشرة -->
+            <!-- الحاوية المعتمدة التي يتم تصويرها مباشرة للواتساب -->
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
 
@@ -760,7 +655,7 @@
                 <div id="invDynamicBoxesContainer"></div>
 
                 <div class="d-flex align-items-baseline my-3">
-                  <span class="fw-bold fs-6" style="white-space:nowrap;" id="invProblemLabel">وصف المشكلة :</span>
+                  <span class="fw-bold fs-6" style="white-space:nowrap;">وصف المشكلة :</span>
                   <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
                 </div>
 
@@ -768,10 +663,10 @@
                   <thead>
                     <tr id="invTableHeaderRow">
                       <th style="width: 50px;">م</th>
-                      <th>البيان / قطع الغيار</th>
-                      <th style="width: 100px;">الكمية</th>
-                      <th style="width: 140px;">سعر الوحدة</th>
-                      <th style="width: 140px;">الإجمالي</th>
+                      <th><i class="fa-solid fa-gear me-1"></i> البيان / قطع الغيار</th>
+                      <th style="width: 100px;"><i class="fa-solid fa-box me-1"></i> الكمية</th>
+                      <th style="width: 140px;"><i class="fa-solid fa-coins me-1"></i> سعر الوحدة</th>
+                      <th style="width: 140px;"><i class="fa-solid fa-sack-dollar me-1"></i> الإجمالي</th>
                       <th style="width: 50px;" class="no-print">حذف</th>
                     </tr>
                   </thead>
@@ -1388,7 +1283,6 @@
       document.getElementById('roleBadge').innerText = 'تسجيل الدخول';
     }
 
-    // ==================== وظائف تصنيف الألوان والشارات ====================
     function getStatusClassKey(st) {
       if (!st) return 'status-جديد';
       if (st.includes('تم') && !st.includes('إلغاء') && !st.includes('لاغي')) return 'status-تم';
@@ -1599,7 +1493,7 @@
 
       let filtered = globalOrders.filter(o => {
         if (statusFilter) {
-          if (statusFilter === 'لاغي' && !(order.status || '').includes('لاغي') && !(order.status || '').includes('إلغاء')) return false;
+          if (statusFilter === 'لاغي' && !(o.status || '').includes('لاغي') && !(o.status || '').includes('إلغاء')) return false;
           else if (statusFilter !== 'لاغي' && o.status !== statusFilter) return false;
         }
         if (dateFilter && o.date !== dateFilter) return false;
@@ -1977,10 +1871,10 @@
       const termsContainer = document.getElementById('invDynamicTermsContainer');
       const thElements = document.querySelectorAll('#invTableHeaderRow th');
 
-      // رسم لوجو كريازي المعتمد بدقة ومطابقة عالية
+      // شعار كيريازي عالي النقاء
       const kiriaziOfficialLogoHtml = `
-        <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 48px; padding: 6px 18px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.22); display: inline-block;">
-          <div style="background:#ffffff; border:2px solid #ffcc00; border-radius:5px; width:26px; height:26px; margin:0 auto 2px auto; display:flex; align-items:center; justify-content:center;">
+        <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3.5px solid #ffcc00; border-radius: 50px; padding: 6px 18px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.22); display: inline-block;">
+          <div style="background:#ffffff; border:2px solid #ffcc00; border-radius:4px; width:26px; height:26px; margin:0 auto 2px auto; display:flex; align-items:center; justify-content:center;">
             <div style="color:#d90429; font-weight:900; font-size:14px; line-height:1;">K</div>
           </div>
           <div style="font-size: 1.6rem; font-weight: 900; color: #ffeb3b; letter-spacing:0.5px; font-family:'Segoe UI', Tahoma;">كريــازى</div>
@@ -1993,7 +1887,7 @@
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
           <!-- اللوجو على اليمين بالأصل -->
-          <div style="width: 220px; text-align: right;">
+          <div style="width: 230px; text-align: right;">
             ${kiriaziOfficialLogoHtml}
           </div>
 
@@ -2004,7 +1898,7 @@
           </div>
 
           <!-- الشارة الخضراء المنحنية على اليسار -->
-          <div style="width: 220px; text-align: left;">
+          <div style="width: 230px; text-align: left;">
             <div style="background: #198754; color: #fff; padding: 6px 24px; border-radius: 20px 0 20px 0; font-weight: 900; font-size: 1.35rem; display: inline-block; box-shadow: 0 3px 6px rgba(0,0,0,0.15);">
               <i class="fa-solid fa-file-invoice me-1"></i> فاتورة
             </div>
@@ -2017,7 +1911,7 @@
 
         boxesContainer.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-            <!-- بيانات الجهاز (اليسار) -->
+            <!-- بيانات الجهاز (اليمين كما بالصورة الأصلية) -->
             <div class="inv-box-section">
               <div class="inv-box-pill-title" style="background:#198754 !important;"><i class="fa-solid fa-mobile-screen me-1"></i> بيانات الجهاز</div>
               <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
@@ -2039,7 +1933,7 @@
               </div>
             </div>
 
-            <!-- بيانات العميل (اليمين) -->
+            <!-- بيانات العميل (اليسار كما بالصورة الأصلية) -->
             <div class="inv-box-section">
               <div class="inv-box-pill-title" style="background:#198754 !important;"><i class="fa-solid fa-gear me-1"></i> بيانات العميل</div>
               <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
@@ -2081,11 +1975,11 @@
         `;
 
       } else if (template === 'authorized') {
-        // قالب المركز المعتمد 19387 الشغال بالكامل
+        // المركز المعتمد 19387
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
-          <div style="width: 220px; text-align: right;">
+          <div style="width: 230px; text-align: right;">
             <div style="background:#0e5c36; color:#fff; padding:4px 25px; border-radius:20px; font-weight:bold; font-size:1.1rem; display:inline-block;">فاتورة</div>
             <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
             <div class="mt-1 text-danger fw-bold fs-5"><i class="fa-solid fa-phone-volume me-1"></i> 19387</div>
@@ -2094,7 +1988,7 @@
             <h2 style="font-weight: 900; color: #125e36; margin: 0;">Authorized Service Center</h2>
             <div class="text-muted small fw-bold">Professional Repair &amp; Maintenance Services</div>
           </div>
-          <div style="width: 220px; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+          <div style="width: 230px; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
             <div style="text-align: left;">
               <div style="color: #b02a37; font-weight: 900;">قسم الخدمة والصيانة</div>
               <div style="font-size: 0.7rem; font-weight: bold;">Service &amp; Maintenance</div>
@@ -2154,7 +2048,7 @@
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
-          <div style="width: 220px; text-align: right;">
+          <div style="width: 230px; text-align: right;">
             <div style="background:#0e5c36; color:#fff; padding:4px 25px; border-radius:20px; font-weight:bold; font-size:1.1rem; display:inline-block;">فاتورة</div>
             <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
           </div>
@@ -2162,7 +2056,7 @@
             <h2 style="font-weight: 900; color: #1b633b; margin: 0;">Electric for Home Appliances</h2>
             <div class="text-muted small fw-bold">Professional Repair &amp; Maintenance Services</div>
           </div>
-          <div style="width: 220px; text-align: left;">
+          <div style="width: 230px; text-align: left;">
             ${kiriaziOfficialLogoHtml}
           </div>
         `;
@@ -2231,38 +2125,42 @@
 
     function renderOfficialPartsTable() {
       const tbody = document.getElementById('invOfficialTableBody');
-      tbody.innerHTML = officialInvoiceParts.map((item, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td style="text-align: right; padding-right: 10px;">
-            <input type="text" value="${item.name}" placeholder="البيان..." oninput="updateOfficialPartItem(${i}, 'name', this.value)" style="text-align: right;">
-          </td>
-          <td><input type="number" min="1" value="${item.qty}" oninput="updateOfficialPartItem(${i}, 'qty', this.value)"></td>
-          <td><input type="number" min="0" value="${item.price}" oninput="updateOfficialPartItem(${i}, 'price', this.value)"></td>
-          <td class="fw-bold" style="color: #0e5c36;">${(item.qty || 1) * (item.price || 0)}</td>
-          <td class="no-print">
-            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" onclick="removeOfficialPartRow(${i})"><i class="fa-solid fa-trash-can"></i></button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = officialInvoiceParts.map((item, i) => {
+        const itemTotal = (parseFloat(item.qty) || 1) * (parseFloat(item.price) || 0);
+        return `
+          <tr>
+            <td>${i + 1}</td>
+            <td style="text-align: right; padding-right: 10px;">
+              <input type="text" value="${item.name}" placeholder="البيان..." oninput="updateOfficialPartItem(${i}, 'name', this.value)" style="text-align: right;">
+            </td>
+            <td><input type="number" min="1" value="${item.qty}" oninput="updateOfficialPartItem(${i}, 'qty', this.value)"></td>
+            <td><input type="number" min="0" value="${item.price}" oninput="updateOfficialPartItem(${i}, 'price', this.value)"></td>
+            <td class="fw-bold" style="color: #0e5c36;">${itemTotal}</td>
+            <td class="no-print">
+              <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" onclick="removeOfficialPartRow(${i})"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function updateOfficialPartItem(idx, key, val) {
       if (key === 'qty' || key === 'price') val = parseFloat(val) || 0;
       officialInvoiceParts[idx][key] = val;
+      renderOfficialPartsTable();
       calculateOfficialInvoice();
     }
 
     function calculateOfficialInvoice() {
       let subtotal = 0;
-      officialInvoiceParts.forEach(p => subtotal += (p.qty || 1) * (p.price || 0));
+      officialInvoiceParts.forEach(p => subtotal += (parseFloat(p.qty) || 1) * (parseFloat(p.price) || 0));
       document.getElementById('invSheetSubtotalDisplay').innerText = subtotal;
       document.getElementById('invSheetTotalDisplay').innerText = subtotal;
     }
 
     function getOfficialInvoicePayload() {
       let total = 0;
-      officialInvoiceParts.forEach(p => total += (p.qty || 1) * (p.price || 0));
+      officialInvoiceParts.forEach(p => total += (parseFloat(p.qty) || 1) * (parseFloat(p.price) || 0));
       const day = document.getElementById('invDateDay')?.value || '';
       const month = document.getElementById('invDateMonth')?.value || '';
       const year = document.getElementById('invDateYear')?.value || '';
@@ -2297,7 +2195,7 @@
       });
     }
 
-    // تصوير الفاتورة الأصلية المعروضة أمامك مباشرة بدون استبدال أو قوالب قديمة
+    // تصوير الفاتورة الأصلية المعروضة أمامك مباشرة بدون استبدال
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -2309,10 +2207,8 @@
       showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
 
       try {
-        // استنساخ الفاتورة الحقيقية المعروضة
         const clone = invoiceElement.cloneNode(true);
 
-        // تحويل الحقول لنصوص ثابتة واضحة في الصورة
         const origInputs = invoiceElement.querySelectorAll('input');
         const cloneInputs = clone.querySelectorAll('input');
         origInputs.forEach((origInp, idx) => {
