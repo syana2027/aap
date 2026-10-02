@@ -39,7 +39,7 @@
     .header-bar {
       background: linear-gradient(135deg, #0b2545 0%, #134074 100%);
       color: white;
-      padding: 12px 18px;
+      padding: 10px 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .card-order {
@@ -75,13 +75,14 @@
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
     .tech-avatar-sm {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      border: 2px solid #28a745;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       cursor: pointer;
+      flex-shrink: 0;
     }
     .online-indicator {
       display: inline-block;
@@ -267,35 +268,98 @@
       padding: 12px;
       text-align: center;
     }
+
+    /* ختم كيريازي 2 */
+    .stamp-k2-seal {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      border: 2.5px solid #c99738;
+      border-radius: 50%;
+      width: 115px;
+      height: 115px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #8c6314;
+      font-weight: 900;
+      background: radial-gradient(circle, rgba(255,249,230,0.95) 0%, rgba(247,232,185,0.95) 100%);
+      transform: rotate(-8deg);
+      box-shadow: 0 4px 12px rgba(140,99,20,0.2);
+      pointer-events: none;
+    }
+    .stamp-kiriazi-red {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      background: #d90429 !important;
+      color: #ffffff !important;
+      border-radius: 15px;
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-15deg);
+      border: 2px dashed #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+    .stamp-golden-seal {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
+      color: #3d2800 !important;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-10deg);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
   <!-- ==================== HEADER ==================== -->
-  <header class="header-bar d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center gap-2">
-      <h5 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-2"></i>منظومة الصيانة المعتمدة</h5>
-      <span id="roleBadge" class="badge bg-light text-dark fw-bold">...</span>
-      <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud me-1"></i> سحابي متصل</span>
-    </div>
-    
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث البيانات">
-        <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i> تحديث
-      </button>
-
-      <div id="techUserHeader" class="d-none d-flex align-items-center gap-2">
-        <img id="techHeaderAvatar" src="https://via.placeholder.com/45" class="tech-avatar-sm" onclick="showTechProfileModal()" title="عرض الكارنيه">
-        <span id="techHeaderName" class="fw-bold d-none d-sm-inline small"></span>
+  <header class="header-bar">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <!-- الجهة اليمنى: اسم النظام والشارات -->
+      <div class="d-flex align-items-center gap-2">
+        <h6 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-1"></i>منظومة الصيانة</h6>
+        <span id="roleBadge" class="badge bg-light text-dark fw-bold">...</span>
+        <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud"></i> <span class="d-none d-sm-inline">متصل</span></span>
       </div>
+      
+      <!-- الجهة اليسرى: صورة الفني البارزة والأزرار بدون أي قص -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- كارت الفني مع صورته الكاملة -->
+        <div id="techUserHeader" class="d-none d-flex align-items-center gap-2 bg-white bg-opacity-15 py-1 px-2 rounded-pill border border-light border-opacity-25" style="cursor: pointer;" onclick="showTechProfileModal()" title="اضغط لعرض الكارنيه">
+          <img id="techHeaderAvatar" src="https://via.placeholder.com/45" class="tech-avatar-sm">
+          <span id="techHeaderName" class="fw-bold small text-white d-inline"></span>
+        </div>
 
-      <button id="switchRoleBtn" class="btn btn-sm btn-warning fw-bold d-none" onclick="openAdminLoginModal()">
-        <i class="fa-solid fa-user-shield me-1"></i> لوحة المدير
-      </button>
+        <button class="btn btn-sm btn-outline-light" onclick="manualRefresh()" title="تحديث البيانات">
+          <i class="fa-solid fa-arrows-rotate" id="refreshSpin"></i>
+        </button>
 
-      <button id="logoutBtn" class="btn btn-sm btn-danger fw-bold d-none" onclick="performLogout()">
-        <i class="fa-solid fa-right-from-bracket me-1"></i> خروج
-      </button>
+        <button id="switchRoleBtn" class="btn btn-sm btn-warning fw-bold d-none" onclick="openAdminLoginModal()">
+          <i class="fa-solid fa-user-shield me-1"></i> الإدارة
+        </button>
+
+        <button id="logoutBtn" class="btn btn-sm btn-danger fw-bold d-none" onclick="performLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -342,12 +406,12 @@
 
   <!-- ==================== TECHNICIAN MAIN VIEW ==================== -->
   <div id="techMainView" class="container-fluid py-3 d-none">
-    <!-- شريط تفعيل إذن الموقع الجغرافي للفني -->
+    <!-- شريط تفعيل إذن الموقع الجغرافي للفني بدون تنبيهات مزعجة -->
     <div class="alert alert-primary d-flex justify-content-between align-items-center p-2 mb-3 shadow-sm rounded-3">
       <div>
         <i class="fa-solid fa-location-crosshairs text-primary me-2 fa-lg"></i>
         <strong class="small">مشاركة الموقع المباشر (GPS) مع الإدارة:</strong>
-        <span id="gpsStatusText" class="badge bg-secondary ms-1">غير مفعل</span>
+        <span id="gpsStatusText" class="badge bg-secondary ms-1">جاهز للتفعيل</span>
       </div>
       <button class="btn btn-sm btn-primary fw-bold" onclick="requestTechLiveGPS()">
         <i class="fa-solid fa-satellite-dish me-1"></i> تفعيل GPS الآن
@@ -541,10 +605,8 @@
 
               <!-- المحتوى الداخلي والصناديق والجدول -->
               <div class="inv-content-body">
-                <!-- صف الصناديق والتاريخ المطابق للأصل بالملّي -->
                 <div id="invDynamicBoxesContainer"></div>
 
-                <!-- سطر وصف المشكلة -->
                 <div class="d-flex align-items-baseline my-3">
                   <span class="fw-bold fs-6" style="white-space:nowrap;">وصف المشكلة :</span>
                   <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
@@ -605,7 +667,6 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر الهام: مشاركة كصورة عبر الواتساب بدقة كاملة وبدون أي نقص -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="sendOfficialInvoiceAsImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إرسال عبر واتساب
             </button>
@@ -729,13 +790,14 @@
     </div>
   </div>
 
-  <!-- ==================== مودال الكارنيه المعتمد ==================== -->
+  <!-- ==================== مودال الكارنيه المعتمد (مع عرض الصورة بالحجم الكامل) ==================== -->
   <div class="modal fade" id="techProfileModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 bg-transparent">
         <div class="id-card-trust">
-          <div class="id-card-top">
+          <div class="id-card-top d-flex justify-content-between align-items-center">
             <h6 class="m-0 fw-bold"><i class="fa-solid fa-id-card-clip me-1"></i> بطاقة إثبات شخصية واعتماد فني</h6>
+            <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
           </div>
           <div class="p-3 text-center">
             <div class="mb-2">
@@ -744,15 +806,8 @@
               </span>
             </div>
             
-            <div class="d-flex justify-content-center gap-3 align-items-center mb-3">
-              <div>
-                <small class="d-block text-muted fw-bold mb-1">الصورة الشخصية</small>
-                <img id="profileModalPhoto" src="https://via.placeholder.com/90" class="rounded-circle shadow" style="width: 85px; height: 85px; object-fit: cover; border: 3px solid #198754;">
-              </div>
-              <div id="profileModalIdCardBox">
-                <small class="d-block text-muted fw-bold mb-1">صورة الكارنيه</small>
-                <img id="profileModalIdCard" src="https://via.placeholder.com/120x85" class="rounded shadow" style="width: 120px; height: 85px; object-fit: cover; border: 2px solid #0b2545;">
-              </div>
+            <div class="d-flex justify-content-center align-items-center my-2">
+              <img id="profileModalPhoto" src="https://via.placeholder.com/90" class="rounded-circle shadow" style="width: 85px; height: 85px; object-fit: cover; border: 3px solid #198754;">
             </div>
 
             <h4 class="fw-bold mb-1 text-dark" id="profileModalName">اسم الفني</h4>
@@ -762,9 +817,18 @@
               </span>
             </div>
             <p class="text-muted fw-bold mb-2" id="profileModalSpecialty">التخصص</p>
-            <div class="bg-light p-2 rounded-pill d-inline-block px-3 border">
+            <div class="bg-light p-2 rounded-pill d-inline-block px-3 border mb-3">
               <span class="small fw-bold">هاتف التواصل: </span>
               <strong id="profileModalPhone">010XXXXXXXX</strong>
+            </div>
+
+            <!-- عرض كارنيه الفني بالحجم الكبير والكامل بدون أي تصغير -->
+            <div id="profileModalIdCardBox" class="mt-2 p-2 bg-light rounded-3 border text-center">
+              <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                <span class="small fw-bold text-dark"><i class="fa-solid fa-id-card text-success me-1"></i> صورة كارنيه / بطاقة الاعتماد:</span>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" onclick="window.open(document.getElementById('profileModalIdCard').src, '_blank')">عرض كامل <i class="fa-solid fa-expand"></i></button>
+              </div>
+              <img id="profileModalIdCard" src="" class="img-fluid rounded shadow-sm border w-100" style="max-height: 280px; object-fit: contain; background: #fff;">
             </div>
           </div>
         </div>
@@ -1022,7 +1086,7 @@
       });
     }
 
-    // ==================== مصادقة الفني وطلب إذن الموقع GPS ====================
+    // ==================== مصادقة الفني وطلب إذن الموقع GPS بسلاسة ====================
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -1045,30 +1109,56 @@
 
     function requestTechLiveGPS() {
       if (!navigator.geolocation) {
-        alert('جهازك لا يدعم نظام تحديد الموقع GPS.');
+        showToast('جهازك لا يدعم نظام تحديد الموقع GPS.');
         return;
       }
       const statusBadge = document.getElementById('gpsStatusText');
-      statusBadge.className = 'badge bg-warning text-dark ms-1';
-      statusBadge.innerText = 'جاري التحديد...';
+      if (statusBadge) {
+        statusBadge.className = 'badge bg-warning text-dark ms-1';
+        statusBadge.innerText = 'جاري التحديد...';
+      }
 
-      navigator.geolocation.watchPosition(
-        (pos) => {
-          if (currentTech) {
-            db.ref('techs/' + currentTech.id).update({
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude,
-              isOnline: true,
-              lastLocationTime: new Date().toLocaleTimeString('ar-EG')
-            });
+      function handlePosSuccess(pos) {
+        if (currentTech) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const time = new Date().toLocaleTimeString('ar-EG');
+          db.ref('techs/' + currentTech.id).update({
+            lat: lat,
+            lng: lng,
+            isOnline: true,
+            lastLocationTime: time
+          });
+          if (statusBadge) {
             statusBadge.className = 'badge bg-success ms-1';
-            statusBadge.innerText = 'نشط بالأقمار الصناعية ✔';
+            statusBadge.innerText = 'موقعك نشط ومحدث ✔';
           }
+        }
+      }
+
+      // طلب الإحداثيات مع دعم Fallback التلقائي لمنع الخطأ
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          handlePosSuccess(pos);
+          if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId);
+          window.gpsWatchId = navigator.geolocation.watchPosition(
+            handlePosSuccess,
+            () => {},
+            { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
+          );
         },
         (err) => {
-          statusBadge.className = 'badge bg-danger ms-1';
-          statusBadge.innerText = 'تم رفض الإذن ✖';
-          alert('تنبيه للفني: يرجى السماح للمتصفح بالوصول للموقع (GPS) لتتمكن الإدارة من متابعة خط سيرك.');
+          // إذا تعذر الـ GPS عالي الدقة، التبديل تلقائياً للموقع عبر الشبكة بدون إظهار رسائل خطأ مزعجة
+          navigator.geolocation.getCurrentPosition(
+            handlePosSuccess,
+            (err2) => {
+              if (statusBadge) {
+                statusBadge.className = 'badge bg-danger ms-1';
+                statusBadge.innerText = 'تحديد الموقع معطل';
+              }
+            },
+            { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }
+          );
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
@@ -1404,7 +1494,7 @@
       }
     }
 
-    // ==================== إدارة الفنيين (الصورة الشخصية + صورة الكارنيه + التعديل) ====================
+    // ==================== إدارة الفنيين ====================
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => `
@@ -1527,6 +1617,7 @@
       }
     }
 
+    // عرض الكارنيه الكبير
     function viewTechIdCard(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
@@ -1580,7 +1671,6 @@
 
       renderActiveInvoiceLayout();
 
-      // ملء البيانات في الحقول
       document.getElementById('invSheetClientName').value = order.clientName;
       document.getElementById('invSheetClientPhone').value = order.clientPhone;
       document.getElementById('invSheetClientAddress').value = order.clientAddress;
@@ -1619,7 +1709,6 @@
       if (mirror) mirror.innerText = `${y} / ${m} / ${d}`;
     }
 
-    // الدالة المسؤولة عن بناء هيكل الفاتورة وتطابق الأماكن 1:1
     function renderActiveInvoiceLayout() {
       const template = document.getElementById('invoiceTemplateSelector').value;
       const headerContainer = document.getElementById('invDynamicHeaderContainer');
@@ -1630,10 +1719,10 @@
       const totalRow = document.getElementById('invTotalRowStyle');
 
       if (template === 'kiriazi2') {
-        // 1. الترويسة الخضراء الكاملة المطابقة لـ 1000170298.png
+        // الترويسة الخضراء الكاملة المطابقة للأصل (1000170298.png)
         headerContainer.className = "k2-green-header";
         headerContainer.innerHTML = `
-          <!-- اللوجو على اليسار كما بالصورة الأصلية -->
+          <!-- اللوجو على اليسار بالأصل -->
           <div style="width: 220px; text-align: left;">
             <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 45px; padding: 6px 20px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); display: inline-block;">
               <div style="background:#d90429; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
@@ -1649,7 +1738,7 @@
             </div>
           </div>
 
-          <!-- الشارة الذهبية على اليمين كما بالصورة الأصلية -->
+          <!-- الشارة الذهبية على اليمين بالأصل -->
           <div style="width: 220px; text-align: right;">
             <div style="background: linear-gradient(135deg, #f0c975 0%, #d49c3d 100%); border: 1.5px solid #a67215; border-radius: 12px; padding: 6px 14px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
               <div style="font-size: 1.45rem; font-weight: 900; color: #111;">فاتورة</div>
@@ -1662,10 +1751,9 @@
           </div>
         `;
 
-        // 2. توزيع الصناديق والتاريخ المطابق تماماً للصورة الأصلية
+        // توزيع الصناديق: الجهاز يمين، العميل يسار، التاريخ منتصف
         boxesContainer.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-            <!-- بيانات الجهاز على اليمين بالأصل مع أيقونة الموبايل -->
             <div class="inv-box-section">
               <div class="inv-box-pill-title"><i class="fa-solid fa-mobile-screen me-1"></i> بيانات الجهاز</div>
               <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
@@ -1673,7 +1761,6 @@
               <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
             </div>
 
-            <!-- التاريخ في المنتصف مع الشارة الداكنة العلوية -->
             <div style="min-width: 200px; text-align: center;">
               <div style="margin-bottom: 6px;">
                 <span style="background: #0d4a2b; color: #ffffff; padding: 4px 14px; border-radius: 10px; font-weight: bold; font-size: 0.95rem; display: inline-block;">
@@ -1692,7 +1779,6 @@
               </div>
             </div>
 
-            <!-- بيانات العميل على اليسار بالأصل مع أيقونة الشخص والهاتف والعنوان -->
             <div class="inv-box-section">
               <div class="inv-box-pill-title"><i class="fa-solid fa-user me-1"></i> بيانات العميل</div>
               <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
@@ -1702,7 +1788,6 @@
           </div>
         `;
 
-        // 3. المجاميع والختم المطابق لـ 1000170298.png
         subtotalLabel.innerHTML = `<span class="float-start ps-3 fw-bold">Sub-total</span> <span>المجموع الفرعي :</span>`;
         totalLabel.innerHTML = `<span class="float-start ps-3 fw-bold text-white">Grand Total</span> <span class="text-white">الإجمالي الكلي :</span>`;
         totalRow.style.backgroundColor = "#0e5c36";
@@ -1716,7 +1801,6 @@
         `;
 
       } else if (template === 'authorized') {
-        // قالب المركز المعتمد 19387
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
@@ -1772,7 +1856,6 @@
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
 
       } else {
-        // كيريازي الكلاسيكي
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
@@ -1909,7 +1992,7 @@
       });
     }
 
-    // ==================== تصدير الفاتورة بدقة 100% كصورة ====================
+    // تصدير الصورة للواتساب
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -1921,10 +2004,8 @@
       showToast('جاري استخراج صورة الفاتورة للواتساب...');
 
       try {
-        // استنساخ الفاتورة بالكامل في حاوية منفصلة لمنع قص الشاشة في الموبايل
         const clone = invoiceElement.cloneNode(true);
 
-        // استبدال حقول الإدخال بنصوص واضحة في الصورة
         const origInputs = invoiceElement.querySelectorAll('input');
         const cloneInputs = clone.querySelectorAll('input');
         origInputs.forEach((origInp, idx) => {
@@ -2057,7 +2138,7 @@
       bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide();
     }
 
-    // ==================== الخريطة مع تتبع كل فني بمفرده ورسم خط سيره ====================
+    // ==================== الخريطة مع تتبع كل فني بمفرده ====================
     function initMap() {
       const mapContainer = document.getElementById('map');
       if (!mapContainer) return;
