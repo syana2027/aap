@@ -617,7 +617,6 @@
       </div>
     </div>
 
-    <!-- أوردرات الإدارة -->
     <div id="adminSectionOrders">
       <div class="d-flex flex-wrap gap-2 mb-3 bg-white p-2 rounded-3 border align-items-center">
         <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم، الهاتف، الفني..." oninput="renderAdminOrders()" style="max-width: 240px;">
@@ -640,12 +639,10 @@
       <div id="adminOrdersContainer" class="row g-3"></div>
     </div>
 
-    <!-- شبكة الفنيين -->
     <div id="adminSectionTechs" class="d-none">
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- خريطة الفنيين مع ميزة عزل كل فني وخط سيره -->
     <div id="adminSectionMap" class="d-none">
       <div class="card border-0 shadow-sm p-3 bg-white">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -667,7 +664,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال تفاصيل البلاغ الكاملة ==================== -->
+  <!-- ==================== مودال تفاصيل البلاغ ==================== -->
   <div class="modal fade" id="orderDetailsModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content border-0 shadow-lg rounded-4">
@@ -741,10 +738,9 @@
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold small text-warning">قالب الفاتورة المعتمد:</span>
             <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 290px;" onchange="renderActiveInvoiceLayout()">
-              <option value="kiriazi_electronic" selected>1. فاتورة إصلاح وضمان إلكترونية (المطابق للأصل)</option>
-              <option value="kiriazi2">2. قالب كريازي 2 الكلاسيكي</option>
-              <option value="authorized">3. المركز المعتمد (19387)</option>
-              <option value="kiriazi">4. صيانة كيريازي الأصلي</option>
+              <option value="kiriazi_electronic" selected>1. فاتورة إصلاح وضمان إلكترونية (المعتمد)</option>
+              <option value="authorized">2. المركز المعتمد (19387)</option>
+              <option value="kiriazi">3. صيانة كيريازي الأصلي</option>
             </select>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -752,6 +748,7 @@
 
         <div class="modal-body p-2 bg-light">
           <div class="invoice-scroll-container">
+            <!-- هذه هي الحاوية الحقيقية التي تظهر على الشاشة وتُصور للواتساب مباشرة -->
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
 
@@ -1416,7 +1413,6 @@
       return '<span class="badge bg-dark fs-6">' + st + '</span>';
     }
 
-    // ==================== أوردرات الفني والضغط على العدادات ====================
     function clickKpiStatusFilter(statusVal) {
       document.querySelectorAll('#techMainView .kpi-card').forEach(c => c.classList.remove('active'));
       event.currentTarget.classList.add('active');
@@ -1603,7 +1599,7 @@
 
       let filtered = globalOrders.filter(o => {
         if (statusFilter) {
-          if (statusFilter === 'لاغي' && !(o.status || '').includes('لاغي') && !(o.status || '').includes('إلغاء')) return false;
+          if (statusFilter === 'لاغي' && !(order.status || '').includes('لاغي') && !(order.status || '').includes('إلغاء')) return false;
           else if (statusFilter !== 'لاغي' && o.status !== statusFilter) return false;
         }
         if (dateFilter && o.date !== dateFilter) return false;
@@ -1660,7 +1656,6 @@
       `).join('');
     }
 
-    // ==================== بطاقة تفاصيل البلاغ ====================
     function openOrderDetailsModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -1982,17 +1977,24 @@
       const termsContainer = document.getElementById('invDynamicTermsContainer');
       const thElements = document.querySelectorAll('#invTableHeaderRow th');
 
+      // رسم لوجو كريازي المعتمد بدقة ومطابقة عالية
+      const kiriaziOfficialLogoHtml = `
+        <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 48px; padding: 6px 18px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.22); display: inline-block;">
+          <div style="background:#ffffff; border:2px solid #ffcc00; border-radius:5px; width:26px; height:26px; margin:0 auto 2px auto; display:flex; align-items:center; justify-content:center;">
+            <div style="color:#d90429; font-weight:900; font-size:14px; line-height:1;">K</div>
+          </div>
+          <div style="font-size: 1.6rem; font-weight: 900; color: #ffeb3b; letter-spacing:0.5px; font-family:'Segoe UI', Tahoma;">كريــازى</div>
+        </div>
+      `;
+
       if (template === 'kiriazi_electronic') {
-        // النموذج الرابع الجديد المطلوب بالملي (1000183766.jpg)
+        // النموذج المعتمد المطلوب بدقة 100%
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
           <!-- اللوجو على اليمين بالأصل -->
           <div style="width: 220px; text-align: right;">
-            <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; display: inline-block;">
-              <div style="background:#e63946; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
-              <div style="font-size: 1.55rem; font-weight: 900; color: #ffeb3b;">كريــازى</div>
-            </div>
+            ${kiriaziOfficialLogoHtml}
           </div>
 
           <!-- العنوان في الوسط -->
@@ -2078,24 +2080,26 @@
           <div style="font-size:0.85rem;">★★★</div>
         `;
 
-      } else {
-        // القوالب الأخرى
+      } else if (template === 'authorized') {
+        // قالب المركز المعتمد 19387 الشغال بالكامل
         headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
         headerContainer.style.background = "#ffffff";
         headerContainer.innerHTML = `
           <div style="width: 220px; text-align: right;">
-            <div class="inv-badge-pill">فاتورة</div>
+            <div style="background:#0e5c36; color:#fff; padding:4px 25px; border-radius:20px; font-weight:bold; font-size:1.1rem; display:inline-block;">فاتورة</div>
             <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
+            <div class="mt-1 text-danger fw-bold fs-5"><i class="fa-solid fa-phone-volume me-1"></i> 19387</div>
           </div>
           <div style="text-align: center; flex: 1;">
-            <h2 style="font-weight: 900; color: #1b633b; margin: 0;">Electric for Home Appliances</h2>
-            <div class="text-muted small fw-bold">Professional Repair & Maintenance Services</div>
+            <h2 style="font-weight: 900; color: #125e36; margin: 0;">Authorized Service Center</h2>
+            <div class="text-muted small fw-bold">Professional Repair &amp; Maintenance Services</div>
           </div>
-          <div style="width: 220px; text-align: left;">
-            <div style="background: radial-gradient(ellipse at center, #1b7a48 0%, #0d4a2b 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; display: inline-block;">
-              <div style="background:#e63946; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
-              <div style="font-size: 1.55rem; font-weight: 900; color: #ffeb3b;">كريــازى</div>
+          <div style="width: 220px; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+            <div style="text-align: left;">
+              <div style="color: #b02a37; font-weight: 900;">قسم الخدمة والصيانة</div>
+              <div style="font-size: 0.7rem; font-weight: bold;">Service &amp; Maintenance</div>
             </div>
+            <div style="width: 44px; height: 44px; background: #0b4f8a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;"><i class="fa-solid fa-wrench"></i></div>
           </div>
         `;
 
@@ -2124,7 +2128,71 @@
           </div>
         `;
 
-        thElements.forEach(th => { th.style.backgroundColor = "#d8dee4"; th.style.color = "#111111"; });
+        thElements.forEach(th => { th.style.backgroundColor = "#0e5c36"; th.style.color = "#ffffff"; });
+        subtotalLabel.innerHTML = `المجموع الفرعي :`;
+        totalLabel.innerHTML = `الإجمالي الكلي :`;
+        totalRow.style.backgroundColor = "#d1e7dd";
+        totalRow.style.color = "#0f5132";
+
+        termsContainer.innerHTML = `
+          <div class="inv-terms-bar">
+            <div class="d-flex align-items-center">
+              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
+              <span class="me-1">شروط الضمان :</span>
+            </div>
+            <div>• تم تسليم الجهاز بعمل بحالة جيدة</div>
+            <div>|</div>
+            <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
+          </div>
+        `;
+
+        stampBox.className = "stamp-electronic-seal";
+        stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
+
+      } else {
+        // صيانة كيريازي الأصلي
+        headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
+        headerContainer.style.background = "#ffffff";
+        headerContainer.innerHTML = `
+          <div style="width: 220px; text-align: right;">
+            <div style="background:#0e5c36; color:#fff; padding:4px 25px; border-radius:20px; font-weight:bold; font-size:1.1rem; display:inline-block;">فاتورة</div>
+            <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <h2 style="font-weight: 900; color: #1b633b; margin: 0;">Electric for Home Appliances</h2>
+            <div class="text-muted small fw-bold">Professional Repair &amp; Maintenance Services</div>
+          </div>
+          <div style="width: 220px; text-align: left;">
+            ${kiriaziOfficialLogoHtml}
+          </div>
+        `;
+
+        boxesContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title">بيانات الجهاز</div>
+              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+            <div style="min-width: 180px; text-align: center;">
+              <div class="fw-bold mb-1">التاريخ :</div>
+              <div style="display: inline-flex; direction: ltr !important;">
+                <input type="text" id="invDateDay" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
+                <input type="text" id="invDateMonth" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
+                <input type="text" id="invDateYear" class="inv-dotted-input text-center fw-bold" style="width: 55px;">
+              </div>
+            </div>
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title">بيانات العميل</div>
+              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>رقم الهاتف : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>العنوان : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+          </div>
+        `;
+
+        thElements.forEach(th => { th.style.backgroundColor = "#0e5c36"; th.style.color = "#ffffff"; });
         subtotalLabel.innerHTML = `المجموع الفرعي :`;
         totalLabel.innerHTML = `الإجمالي الكلي :`;
         totalRow.style.backgroundColor = "#e8f5e9";
@@ -2142,7 +2210,7 @@
           </div>
         `;
 
-        stampBox.className = "stamp-kiriazi-red";
+        stampBox.className = "stamp-electronic-seal";
         stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
       }
     }
@@ -2229,7 +2297,7 @@
       });
     }
 
-    // تصدير الصورة للواتساب بدقة متطابقة مع التصميم الفعلي
+    // تصوير الفاتورة الأصلية المعروضة أمامك مباشرة بدون استبدال أو قوالب قديمة
     async function sendOfficialInvoiceAsImage() {
       saveOfficialInvoice();
 
@@ -2238,11 +2306,13 @@
       const clientName = document.getElementById('invSheetClientName')?.value || '';
       const invNumber = document.getElementById('invSheetNumber')?.value || '1001';
 
-      showToast('جاري استخراج صورة الفاتورة للواتساب بدقة عالية...');
+      showToast('جاري تصدير صورة الفاتورة للواتساب بدقة عالية...');
 
       try {
+        // استنساخ الفاتورة الحقيقية المعروضة
         const clone = invoiceElement.cloneNode(true);
 
+        // تحويل الحقول لنصوص ثابتة واضحة في الصورة
         const origInputs = invoiceElement.querySelectorAll('input');
         const cloneInputs = clone.querySelectorAll('input');
         origInputs.forEach((origInp, idx) => {
