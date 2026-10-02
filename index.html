@@ -43,31 +43,86 @@
       padding: 10px 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
+
+    /* كروت البلاغات الملونة حسب الحالة */
     .card-order {
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
       background: #ffffff;
-      border-right: 5px solid #0d6efd;
+      border-right: 6px solid #0d6efd;
       transition: all 0.25s ease;
+      cursor: pointer;
     }
     .card-order:hover {
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
       transform: translateY(-2px);
     }
-    .card-order.status-مرتجع { border-right-color: #dc3545 !important; background-color: #fff8f8; }
-    .card-order.status-تم { border-right-color: #198754 !important; }
-    .card-order.status-كشف { border-right-color: #0dcaf0 !important; }
-    .card-order.status-مؤجل { border-right-color: #ffc107 !important; }
+    .card-order.status-تم {
+      border-right-color: #198754 !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f6fdf9 100%);
+    }
+    .card-order.status-كشف {
+      border-right-color: #0dcaf0 !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f3fcfe 100%);
+    }
+    .card-order.status-مرتجع {
+      border-right-color: #dc3545 !important;
+      background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%);
+    }
+    .card-order.status-مؤجل {
+      border-right-color: #ffc107 !important;
+      background: linear-gradient(180deg, #ffffff 0%, #fffdf4 100%);
+    }
+    .card-order.status-متابعة {
+      border-right-color: #6f42c1 !important;
+      background: linear-gradient(180deg, #ffffff 0%, #faf6ff 100%);
+    }
+    .card-order.status-لاغي {
+      border-right-color: #6c757d !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f7f8f9 100%);
+      opacity: 0.92;
+    }
+    .card-order.status-استكمال {
+      border-right-color: #0d6efd !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+    }
+    .card-order.status-جديد {
+      border-right-color: #0b2545 !important;
+      background: #ffffff;
+    }
+
+    /* كروت العدادات العلوية التفاعلية */
+    .kpi-card {
+      border: 1px solid #e5e9f0;
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card:hover, .kpi-card.active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+    .kpi-card.active {
+      border-color: currentColor !important;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px currentColor;
+    }
     
     .action-circle-btn {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       text-decoration: none;
       transition: transform 0.2s;
     }
@@ -75,7 +130,7 @@
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
-    /* مظهر صورة الفني الجديد بدون الشكل البيضاوي المشوه */
+    /* مظهر صورة الفني بالترويسة */
     .tech-header-profile-box {
       display: flex;
       align-items: center;
@@ -98,26 +153,6 @@
       border: 2px solid #28a745;
       box-shadow: 0 2px 5px rgba(0,0,0,0.25);
       flex-shrink: 0;
-    }
-    .online-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background-color: #28a745;
-      border-radius: 50%;
-      animation: pulse-online 1.8s infinite;
-    }
-    .offline-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background-color: #6c757d;
-      border-radius: 50%;
-    }
-    @keyframes pulse-online {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
     }
 
     #map {
@@ -202,6 +237,7 @@
       font-weight: bold;
     }
     .inv-row-item span { white-space: nowrap; }
+
     .inv-table-custom {
       width: 100%;
       border-collapse: collapse;
@@ -274,6 +310,44 @@
       box-shadow: 0 4px 12px rgba(140,99,20,0.2);
       pointer-events: none;
     }
+    .stamp-golden-seal {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%) !important;
+      color: #3d2800 !important;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-10deg);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+    .stamp-kiriazi-red {
+      position: absolute;
+      bottom: 25px;
+      left: 30px;
+      background: #d90429 !important;
+      color: #ffffff !important;
+      border-radius: 15px;
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      transform: rotate(-15deg);
+      border: 2px dashed #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+
     .preview-box {
       border: 2px dashed #0d6efd;
       border-radius: 10px;
@@ -294,7 +368,16 @@
       padding: 12px 18px;
     }
 
-    /* ==================== استايل الوضع الليلي DARK MODE ==================== */
+    /* بطاقة تفاصيل البلاغ */
+    .detail-section-card {
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    /* الوضع الليلي */
     body.dark-mode {
       background-color: #121417 !important;
       color: #e2e8f0 !important;
@@ -305,15 +388,12 @@
     body.dark-mode .card-order,
     body.dark-mode .modal-content:not(.official-invoice-modal-content),
     body.dark-mode .bg-white,
-    body.dark-mode .trust-id-card,
+    body.dark-mode .kpi-card,
+    body.dark-mode .detail-section-card,
     body.dark-mode .id-card-trust {
       background-color: #1c2128 !important;
       color: #f1f5f9 !important;
       border-color: #2d333b !important;
-    }
-    body.dark-mode .card-order {
-      background: #1c2128 !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
     }
     body.dark-mode .text-dark { color: #f8fafc !important; }
     body.dark-mode .text-muted, body.dark-mode .text-secondary { color: #94a3b8 !important; }
@@ -323,12 +403,6 @@
       color: #f8fafc !important;
       border-color: #3b434e !important;
     }
-    body.dark-mode .btn-light {
-      background-color: #272d36 !important;
-      color: #f8fafc !important;
-      border-color: #3b434e !important;
-    }
-    body.dark-mode .border { border-color: #2d333b !important; }
   </style>
 </head>
 <body>
@@ -336,16 +410,13 @@
   <!-- ==================== HEADER ==================== -->
   <header class="header-bar">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <!-- الجهة اليمنى: اسم المنظومة والشارات -->
       <div class="d-flex align-items-center gap-2">
         <h6 class="m-0 fw-bold"><i class="fa-solid fa-screwdriver-wrench me-1"></i>منظومة الصيانة</h6>
         <span id="roleBadge" class="badge bg-light text-dark fw-bold">...</span>
         <span id="cloudStatusBadge" class="badge bg-success small"><i class="fa-solid fa-cloud"></i> <span class="d-none d-sm-inline">سحابي متصل</span></span>
       </div>
       
-      <!-- الجهة اليسرى: صورة الفني النظيفة وأزرار الإدارة والوضع الليلي -->
       <div class="d-flex align-items-center gap-2">
-        <!-- كارت الفني الأنيق والبارز بدون الشكل البيضاوي الأبيض -->
         <div id="techUserHeader" class="d-none tech-header-profile-box" onclick="showTechProfileModal()" title="اضغط لعرض بطاقة الكارنيه">
           <img id="techHeaderAvatar" src="https://via.placeholder.com/45" class="tech-avatar-sm">
           <div class="d-flex flex-column text-end lh-1">
@@ -354,7 +425,6 @@
           </div>
         </div>
 
-        <!-- زر التبديل للوضع الليلي -->
         <button class="btn btn-sm btn-outline-light" onclick="toggleDarkMode()" id="btnDarkModeToggle" title="تبديل الوضع الليلي">
           <i class="fa-solid fa-moon" id="darkModeIcon"></i>
         </button>
@@ -417,7 +487,7 @@
 
   <!-- ==================== TECHNICIAN MAIN VIEW ==================== -->
   <div id="techMainView" class="container-fluid py-3 d-none">
-    <!-- شريط تفعيل إذن الموقع الجغرافي للفني بدون تنبيهات معطلة مسبقاً -->
+    <!-- شريط تفعيل إذن الموقع الجغرافي للفني -->
     <div class="alert alert-primary d-flex justify-content-between align-items-center p-2 mb-3 shadow-sm rounded-3">
       <div>
         <i class="fa-solid fa-location-crosshairs text-primary me-2 fa-lg"></i>
@@ -429,27 +499,53 @@
       </button>
     </div>
 
+    <!-- مربعات العدادات والحالات الكاملة للفني (قابلة للنقر وتفتح الأوردرات) -->
     <div class="row g-2 mb-3">
-      <div class="col-4">
-        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-primary">
-          <div class="text-muted small fw-bold">اليوم الشامل</div>
-          <h4 class="mb-0 fw-bold text-primary" id="techTodayTotal">0</h4>
+      <div class="col-6 col-md-3">
+        <div class="kpi-card active" style="color: #0d6efd; border-top: 4px solid #0d6efd;" onclick="clickKpiStatusFilter('all')">
+          <small class="text-muted fw-bold d-block">اليوم الشامل</small>
+          <h4 class="mb-0 fw-bold" id="techTodayTotal">0</h4>
         </div>
       </div>
-      <div class="col-4">
-        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-success">
-          <div class="text-muted small fw-bold">تم إنجازها</div>
-          <h4 class="mb-0 fw-bold text-success" id="techTodayDone">0</h4>
+      <div class="col-6 col-md-3">
+        <div class="kpi-card" style="color: #198754; border-top: 4px solid #198754;" onclick="clickKpiStatusFilter('تم')">
+          <small class="text-muted fw-bold d-block">تم إنجازها</small>
+          <h4 class="mb-0 fw-bold" id="techTodayDone">0</h4>
         </div>
       </div>
-      <div class="col-4">
-        <div class="card border-0 shadow-sm p-3 bg-white rounded-3 text-center border-start border-4 border-danger">
-          <div class="text-muted small fw-bold">المرتجع</div>
-          <h4 class="mb-0 fw-bold text-danger" id="techTodayReturns">0</h4>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #0dcaf0; border-top: 4px solid #0dcaf0;" onclick="clickKpiStatusFilter('كشف')">
+          <small class="text-muted fw-bold d-block">كشف</small>
+          <h4 class="mb-0 fw-bold" id="techTodayKashf">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #ffc107; border-top: 4px solid #ffc107;" onclick="clickKpiStatusFilter('مؤجل')">
+          <small class="text-muted fw-bold d-block">مؤجل</small>
+          <h4 class="mb-0 fw-bold" id="techTodayPostponed">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #6f42c1; border-top: 4px solid #6f42c1;" onclick="clickKpiStatusFilter('يحتاج متابعة')">
+          <small class="text-muted fw-bold d-block">متابعة</small>
+          <h4 class="mb-0 fw-bold" id="techTodayFollowup">0</h4>
+        </div>
+      </div>
+      <div class="col-6 col-md-6">
+        <div class="kpi-card" style="color: #6c757d; border-top: 4px solid #6c757d;" onclick="clickKpiStatusFilter('لاغي')">
+          <small class="text-muted fw-bold d-block">لاغي / ملغي</small>
+          <h4 class="mb-0 fw-bold" id="techTodayCanceled">0</h4>
+        </div>
+      </div>
+      <div class="col-6 col-md-6">
+        <div class="kpi-card" style="color: #dc3545; border-top: 4px solid #dc3545;" onclick="clickKpiStatusFilter('مرتجع')">
+          <small class="text-muted fw-bold d-block">المرتجع</small>
+          <h4 class="mb-0 fw-bold" id="techTodayReturns">0</h4>
         </div>
       </div>
     </div>
 
+    <!-- شريط الفلترة والأزرار -->
     <div class="d-flex flex-wrap gap-2 mb-3 justify-content-between align-items-center bg-white p-2 rounded-3 shadow-sm">
       <div class="btn-group btn-group-sm flex-wrap w-100 w-md-auto" role="group">
         <button class="btn btn-outline-primary active fw-bold" id="tabTechToday" onclick="setTechFilterTab('today')">
@@ -461,18 +557,20 @@
           <span class="badge bg-secondary text-white" id="countTechAll">0</span>
         </button>
         <button class="btn btn-outline-danger fw-bold" id="tabTechReturns" onclick="setTechFilterTab('مرتجع')">
-          <i class="fa-solid fa-rotate-left me-1"></i> تابة المرتجعات
+          <i class="fa-solid fa-rotate-left me-1"></i> المرتجعات
           <span class="badge bg-danger text-white" id="countTechReturns">0</span>
         </button>
       </div>
       
       <div class="d-flex gap-2 w-100 w-md-auto mt-2 mt-md-0">
-        <select class="form-select form-select-sm" id="techFilterStatus" onchange="renderTechOrders()">
-          <option value="">البحث بحالة الاوردر</option>
+        <select class="form-select form-select-sm fw-bold" id="techFilterStatus" onchange="renderTechOrders()">
+          <option value="">جميع الحالات</option>
           <option value="تم">تم</option>
           <option value="كشف">كشف</option>
           <option value="قيد الاستكمال">قيد الاستكمال</option>
           <option value="مؤجل">مؤجل</option>
+          <option value="يحتاج متابعة">يحتاج متابعة</option>
+          <option value="لاغي">لاغي</option>
           <option value="مرتجع">مرتجع</option>
         </select>
         
@@ -483,38 +581,65 @@
       </div>
     </div>
 
+    <!-- شبكة أوردرات الفني -->
     <div id="techOrdersContainer" class="row g-3"></div>
   </div>
 
   <!-- ==================== ADMIN MAIN VIEW ==================== -->
   <div id="adminMainView" class="container-fluid py-3 d-none">
+    <!-- مربعات العدادات الكاملة للإدارة (قابلة للنقر وتفتح وتفلتر الأوردرات) -->
     <div class="row g-2 mb-3">
-      <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-primary">
-          <div class="text-muted small fw-bold">إجمالي البلاغات</div>
-          <h4 class="fw-bold my-1 text-primary" id="adminTotalOrders">0</h4>
+      <div class="col-6 col-md-3">
+        <div class="kpi-card active" style="color: #0d6efd; border-top: 4px solid #0d6efd;" onclick="clickAdminKpiStatusFilter('all')">
+          <small class="text-muted fw-bold d-block">إجمالي البلاغات</small>
+          <h4 class="mb-0 fw-bold" id="adminTotalOrders">0</h4>
         </div>
       </div>
-      <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-success">
-          <div class="text-muted small fw-bold">تم إنجازها</div>
-          <h4 class="fw-bold my-1 text-success" id="adminDoneOrders">0</h4>
+      <div class="col-6 col-md-3">
+        <div class="kpi-card" style="color: #198754; border-top: 4px solid #198754;" onclick="clickAdminKpiStatusFilter('تم')">
+          <small class="text-muted fw-bold d-block">تم إنجازها</small>
+          <h4 class="mb-0 fw-bold" id="adminDoneOrders">0</h4>
         </div>
       </div>
-      <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-danger">
-          <div class="text-muted small fw-bold">المرتجعات</div>
-          <h4 class="fw-bold my-1 text-danger" id="adminReturnOrders">0</h4>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #0dcaf0; border-top: 4px solid #0dcaf0;" onclick="clickAdminKpiStatusFilter('كشف')">
+          <small class="text-muted fw-bold d-block">كشف</small>
+          <h4 class="mb-0 fw-bold" id="adminKashfOrders">0</h4>
         </div>
       </div>
-      <div class="col-3">
-        <div class="card p-2 border-0 shadow-sm bg-white text-center border-top border-4 border-info">
-          <div class="text-muted small fw-bold">الفنيين</div>
-          <h4 class="fw-bold my-1 text-info" id="adminTechCount">0</h4>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #ffc107; border-top: 4px solid #ffc107;" onclick="clickAdminKpiStatusFilter('مؤجل')">
+          <small class="text-muted fw-bold d-block">مؤجل</small>
+          <h4 class="mb-0 fw-bold" id="adminPostponedOrders">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-2">
+        <div class="kpi-card" style="color: #6f42c1; border-top: 4px solid #6f42c1;" onclick="clickAdminKpiStatusFilter('يحتاج متابعة')">
+          <small class="text-muted fw-bold d-block">متابعة</small>
+          <h4 class="mb-0 fw-bold" id="adminFollowupOrders">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-4">
+        <div class="kpi-card" style="color: #6c757d; border-top: 4px solid #6c757d;" onclick="clickAdminKpiStatusFilter('لاغي')">
+          <small class="text-muted fw-bold d-block">لاغي / ملغي</small>
+          <h4 class="mb-0 fw-bold" id="adminCanceledOrders">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-4">
+        <div class="kpi-card" style="color: #dc3545; border-top: 4px solid #dc3545;" onclick="clickAdminKpiStatusFilter('مرتجع')">
+          <small class="text-muted fw-bold d-block">المرتجعات</small>
+          <h4 class="mb-0 fw-bold" id="adminReturnOrders">0</h4>
+        </div>
+      </div>
+      <div class="col-4 col-md-4">
+        <div class="kpi-card" style="color: #0b4f8a; border-top: 4px solid #0b4f8a;" onclick="switchAdminSection('techs')">
+          <small class="text-muted fw-bold d-block">الفنيين المسجلين</small>
+          <h4 class="mb-0 fw-bold" id="adminTechCount">0</h4>
         </div>
       </div>
     </div>
 
+    <!-- أزرار الإدارة الرئيسية -->
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3 bg-white p-3 rounded-3 shadow-sm">
       <div class="btn-group" role="group">
         <button class="btn btn-primary fw-bold" id="btnAdminTabOrders" onclick="switchAdminSection('orders')">
@@ -541,16 +666,18 @@
       </div>
     </div>
 
-    <!-- أوردرات الإدارة -->
+    <!-- قسم أوردرات الإدارة -->
     <div id="adminSectionOrders">
       <div class="d-flex flex-wrap gap-2 mb-3 bg-white p-2 rounded-3 border align-items-center">
         <input type="text" class="form-control form-control-sm" id="adminSearchInput" placeholder="بحث بالاسم، الهاتف، الفني..." oninput="renderAdminOrders()" style="max-width: 240px;">
-        <select class="form-select form-select-sm" id="adminFilterStatusSelect" onchange="renderAdminOrders()" style="width: 160px;">
-          <option value="">كل الحالات</option>
+        <select class="form-select form-select-sm fw-bold" id="adminFilterStatusSelect" onchange="renderAdminOrders()" style="width: 160px;">
+          <option value="">جميع الحالات</option>
           <option value="تم">تم</option>
           <option value="كشف">كشف</option>
           <option value="قيد الاستكمال">قيد الاستكمال</option>
           <option value="مؤجل">مؤجل</option>
+          <option value="يحتاج متابعة">يحتاج متابعة</option>
+          <option value="لاغي">لاغي</option>
           <option value="مرتجع">مرتجع</option>
         </select>
         
@@ -567,7 +694,7 @@
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- خريطة الفنيين مع ميزة عزل كل فني وخط سيره -->
+    <!-- خريطة الفنيين -->
     <div id="adminSectionMap" class="d-none">
       <div class="card border-0 shadow-sm p-3 bg-white">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -585,6 +712,76 @@
         </div>
 
         <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== مودال تفاصيل البلاغ الكاملة (عند الضغط على كارت العميل) ==================== -->
+  <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-dark text-white py-3 px-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-file-shield text-warning fa-lg"></i>
+            <h5 class="modal-title fw-bold m-0">تفاصيل بلاغ الصيانة</h5>
+            <span class="badge bg-secondary ms-2" id="detailOrderCode"></span>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <!-- شارة الحالة الكبيرة -->
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted fw-bold"><i class="fa-solid fa-calendar me-1"></i>تاريخ التسجيل: <strong id="detailOrderDate" class="text-dark"></strong></span>
+            <div id="detailOrderStatusBadge"></div>
+          </div>
+
+          <div class="row g-3">
+            <!-- بيانات العميل -->
+            <div class="col-md-6">
+              <div class="detail-section-card h-100">
+                <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-circle me-1"></i> بيانات العميل</h6>
+                <div class="mb-2"><strong>اسم العميل:</strong> <span id="detailClientName" class="fs-6 fw-bold"></span></div>
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <strong>رقم الهاتف:</strong> <span id="detailClientPhone" class="fw-bold text-success fs-6"></span>
+                  <a id="detailCallBtn" href="#" class="action-circle-btn btn-call" style="width:30px;height:30px;font-size:0.9rem;" title="اتصال"><i class="fa-solid fa-phone"></i></a>
+                  <a id="detailWhatsappBtn" href="#" target="_blank" class="action-circle-btn btn-whatsapp" style="width:30px;height:30px;font-size:0.9rem;" title="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+                <div class="mb-0"><strong>العنوان التفصيلي:</strong> <span id="detailClientAddress" class="text-secondary fw-bold"></span></div>
+              </div>
+            </div>
+
+            <!-- بيانات الجهاز -->
+            <div class="col-md-6">
+              <div class="detail-section-card h-100">
+                <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-wrench me-1"></i> بيانات الجهاز</h6>
+                <div class="mb-2"><strong>نوع وموديل الجهاز:</strong> <span id="detailDevice" class="fs-6 fw-bold text-dark"></span></div>
+                <div class="mb-2"><strong>الفني المكلف:</strong> <span id="detailAssignedTech" class="badge bg-primary fs-6"></span></div>
+                <div class="mb-0"><strong>حالة الفاتورة:</strong> <span id="detailInvoiceState" class="badge bg-success"></span></div>
+              </div>
+            </div>
+
+            <!-- وصف العطل والشكوى -->
+            <div class="col-12">
+              <div class="detail-section-card mb-0">
+                <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> شكوى العميل وتفاصيل العطل:</h6>
+                <p id="detailNotes" class="mb-0 p-2 bg-white rounded border fw-bold text-dark" style="min-height: 50px;"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer justify-content-between bg-light p-3">
+          <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إغلاق</button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary fw-bold" id="detailEditBtn">
+              <i class="fa-solid fa-pen-to-square me-1"></i> تعديل البلاغ
+            </button>
+            <button type="button" class="btn btn-success fw-bold px-3 shadow-sm" id="detailInvoiceBtn">
+              <i class="fa-solid fa-receipt me-1"></i> فتح الفاتورة
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -610,10 +807,8 @@
             <div id="printableOfficialInvoice" class="official-invoice-wrapper">
               <input type="hidden" id="invoiceOrderId">
 
-              <!-- ترويسة الفاتورة الديناميكية -->
               <div id="invDynamicHeaderContainer"></div>
 
-              <!-- المحتوى الداخلي والصناديق والجدول -->
               <div class="inv-content-body">
                 <div id="invDynamicBoxesContainer"></div>
 
@@ -622,7 +817,6 @@
                   <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
                 </div>
 
-                <!-- جدول البنود -->
                 <table class="inv-table-custom">
                   <thead>
                     <tr id="invTableHeaderRow">
@@ -655,7 +849,6 @@
                   </button>
                 </div>
 
-                <!-- شروط الضمان -->
                 <div class="inv-terms-bar">
                   <div class="d-flex align-items-center">
                     <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
@@ -666,7 +859,6 @@
                   <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
                 </div>
 
-                <!-- الختم الرسمي -->
                 <div id="invSheetStamp"></div>
               </div>
             </div>
@@ -800,7 +992,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال الكارنيه المعتمد (مع عرض الصورة بالحجم الكامل) ==================== -->
+  <!-- ==================== مودال الكارنيه المعتمد ==================== -->
   <div class="modal fade" id="techProfileModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 bg-transparent">
@@ -832,7 +1024,6 @@
               <strong id="profileModalPhone">010XXXXXXXX</strong>
             </div>
 
-            <!-- عرض كارنيه الفني بالحجم الكامل والواضح -->
             <div id="profileModalIdCardBox" class="mt-2 p-2 bg-light rounded-3 border text-center">
               <div class="d-flex justify-content-between align-items-center mb-2 px-1">
                 <span class="small fw-bold text-dark"><i class="fa-solid fa-id-card text-success me-1"></i> صورة كارنيه / بطاقة الاعتماد:</span>
@@ -890,6 +1081,8 @@
                   <option value="كشف">كشف</option>
                   <option value="قيد الاستكمال">قيد الاستكمال</option>
                   <option value="مؤجل">مؤجل</option>
+                  <option value="يحتاج متابعة">يحتاج متابعة</option>
+                  <option value="لاغي">لاغي</option>
                   <option value="مرتجع">مرتجع</option>
                 </select>
               </div>
@@ -1045,7 +1238,7 @@
       }
     });
 
-    // ==================== ميزات الوضع الليلي DARK MODE ====================
+    // ==================== ميزات الوضع الليلي ====================
     function initTheme() {
       const savedTheme = localStorage.getItem('syana_theme') || 'light';
       if (savedTheme === 'dark') {
@@ -1117,7 +1310,7 @@
       });
     }
 
-    // ==================== مصادقة الفني وطلب إذن الموقع GPS ====================
+    // ==================== تسجيل دخول الفني وطلب الموقع ====================
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -1182,8 +1375,8 @@
             handlePosSuccess,
             (err2) => {
               if (statusBadge) {
-                statusBadge.className = 'badge bg-danger ms-1';
-                statusBadge.innerText = 'تحديد الموقع معطل';
+                statusBadge.className = 'badge bg-secondary ms-1';
+                statusBadge.innerText = 'يرجى تشغيل الموقع بالهاتف';
               }
             },
             { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }
@@ -1255,7 +1448,45 @@
       document.getElementById('roleBadge').innerText = 'تسجيل الدخول';
     }
 
-    // ==================== أوردرات الفني ====================
+    // ==================== وظائف تصنيف الألوان والشارات ====================
+    function getStatusClassKey(st) {
+      if (!st) return 'status-جديد';
+      if (st.includes('تم') && !st.includes('إلغاء') && !st.includes('لاغي')) return 'status-تم';
+      if (st.includes('كشف')) return 'status-كشف';
+      if (st.includes('مرتجع')) return 'status-مرتجع';
+      if (st.includes('مؤجل')) return 'status-مؤجل';
+      if (st.includes('متابعة')) return 'status-متابعة';
+      if (st.includes('لاغي') || st.includes('إلغاء')) return 'status-لاغي';
+      if (st.includes('استكمال')) return 'status-استكمال';
+      return 'status-جديد';
+    }
+
+    function getStatusBadgeHtml(st) {
+      if (!st) return '<span class="badge bg-dark">جديد</span>';
+      if (st === 'تم') return '<span class="badge bg-success fs-6"><i class="fa-solid fa-circle-check me-1"></i>تم</span>';
+      if (st === 'كشف') return '<span class="badge bg-info text-dark fs-6"><i class="fa-solid fa-magnifying-glass me-1"></i>كشف</span>';
+      if (st === 'مرتجع') return '<span class="badge bg-danger fs-6"><i class="fa-solid fa-rotate-left me-1"></i>مرتجع</span>';
+      if (st === 'مؤجل') return '<span class="badge bg-warning text-dark fs-6"><i class="fa-solid fa-clock me-1"></i>مؤجل</span>';
+      if (st.includes('متابعة')) return '<span class="badge fs-6 text-white" style="background:#6f42c1;"><i class="fa-solid fa-bell me-1"></i>يحتاج متابعة</span>';
+      if (st.includes('لاغي') || st.includes('إلغاء')) return '<span class="badge bg-secondary fs-6"><i class="fa-solid fa-ban me-1"></i>لاغي</span>';
+      if (st.includes('استكمال')) return '<span class="badge bg-primary fs-6"><i class="fa-solid fa-spinner fa-spin-pulse me-1"></i>قيد الاستكمال</span>';
+      return '<span class="badge bg-dark fs-6">' + st + '</span>';
+    }
+
+    // ==================== أوردرات الفني والضغط على العدادات ====================
+    function clickKpiStatusFilter(statusVal) {
+      document.querySelectorAll('#techMainView .kpi-card').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      if (statusVal === 'all') {
+        document.getElementById('techFilterStatus').value = '';
+      } else {
+        document.getElementById('techFilterStatus').value = statusVal;
+      }
+      renderTechOrders();
+      document.getElementById('techOrdersContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function setTechFilterTab(tabName) {
       currentTechTab = tabName;
       document.querySelectorAll('#techMainView .btn-group button').forEach(b => b.classList.remove('active'));
@@ -1281,8 +1512,13 @@
 
       const todayOrdersAll = techOrders.filter(o => o.date === todayStr || o.statusDate === todayStr);
 
+      // تحديث جميع العدادات العلوية
       document.getElementById('techTodayTotal').innerText = todayOrdersAll.length;
       document.getElementById('techTodayDone').innerText = todayOrdersAll.filter(o => o.status === 'تم').length;
+      document.getElementById('techTodayKashf').innerText = todayOrdersAll.filter(o => o.status === 'كشف').length;
+      document.getElementById('techTodayPostponed').innerText = todayOrdersAll.filter(o => o.status === 'مؤجل').length;
+      document.getElementById('techTodayFollowup').innerText = todayOrdersAll.filter(o => (o.status || '').includes('متابعة')).length;
+      document.getElementById('techTodayCanceled').innerText = todayOrdersAll.filter(o => (o.status || '').includes('لاغي') || (o.status || '').includes('إلغاء')).length;
       document.getElementById('techTodayReturns').innerText = todayOrdersAll.filter(o => o.status === 'مرتجع').length;
 
       document.getElementById('countTechToday').innerText = todayOrdersAll.length;
@@ -1296,47 +1532,52 @@
           if (order.status !== 'مرتجع') return false;
         }
 
-        if (statusFilter && order.status !== statusFilter) return false;
+        if (statusFilter) {
+          if (statusFilter === 'لاغي' && !(order.status || '').includes('لاغي') && !(order.status || '').includes('إلغاء')) return false;
+          else if (statusFilter !== 'لاغي' && order.status !== statusFilter) return false;
+        }
         if (dateFilter && order.date !== dateFilter) return false;
 
         return true;
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مسجلة</h6></div>`;
+        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات تظهر في هذا القسم</h6></div>`;
         return;
       }
 
       container.innerHTML = filtered.map(order => `
         <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-order p-3 status-${order.status}">
+          <div class="card card-order p-3 ${getStatusClassKey(order.status)}" onclick="openOrderDetailsModal('${order.id}')">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
                 <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
               </div>
-              <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
+              <div>${getStatusBadgeHtml(order.status)}</div>
             </div>
 
             <div class="mb-2 text-secondary small">
               <div><i class="fa-solid fa-location-dot text-danger me-1"></i> ${order.clientAddress}</div>
               <div><i class="fa-solid fa-wrench text-primary me-1"></i> ${order.device}</div>
-              ${order.notes ? `<div class="mt-1 text-dark bg-light p-1 rounded small">${order.notes}</div>` : ''}
+              ${order.notes ? `<div class="mt-1 text-dark bg-light p-1 rounded small"><i class="fa-solid fa-comment-dots text-secondary me-1"></i>${order.notes}</div>` : ''}
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top" onclick="event.stopPropagation()">
               <div class="d-flex gap-2">
                 <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call"><i class="fa-solid fa-phone"></i></a>
                 <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
               </div>
 
               <div class="d-flex align-items-center gap-1">
-                <select class="form-select form-select-sm fw-bold border-primary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
+                <select class="form-select form-select-sm fw-bold border-secondary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
                   <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
                   <option value="تم" ${order.status === 'تم' ? 'selected' : ''}>تم</option>
                   <option value="كشف" ${order.status === 'كشف' ? 'selected' : ''}>كشف</option>
                   <option value="قيد الاستكمال" ${order.status === 'قيد الاستكمال' ? 'selected' : ''}>قيد الاستكمال</option>
                   <option value="مؤجل" ${order.status === 'مؤجل' ? 'selected' : ''}>مؤجل</option>
+                  <option value="يحتاج متابعة" ${order.status === 'يحتاج متابعة' ? 'selected' : ''}>يحتاج متابعة</option>
+                  <option value="لاغي" ${(order.status || '').includes('لاغي') ? 'selected' : ''}>لاغي</option>
                   <option value="مرتجع" ${order.status === 'مرتجع' ? 'selected' : ''}>مرتجع</option>
                 </select>
 
@@ -1360,7 +1601,20 @@
       });
     }
 
-    // ==================== أوردرات الإدارة ====================
+    // ==================== أوردرات الإدارة والضغط على العدادات ====================
+    function clickAdminKpiStatusFilter(statusVal) {
+      document.querySelectorAll('#adminMainView .kpi-card').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      if (statusVal === 'all') {
+        document.getElementById('adminFilterStatusSelect').value = '';
+      } else {
+        document.getElementById('adminFilterStatusSelect').value = statusVal;
+      }
+      renderAdminOrders();
+      document.getElementById('adminOrdersContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function switchAdminSection(sec) {
       document.getElementById('adminSectionOrders').classList.add('d-none');
       document.getElementById('adminSectionTechs').classList.add('d-none');
@@ -1394,6 +1648,10 @@
       const container = document.getElementById('adminOrdersContainer');
       document.getElementById('adminTotalOrders').innerText = globalOrders.length;
       document.getElementById('adminDoneOrders').innerText = globalOrders.filter(o => o.status === 'تم').length;
+      document.getElementById('adminKashfOrders').innerText = globalOrders.filter(o => o.status === 'كشف').length;
+      document.getElementById('adminPostponedOrders').innerText = globalOrders.filter(o => o.status === 'مؤجل').length;
+      document.getElementById('adminFollowupOrders').innerText = globalOrders.filter(o => (o.status || '').includes('متابعة')).length;
+      document.getElementById('adminCanceledOrders').innerText = globalOrders.filter(o => (o.status || '').includes('لاغي') || (o.status || '').includes('إلغاء')).length;
       document.getElementById('adminReturnOrders').innerText = globalOrders.filter(o => o.status === 'مرتجع').length;
       document.getElementById('adminTechCount').innerText = globalTechs.length;
 
@@ -1402,7 +1660,10 @@
       const dateFilter = document.getElementById('adminFilterDate').value;
 
       let filtered = globalOrders.filter(o => {
-        if (statusFilter && o.status !== statusFilter) return false;
+        if (statusFilter) {
+          if (statusFilter === 'لاغي' && !(o.status || '').includes('لاغي') && !(o.status || '').includes('إلغاء')) return false;
+          else if (statusFilter !== 'لاغي' && o.status !== statusFilter) return false;
+        }
         if (dateFilter && o.date !== dateFilter) return false;
         if (searchTxt) {
           const m1 = o.clientName.toLowerCase().includes(searchTxt);
@@ -1420,13 +1681,13 @@
 
       container.innerHTML = filtered.map(order => `
         <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-order p-3 status-${order.status}">
+          <div class="card card-order p-3 ${getStatusClassKey(order.status)}" onclick="openOrderDetailsModal('${order.id}')">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
                 <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
               </div>
-              <span class="badge ${getStatusBadgeClass(order.status)} fs-6">${order.status}</span>
+              <div>${getStatusBadgeHtml(order.status)}</div>
             </div>
 
             <div class="mb-2 text-secondary small">
@@ -1435,7 +1696,7 @@
               <div><i class="fa-solid fa-wrench text-secondary me-1"></i> ${order.device}</div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top" onclick="event.stopPropagation()">
               <div class="d-flex gap-2">
                 <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call"><i class="fa-solid fa-phone"></i></a>
                 <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
@@ -1455,6 +1716,46 @@
           </div>
         </div>
       `).join('');
+    }
+
+    // ==================== بطاقة تفاصيل البلاغ عند الضغط على الكارت ====================
+    function openOrderDetailsModal(orderId) {
+      const order = globalOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      document.getElementById('detailOrderCode').innerText = order.id;
+      document.getElementById('detailOrderDate').innerText = order.date || 'اليوم';
+      document.getElementById('detailOrderStatusBadge').innerHTML = getStatusBadgeHtml(order.status);
+      document.getElementById('detailClientName').innerText = order.clientName;
+      document.getElementById('detailClientPhone').innerText = order.clientPhone;
+      document.getElementById('detailClientAddress').innerText = order.clientAddress;
+      document.getElementById('detailDevice').innerText = order.device;
+      document.getElementById('detailAssignedTech').innerText = order.assignedTechName || 'غير محدد';
+      document.getElementById('detailNotes').innerText = order.notes || 'لا توجد ملاحظات إضافية مسجلة.';
+
+      document.getElementById('detailCallBtn').href = 'tel:' + order.clientPhone;
+      document.getElementById('detailWhatsappBtn').href = 'https://wa.me/2' + order.clientPhone.replace(/\D/g,'');
+
+      const invState = document.getElementById('detailInvoiceState');
+      if (order.invoice && order.invoice.totalCost) {
+        invState.className = 'badge bg-success fs-6';
+        invState.innerText = `تم إصدار الفاتورة (${order.invoice.totalCost} ج.م)`;
+      } else {
+        invState.className = 'badge bg-secondary fs-6';
+        invState.innerText = 'لم تصدر فاتورة بعد';
+      }
+
+      document.getElementById('detailEditBtn').onclick = () => {
+        bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
+        openEditOrderModal(order.id);
+      };
+
+      document.getElementById('detailInvoiceBtn').onclick = () => {
+        bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
+        openOfficialInvoiceModal(order.id);
+      };
+
+      new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
     }
 
     function showAddOrderModal() {
@@ -1747,10 +2048,8 @@
       const totalRow = document.getElementById('invTotalRowStyle');
 
       if (template === 'kiriazi2') {
-        // الترويسة الخضراء الكاملة المطابقة للأصل (1000170298.png)
         headerContainer.className = "k2-green-header";
         headerContainer.innerHTML = `
-          <!-- اللوجو على اليسار بالأصل -->
           <div style="width: 220px; text-align: left;">
             <div style="background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 45px; padding: 6px 20px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); display: inline-block;">
               <div style="background:#d90429; border:2px solid #ffcc00; border-radius:4px; width:22px; height:22px; margin:0 auto -3px auto; color:#ffcc00; font-size:12px; font-weight:bold; line-height:18px;">K</div>
@@ -1758,7 +2057,6 @@
             </div>
           </div>
 
-          <!-- العنوان في الوسط -->
           <div style="text-align: center; flex: 1;">
             <h2 style="font-weight: 900; margin: 0; font-size: 2.3rem; letter-spacing: -0.5px; color: #ffffff;">Electric for Home Appliances</h2>
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #f0f0f0; margin-top: 5px;">
@@ -1766,7 +2064,6 @@
             </div>
           </div>
 
-          <!-- الشارة الذهبية على اليمين بالأصل -->
           <div style="width: 220px; text-align: right;">
             <div style="background: linear-gradient(135deg, #f0c975 0%, #d49c3d 100%); border: 1.5px solid #a67215; border-radius: 12px; padding: 6px 14px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.25);">
               <div style="font-size: 1.45rem; font-weight: 900; color: #111;">فاتورة</div>
@@ -1779,7 +2076,6 @@
           </div>
         `;
 
-        // توزيع الصناديق: الجهاز يمين، العميل يسار، التاريخ منتصف
         boxesContainer.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
             <div class="inv-box-section">
@@ -2264,17 +2560,6 @@
 
         mapInstance.setView([t.lat, t.lng], 14);
         document.getElementById('lastMapUpdateText').innerText = `خط سير: ${t.name} (لديه ${techOrders.length} بلاغات اليوم)`;
-      }
-    }
-
-    function getStatusBadgeClass(status) {
-      switch (status) {
-        case 'تم': return 'bg-success';
-        case 'كشف': return 'bg-info text-dark';
-        case 'قيد الاستكمال': return 'bg-primary';
-        case 'مؤجل': return 'bg-warning text-dark';
-        case 'مرتجع': return 'bg-danger';
-        default: return 'bg-secondary';
       }
     }
 
