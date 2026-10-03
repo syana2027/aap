@@ -239,6 +239,7 @@
       overflow: hidden;
       background: white;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
     }
     .render-body { padding: 24px 28px; position: relative; }
     .render-dotted-line { border-bottom: 1.5px dotted #555; display: inline-block; padding: 0 8px; font-weight: bold; }
@@ -254,17 +255,42 @@
     .render-terms-bar { border: 1.5px solid #212529; border-radius: 12px; padding: 10px 18px; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: bold; }
     .render-check-badge { background-color: #0e5c36; color: white; width: 25px; height: 25px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; }
 
-    .render-seal {
-      position: absolute; bottom: 25px; left: 35px; background: radial-gradient(circle, #ffd166 0%, #e09f18 100%); color: #0b381e; border-radius: 50%; width: 110px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border: 3px double white; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transform: rotate(-12deg);
+    /* ختم الضمان الذهبي الذي لا يغطي الإجمالي */
+    .render-seal-gold {
+      background: radial-gradient(circle, #ffe066 0%, #d4af37 60%, #aa771c 100%);
+      color: #3d2600;
+      border-radius: 50%;
+      width: 105px;
+      height: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      border: 3px double #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+      transform: rotate(-10deg);
+      flex-shrink: 0;
     }
     
-    .kiriazi-logo-draw {
-      background: radial-gradient(ellipse at center, #0e5c36 0%, #06381e 100%); border: 3px solid #ffcc00; border-radius: 40px; padding: 6px 16px; text-align: center; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+    /* شعار كريازي البيضاوي الأبيض بإطار أخضر وكلمة خضراء */
+    .kiriazi-oval-logo {
+      background-color: #ffffff;
+      border: 3.5px solid #0e5c36;
+      border-radius: 50px;
+      padding: 6px 28px;
+      text-align: center;
+      display: inline-block;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
-    .kiriazi-k-icon {
-      background: white; border: 2px solid #ffcc00; border-radius: 4px; width: 26px; height: 26px; margin: 0 auto 2px auto; display: flex; align-items: center; justify-content: center; color: #d90429; font-weight: 900; font-size: 14px;
+    .kiriazi-oval-text {
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #0e5c36;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .kiriazi-text-draw { font-size: 1.6rem; font-weight: 900; color: #ffeb3b; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -1241,10 +1267,11 @@
       if (payload.templateType === 'kiriazi_electronic') {
         container.innerHTML = `
           <div class="invoice-render-box">
+            <!-- الترويسة العلوية مع الشعار البيضاوي الجديد -->
             <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1.5px solid #ccc;">
               <div style="width: 250px; text-align: right;">
-                <div class="kiriazi-logo-draw">
-                  <div class="kiriazi-k-icon">K</div><div class="kiriazi-text-draw">كريــازى</div>
+                <div class="kiriazi-oval-logo">
+                  <div class="kiriazi-oval-text">كريــازى</div>
                 </div>
               </div>
               <div style="flex:1; text-align:center;">
@@ -1279,6 +1306,7 @@
 
               <div style="margin-top:20px; font-weight:bold; font-size:1.1rem;">وصف المشكلة : <span class="render-dotted-line">${payload.problemDesc}</span></div>
 
+              <!-- جدول البنود والمجاميع (الختم بعيد تماماً عن هذا الجدول) -->
               <table class="render-table">
                 <thead><tr><th style="width:50px;">م</th><th>البيان / قطع الغيار</th><th style="width:100px;">الكمية</th><th style="width:140px;">سعر الوحدة</th><th style="width:140px;">الإجمالي</th></tr></thead>
                 <tbody>${partsHtml}</tbody>
@@ -1288,15 +1316,26 @@
                 </tfoot>
               </table>
 
-              <div class="render-terms-bar mt-4">
-                <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>خدمة 24/7</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+              <!-- شروط الضمان مع الختم الذهبي في أقصى اليسار بدون أي تداخل -->
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
+                <div class="render-terms-bar" style="flex:1; margin-top:0;">
+                  <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
+                  <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>خدمة 24/7</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+                </div>
+                <!-- الختم الذهبي الملكي -->
+                <div class="render-seal-gold">
+                  <div style="font-size:1.1rem;">ضمان</div>
+                  <div style="font-size:0.95rem;">لمدة عام</div>
+                  <div style="font-size:0.85rem;">★★★</div>
+                </div>
               </div>
-              <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:10px; border-radius:8px; display:flex; justify-content:space-between; font-weight:bold;">
-                <div style="font-size:1.2rem;">راحتك .. هدفنا</div><div style="opacity:0.8;">صيانة معتمدة بأعلى معايير الجودة</div>
+
+              <!-- الشريط السفلي مع إضافة: كريازي حبي واعتزازي -->
+              <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
+                <div style="font-size:1.25rem;"><i class="fa-solid fa-heart text-danger me-1"></i> كريازي حبي واعتزازي</div>
+                <div style="font-size:1.1rem;">راحتك .. هدفنا</div>
+                <div style="opacity:0.85; font-size:0.9rem;">صيانة معتمدة بأعلى معايير الجودة</div>
               </div>
-              
-              <div class="render-seal"><div>ضمان</div><div>لمدة عام</div><div>★★★</div></div>
             </div>
           </div>
         `;
@@ -1351,12 +1390,22 @@
                 </tfoot>
               </table>
 
-              <div class="render-terms-bar mt-4">
-                <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
+                <div class="render-terms-bar" style="flex:1; margin-top:0;">
+                  <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
+                  <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+                </div>
+                <div class="render-seal-gold">
+                  <div style="font-size:1.1rem;">ضمان</div>
+                  <div style="font-size:0.95rem;">لمدة عام</div>
+                  <div style="font-size:0.85rem;">★★★</div>
+                </div>
               </div>
-              
-              <div class="render-seal" style="background:radial-gradient(circle, #ffe066 0%, #d4af37 60%, #996515 100%); color:white;"><div>ضمان</div><div>لمدة عام</div><div>★★★</div></div>
+
+              <div style="background:#198754; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
+                <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
+                <div>خدمة معتمدة 24/7</div>
+              </div>
             </div>
           </div>
         `;
@@ -1374,8 +1423,8 @@
                 <div style="font-size:1rem; font-weight:bold; color:#555; margin-top:4px;">Professional Repair & Maintenance Services</div>
               </div>
               <div style="width: 250px; text-align: left;">
-                <div class="kiriazi-logo-draw">
-                  <div class="kiriazi-k-icon">K</div><div class="kiriazi-text-draw">كريــازى</div>
+                <div class="kiriazi-oval-logo">
+                  <div class="kiriazi-oval-text">كريــازى</div>
                 </div>
               </div>
             </div>
@@ -1411,12 +1460,22 @@
                 </tfoot>
               </table>
 
-              <div class="render-terms-bar mt-4">
-                <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
+                <div class="render-terms-bar" style="flex:1; margin-top:0;">
+                  <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
+                  <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+                </div>
+                <div class="render-seal-gold">
+                  <div style="font-size:1.1rem;">ضمان</div>
+                  <div style="font-size:0.95rem;">لمدة عام</div>
+                  <div style="font-size:0.85rem;">★★★</div>
+                </div>
               </div>
-              
-              <div class="render-seal" style="background:#dc3545; color:white; border-radius:15px; width:130px; height:80px; transform:rotate(-15deg);"><div>ضمان</div><div>لمدة عام</div><div>★★★</div></div>
+
+              <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
+                <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
+                <div>صيانة منزلية معتمدة</div>
+              </div>
             </div>
           </div>
         `;
