@@ -17,9 +17,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- PDFMake Libraries لإنشاء PDF حقيقي نقي 100% -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- HTML2PDF Library (المكتبة الجديدة الموثوقة لإنشاء الـ PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
@@ -45,20 +44,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
-    /* كروت البلاغات الملونة حسب الحالة */
+    /* كروت البلاغات الملونة */
     .card-order {
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-      background: #ffffff;
-      border-right: 6px solid #0d6efd;
-      transition: all 0.25s ease;
-      cursor: pointer;
+      border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); background: #ffffff; border-right: 6px solid #0d6efd; transition: all 0.25s ease; cursor: pointer;
     }
-    .card-order:hover {
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-      transform: translateY(-2px);
-    }
+    .card-order:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
     .card-order.status-تم { border-right-color: #198754 !important; background: linear-gradient(180deg, #ffffff 0%, #f6fdf9 100%); }
     .card-order.status-كشف { border-right-color: #0dcaf0 !important; background: linear-gradient(180deg, #ffffff 0%, #f3fcfe 100%); }
     .card-order.status-مرتجع { border-right-color: #dc3545 !important; background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%); }
@@ -68,35 +58,42 @@
     .card-order.status-استكمال { border-right-color: #0d6efd !important; background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%); }
     .card-order.status-جديد { border-right-color: #0b2545 !important; background: #ffffff; }
 
-    /* كروت العدادات العلوية التفاعلية */
     .kpi-card {
-      border: 1px solid #e5e9f0;
-      border-radius: 12px;
-      padding: 10px 6px;
-      text-align: center;
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
+      border: 1px solid #e5e9f0; border-radius: 12px; padding: 10px 6px; text-align: center; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden;
     }
     .kpi-card:hover, .kpi-card.active { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
     .kpi-card.active { border-color: currentColor !important; background: #ffffff; box-shadow: 0 0 0 2px currentColor; }
     
-    .action-circle-btn {
-      width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none; transition: transform 0.2s;
-    }
+    .action-circle-btn { width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none; transition: transform 0.2s; }
     .action-circle-btn:hover { transform: scale(1.1); }
     .btn-call { background-color: #e8f5e9; color: #2e7d32; }
     .btn-whatsapp { background-color: #e8f8f0; color: #25d366; }
 
-    .tech-header-profile-box {
-      display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.12); padding: 3px 10px 3px 6px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer;
-    }
+    .tech-header-profile-box { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.12); padding: 3px 10px 3px 6px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer; }
     .tech-avatar-sm { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; box-shadow: 0 2px 5px rgba(0,0,0,0.25); flex-shrink: 0; }
     #map { height: 520px; border-radius: 12px; width: 100%; }
     .custom-map-avatar { background: transparent; border: none; }
+
+    /* ==================== استايل الفاتورة المعتمد ==================== */
+    .invoice-scroll-container { width: 100%; overflow-x: auto; padding-bottom: 10px; }
+    .official-invoice-wrapper {
+      background: #ffffff !important; color: #111111 !important; padding: 0; border-radius: 14px; width: 950px; min-width: 950px; margin: auto; position: relative; border: 2px solid #06381e; box-shadow: 0 6px 25px rgba(0,0,0,0.12); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden;
+    }
+    .inv-content-body { padding: 24px 28px; background: #ffffff; position: relative; }
+    .inv-dotted-input { border: none; border-bottom: 1.5px dotted #555; background: transparent; padding: 2px 4px; font-size: 1rem; font-weight: bold; outline: none; color: #111 !important; }
+    .inv-box-section { flex: 1; border: 1.5px solid #212529; border-radius: 14px; padding: 18px 14px 10px 14px; position: relative; background: #ffffff; }
+    .inv-box-pill-title { position: absolute; top: -14px; right: 25px; background-color: #0e5c36 !important; color: #ffffff !important; padding: 2px 22px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid #1c6841; }
+    .inv-row-item { display: flex; align-items: baseline; margin-bottom: 8px; font-size: 0.95rem; font-weight: bold; }
+    .inv-row-item span { white-space: nowrap; }
+
+    .inv-table-custom { width: 100%; border-collapse: collapse; margin-top: 14px; border: 1.5px solid #0e5c36; text-align: center; position: relative; }
+    .inv-table-custom th { background-color: #0e5c36 !important; color: #ffffff !important; padding: 10px; font-size: 1.05rem; font-weight: bold; border: 1px solid #0e5c36; }
+    .inv-table-custom td { border: 1px solid #888; padding: 8px; font-size: 0.95rem; font-weight: bold; color: #111 !important; }
+    .inv-table-custom input { border: none; background: transparent; text-align: center; width: 100%; font-weight: bold; outline: none; }
+
+    .stamp-electronic-seal {
+      position: absolute; bottom: 25px; left: 35px; background: radial-gradient(circle, #ffd166 0%, #e09f18 100%); color: #0b381e; border-radius: 50%; width: 110px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border: 3px double #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transform: rotate(-12deg); pointer-events: none;
+    }
 
     .preview-box { border: 2px dashed #0d6efd; border-radius: 10px; padding: 8px; text-align: center; background: #f8f9fa; }
     .id-card-trust { background: #ffffff; border: 2px solid #198754; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
@@ -106,7 +103,7 @@
     /* الوضع الليلي */
     body.dark-mode { background-color: #121417 !important; color: #e2e8f0 !important; }
     body.dark-mode .header-bar { background: linear-gradient(135deg, #070e17 0%, #0f1e33 100%) !important; }
-    body.dark-mode .card-order, body.dark-mode .bg-white, body.dark-mode .kpi-card, body.dark-mode .detail-section-card, body.dark-mode .id-card-trust {
+    body.dark-mode .card-order, body.dark-mode .modal-content:not(.official-invoice-modal-content), body.dark-mode .bg-white, body.dark-mode .kpi-card, body.dark-mode .detail-section-card, body.dark-mode .id-card-trust {
       background-color: #1c2128 !important; color: #f1f5f9 !important; border-color: #2d333b !important;
     }
     body.dark-mode .text-dark { color: #f8fafc !important; }
@@ -483,14 +480,14 @@
     </div>
   </div>
 
-  <!-- ==================== مودال معاينة الفاتورة قبل التصدير كـ PDF ==================== -->
+  <!-- ==================== مودال الفاتورة الرسمية المطابقة 1:1 ==================== -->
   <div class="modal fade" id="officialInvoiceModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center">
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold small text-warning">قالب الفاتورة المعتمد:</span>
-            <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 290px;">
+            <select class="form-select form-select-sm fw-bold border-warning" id="invoiceTemplateSelector" style="width: 290px;" onchange="renderActiveInvoiceLayout()">
               <option value="kiriazi_electronic" selected>1. فاتورة إصلاح وضمان إلكترونية (المعتمد)</option>
               <option value="kiriazi2">2. قالب كريازي 2 الكلاسيكي</option>
               <option value="authorized">3. المركز المعتمد (19387)</option>
@@ -500,65 +497,63 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
 
-        <!-- المعاينة المبسطة للفني لإدخال البيانات بسلاسة دون أن يختفي الكيبورد -->
-        <div class="modal-body p-3 bg-light">
-          <input type="hidden" id="invoiceOrderId">
-          
-          <div class="row g-3 mb-3">
-            <div class="col-md-3"><label class="small fw-bold">رقم الفاتورة</label><input type="text" id="invSheetNumber" class="form-control fw-bold text-center"></div>
-            <div class="col-md-3"><label class="small fw-bold">تاريخ الفاتورة (يوم/شهر/سنة)</label>
-              <div class="input-group" dir="ltr">
-                <input type="text" id="invDateDay" class="form-control text-center" placeholder="DD">
-                <input type="text" id="invDateMonth" class="form-control text-center" placeholder="MM">
-                <input type="text" id="invDateYear" class="form-control text-center" placeholder="YYYY">
-              </div>
-            </div>
-            <div class="col-md-6"><label class="small fw-bold">وصف المشكلة الأساسي</label><input type="text" id="invSheetProblemDesc" class="form-control fw-bold"></div>
-          </div>
+        <div class="modal-body p-2 bg-light">
+          <div class="invoice-scroll-container">
+            <!-- الفاتورة الأصلية المعروضة هي التي سيتم تصويرها كـ PDF مباشرة -->
+            <div id="printableOfficialInvoice" class="official-invoice-wrapper">
+              <input type="hidden" id="invoiceOrderId">
 
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <div class="card p-2 border-primary shadow-sm h-100">
-                <h6 class="fw-bold text-primary mb-2 border-bottom pb-1"><i class="fa-solid fa-mobile-screen me-1"></i>بيانات الجهاز</h6>
-                <div class="input-group input-group-sm mb-1"><span class="input-group-text w-25">النوع</span><input type="text" id="invSheetDeviceType" class="form-control"></div>
-                <div class="input-group input-group-sm mb-1"><span class="input-group-text w-25">الماركة</span><input type="text" id="invSheetDeviceBrand" class="form-control"></div>
-                <div class="input-group input-group-sm"><span class="input-group-text w-25">الموديل</span><input type="text" id="invSheetDeviceModel" class="form-control"></div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card p-2 border-success shadow-sm h-100">
-                <h6 class="fw-bold text-success mb-2 border-bottom pb-1"><i class="fa-solid fa-user me-1"></i>بيانات العميل</h6>
-                <div class="input-group input-group-sm mb-1"><span class="input-group-text w-25">الاسم</span><input type="text" id="invSheetClientName" class="form-control"></div>
-                <div class="input-group input-group-sm mb-1"><span class="input-group-text w-25">الهاتف</span><input type="text" id="invSheetClientPhone" class="form-control"></div>
-                <div class="input-group input-group-sm"><span class="input-group-text w-25">العنوان</span><input type="text" id="invSheetClientAddress" class="form-control"></div>
-              </div>
-            </div>
-          </div>
+              <!-- الترويسة الديناميكية -->
+              <div id="invDynamicHeaderContainer"></div>
 
-          <!-- جدول البنود المبسط الذي لا يعيد رسم نفسه ليحافظ على الكيبورد -->
-          <div class="table-responsive bg-white rounded border">
-            <table class="table table-bordered table-sm mb-0 text-center align-middle">
-              <thead class="table-dark">
-                <tr>
-                  <th style="width: 5%;">م</th>
-                  <th>البيان / قطع الغيار</th>
-                  <th style="width: 15%;">الكمية</th>
-                  <th style="width: 15%;">السعر</th>
-                  <th style="width: 15%;">الإجمالي</th>
-                  <th style="width: 5%;">حذف</th>
-                </tr>
-              </thead>
-              <tbody id="invSimpleTableBody"></tbody>
-              <tfoot class="table-light fw-bold">
-                <tr>
-                  <td colspan="4" class="text-end pe-3">الإجمالي الكلي :</td>
-                  <td class="text-success fs-6"><span id="invSimpleTotalDisplay">0</span> ج.م</td>
-                  <td></td>
-                </tr>
-              </tfoot>
-            </table>
+              <!-- المحتوى الداخلي -->
+              <div class="inv-content-body">
+                <div id="invDynamicBoxesContainer"></div>
+
+                <div class="d-flex align-items-baseline my-3">
+                  <span class="fw-bold fs-6" style="white-space:nowrap;" id="invProblemLabel">وصف المشكلة :</span>
+                  <input type="text" id="invSheetProblemDesc" class="inv-dotted-input w-100 ms-2">
+                </div>
+
+                <table class="inv-table-custom">
+                  <thead>
+                    <tr id="invTableHeaderRow">
+                      <th style="width: 50px;">م</th>
+                      <th><i class="fa-solid fa-gear me-1"></i> البيان / قطع الغيار</th>
+                      <th style="width: 100px;"><i class="fa-solid fa-box me-1"></i> الكمية</th>
+                      <th style="width: 140px;"><i class="fa-solid fa-coins me-1"></i> سعر الوحدة</th>
+                      <th style="width: 140px;"><i class="fa-solid fa-sack-dollar me-1"></i> الإجمالي</th>
+                      <th style="width: 50px;" class="no-print">حذف</th>
+                    </tr>
+                  </thead>
+                  <!-- المكون السحري الذي لن يعيد رسم نفسه كاملاً لضمان بقاء الكيبورد -->
+                  <tbody id="invOfficialTableBody"></tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3" class="border-0"></td>
+                      <td class="border-start border-end fw-bold text-end pe-3" id="invSubtotalLabel">المجموع الفرعي :</td>
+                      <td colspan="2" class="fw-bold fs-6 border-end text-center"><span id="invSheetSubtotalDisplay">0</span> ج.م</td>
+                    </tr>
+                    <tr id="invTotalRowStyle">
+                      <td colspan="3" class="border-0"></td>
+                      <td class="border-start border-end border-bottom fw-bold text-end pe-3" id="invTotalLabel">الإجمالي الكلي :</td>
+                      <td colspan="2" class="text-center fw-bold fs-6 border-end border-bottom"><span id="invSheetTotalDisplay">0</span> ج.م</td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                <div class="text-start mt-2 no-print">
+                  <button type="button" class="btn btn-sm btn-outline-success fw-bold" onclick="addOfficialPartRow()">
+                    <i class="fa-solid fa-plus-circle me-1"></i> إضافة بند جديد
+                  </button>
+                </div>
+
+                <!-- شروط الضمان والختم -->
+                <div id="invDynamicTermsContainer"></div>
+                <div id="invSheetStamp"></div>
+              </div>
+            </div>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-success fw-bold mt-2" onclick="addOfficialPartRow()"><i class="fa-solid fa-plus-circle me-1"></i> إضافة بند جديد</button>
         </div>
 
         <div class="modal-footer justify-content-between bg-white p-2">
@@ -567,7 +562,7 @@
           <div class="d-flex flex-wrap gap-2">
             <!-- الزر السحري الجديد الذي ينشئ الـ PDF النقي -->
             <button type="button" class="btn btn-danger fw-bold btn-sm px-3 shadow" onclick="generateAndSendPDF()">
-              <i class="fa-solid fa-file-pdf fa-lg me-1"></i> إنشاء PDF للواتساب
+              <i class="fa-solid fa-file-pdf fa-lg me-1"></i> حفظ PDF وإرسال للواتساب
             </button>
             <button type="button" class="btn btn-dark fw-bold btn-sm px-3" onclick="saveOfficialInvoice()">
               <i class="fa-solid fa-floppy-disk me-1"></i> حفظ واعتماد فقط
@@ -926,7 +921,6 @@
       });
     }
 
-    // دالة دخول الفني المعدلة والمحصنة لاكتشاف الأخطاء
     function handleTechLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -958,31 +952,15 @@
     }
 
     function requestTechLiveGPS() {
-      if (!navigator.geolocation) {
-        showToast('جهازك لا يدعم نظام تحديد الموقع GPS.');
-        return;
-      }
+      if (!navigator.geolocation) { showToast('جهازك لا يدعم نظام تحديد الموقع GPS.'); return; }
       const statusBadge = document.getElementById('gpsStatusText');
-      if (statusBadge) {
-        statusBadge.className = 'badge bg-warning text-dark ms-1';
-        statusBadge.innerText = 'جاري التحديد...';
-      }
+      if (statusBadge) { statusBadge.className = 'badge bg-warning text-dark ms-1'; statusBadge.innerText = 'جاري التحديد...'; }
 
       function handlePosSuccess(pos) {
         if (currentTech) {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          const time = new Date().toLocaleTimeString('ar-EG');
-          db.ref('techs/' + currentTech.id).update({
-            lat: lat,
-            lng: lng,
-            isOnline: true,
-            lastLocationTime: time
-          });
-          if (statusBadge) {
-            statusBadge.className = 'badge bg-success ms-1';
-            statusBadge.innerText = 'موقعك نشط ومحدث ✔';
-          }
+          const lat = pos.coords.latitude; const lng = pos.coords.longitude; const time = new Date().toLocaleTimeString('ar-EG');
+          db.ref('techs/' + currentTech.id).update({ lat: lat, lng: lng, isOnline: true, lastLocationTime: time });
+          if (statusBadge) { statusBadge.className = 'badge bg-success ms-1'; statusBadge.innerText = 'موقعك نشط ومحدث ✔'; }
         }
       }
 
@@ -991,20 +969,13 @@
           handlePosSuccess(pos);
           if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId);
           window.gpsWatchId = navigator.geolocation.watchPosition(
-            handlePosSuccess,
-            () => {},
-            { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
+            handlePosSuccess, () => {}, { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
           );
         },
         (err) => {
           navigator.geolocation.getCurrentPosition(
             handlePosSuccess,
-            (err2) => {
-              if (statusBadge) {
-                statusBadge.className = 'badge bg-secondary ms-1';
-                statusBadge.innerText = 'يرجى تشغيل الموقع بالهاتف';
-              }
-            },
+            (err2) => { if (statusBadge) { statusBadge.className = 'badge bg-secondary ms-1'; statusBadge.innerText = 'يرجى تشغيل الموقع بالهاتف'; } },
             { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }
           );
         },
@@ -1013,65 +984,39 @@
     }
 
     function setRoleAdmin() {
-      currentRole = 'admin';
-      currentTech = null;
-      localStorage.setItem('syana_role', 'admin');
-      localStorage.removeItem('syana_current_tech');
-
-      document.getElementById('loginView').classList.add('d-none');
-      document.getElementById('techMainView').classList.add('d-none');
-      document.getElementById('adminMainView').classList.remove('d-none');
-      document.getElementById('switchRoleBtn').classList.add('d-none');
-      document.getElementById('logoutBtn').classList.remove('d-none');
-      document.getElementById('techUserHeader').classList.add('d-none');
-      document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold';
-      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
-
-      renderAdminOrders();
-      renderAdminTechsGrid();
+      currentRole = 'admin'; currentTech = null;
+      localStorage.setItem('syana_role', 'admin'); localStorage.removeItem('syana_current_tech');
+      document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.add('d-none');
+      document.getElementById('adminMainView').classList.remove('d-none'); document.getElementById('switchRoleBtn').classList.add('d-none');
+      document.getElementById('logoutBtn').classList.remove('d-none'); document.getElementById('techUserHeader').classList.add('d-none');
+      document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
+      renderAdminOrders(); renderAdminTechsGrid();
     }
 
     function setRoleTechnician(techObj) {
-      currentRole = 'technician';
-      currentTech = techObj;
-      localStorage.setItem('syana_role', 'technician');
-      localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
-
-      document.getElementById('loginView').classList.add('d-none');
-      document.getElementById('techMainView').classList.remove('d-none');
-      document.getElementById('adminMainView').classList.add('d-none');
-      document.getElementById('switchRoleBtn').classList.remove('d-none');
+      currentRole = 'technician'; currentTech = techObj;
+      localStorage.setItem('syana_role', 'technician'); localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
+      document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.remove('d-none');
+      document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none');
       document.getElementById('logoutBtn').classList.remove('d-none');
-      
-      const userHeader = document.getElementById('techUserHeader');
-      userHeader.classList.remove('d-none');
+      const userHeader = document.getElementById('techUserHeader'); userHeader.classList.remove('d-none');
       document.getElementById('techHeaderName').innerText = techObj.name;
       if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo;
-
-      document.getElementById('roleBadge').className = 'badge bg-success fw-bold';
-      document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
-
+      document.getElementById('roleBadge').className = 'badge bg-success fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
       renderTechOrders();
     }
 
     function performLogout() {
-      localStorage.removeItem('syana_role');
-      localStorage.removeItem('syana_current_tech');
-      showLoginView();
-      showToast('تم تسجيل الخروج');
+      localStorage.removeItem('syana_role'); localStorage.removeItem('syana_current_tech');
+      showLoginView(); showToast('تم تسجيل الخروج');
     }
 
     function showLoginView() {
-      currentRole = null;
-      currentTech = null;
-      document.getElementById('loginView').classList.remove('d-none');
-      document.getElementById('techMainView').classList.add('d-none');
-      document.getElementById('adminMainView').classList.add('d-none');
-      document.getElementById('switchRoleBtn').classList.remove('d-none');
-      document.getElementById('logoutBtn').classList.add('d-none');
-      document.getElementById('techUserHeader').classList.add('d-none');
-      document.getElementById('roleBadge').className = 'badge bg-secondary';
-      document.getElementById('roleBadge').innerText = 'تسجيل الدخول';
+      currentRole = null; currentTech = null;
+      document.getElementById('loginView').classList.remove('d-none'); document.getElementById('techMainView').classList.add('d-none');
+      document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none');
+      document.getElementById('logoutBtn').classList.add('d-none'); document.getElementById('techUserHeader').classList.add('d-none');
+      document.getElementById('roleBadge').className = 'badge bg-secondary'; document.getElementById('roleBadge').innerText = 'تسجيل الدخول';
     }
 
     function getStatusClassKey(st) {
@@ -1099,16 +1044,9 @@
     }
 
     function clickKpiStatusFilter(statusVal) {
-      document.querySelectorAll('#techMainView .kpi-card').forEach(c => c.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      if (statusVal === 'all') {
-        document.getElementById('techFilterStatus').value = '';
-      } else {
-        document.getElementById('techFilterStatus').value = statusVal;
-      }
-      renderTechOrders();
-      document.getElementById('techOrdersContainer').scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('#techMainView .kpi-card').forEach(c => c.classList.remove('active')); event.currentTarget.classList.add('active');
+      document.getElementById('techFilterStatus').value = statusVal === 'all' ? '' : statusVal;
+      renderTechOrders(); document.getElementById('techOrdersContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
     function setTechFilterTab(tabName) {
@@ -1120,20 +1058,15 @@
       renderTechOrders();
     }
 
-    function clearDateFilter(id, callback) {
-      document.getElementById(id).value = '';
-      if (callback) callback();
-    }
+    function clearDateFilter(id, callback) { document.getElementById(id).value = ''; if (callback) callback(); }
 
     function renderTechOrders() {
       if (!currentTech) return;
       const container = document.getElementById('techOrdersContainer');
       const techOrders = globalOrders.filter(o => o.assignedTechId === currentTech.id);
-
       const todayStr = getLocalDateStr();
       const statusFilter = document.getElementById('techFilterStatus').value;
       const dateFilter = document.getElementById('techFilterDate').value;
-
       const todayOrdersAll = techOrders.filter(o => o.date === todayStr || o.statusDate === todayStr);
 
       document.getElementById('techTodayTotal').innerText = todayOrdersAll.length;
@@ -1144,50 +1077,41 @@
       document.getElementById('techTodayCanceled').innerText = todayOrdersAll.filter(o => (o.status || '').includes('لاغي') || (o.status || '').includes('إلغاء')).length;
       document.getElementById('techTodayReturns').innerText = todayOrdersAll.filter(o => o.status === 'مرتجع').length;
 
+      document.getElementById('countTechToday').innerText = todayOrdersAll.length;
+      document.getElementById('countTechAll').innerText = techOrders.length;
+      document.getElementById('countTechReturns').innerText = techOrders.filter(o => o.status === 'مرتجع').length;
+
       let filtered = techOrders.filter(order => {
-        if (currentTechTab === 'today') {
-          if (order.date !== todayStr && order.statusDate !== todayStr) return false;
-        } else if (currentTechTab === 'مرتجع') {
-          if (order.status !== 'مرتجع') return false;
-        }
+        if (currentTechTab === 'today') { if (order.date !== todayStr && order.statusDate !== todayStr) return false; } 
+        else if (currentTechTab === 'مرتجع') { if (order.status !== 'مرتجع') return false; }
 
         if (statusFilter) {
           if (statusFilter === 'لاغي' && !(order.status || '').includes('لاغي') && !(order.status || '').includes('إلغاء')) return false;
           else if (statusFilter !== 'لاغي' && order.status !== statusFilter) return false;
         }
         if (dateFilter && order.date !== dateFilter) return false;
-
         return true;
       });
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات تظهر في هذا القسم</h6></div>`;
-        return;
-      }
+      if (filtered.length === 0) { container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات تظهر في هذا القسم</h6></div>`; return; }
 
       container.innerHTML = filtered.map(order => `
         <div class="col-12 col-md-6 col-lg-4">
           <div class="card card-order p-3 ${getStatusClassKey(order.status)}" onclick="openOrderDetailsModal('${order.id}')">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
-                <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
-              </div>
+              <div><h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6><small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small></div>
               <div>${getStatusBadgeHtml(order.status)}</div>
             </div>
-
             <div class="mb-2 text-secondary small">
               <div><i class="fa-solid fa-location-dot text-danger me-1"></i> ${order.clientAddress}</div>
               <div><i class="fa-solid fa-wrench text-primary me-1"></i> ${order.device}</div>
               ${order.notes ? `<div class="mt-1 text-dark bg-light p-1 rounded small"><i class="fa-solid fa-comment-dots text-secondary me-1"></i>${order.notes}</div>` : ''}
             </div>
-
             <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top" onclick="event.stopPropagation()">
               <div class="d-flex gap-2">
                 <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call"><i class="fa-solid fa-phone"></i></a>
                 <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
               </div>
-
               <div class="d-flex align-items-center gap-1">
                 <select class="form-select form-select-sm fw-bold border-secondary" style="width: 130px;" onchange="updateOrderStatus('${order.id}', this.value)">
                   <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
@@ -1199,10 +1123,7 @@
                   <option value="لاغي" ${(order.status || '').includes('لاغي') ? 'selected' : ''}>لاغي</option>
                   <option value="مرتجع" ${order.status === 'مرتجع' ? 'selected' : ''}>مرتجع</option>
                 </select>
-
-                <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة">
-                  <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
-                </button>
+                <button class="btn btn-sm btn-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')" title="فتح الفاتورة"><i class="fa-solid fa-file-invoice me-1"></i> الفاتورة</button>
               </div>
             </div>
           </div>
@@ -1216,46 +1137,20 @@
     }
 
     function clickAdminKpiStatusFilter(statusVal) {
-      document.querySelectorAll('#adminMainView .kpi-card').forEach(c => c.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      if (statusVal === 'all') {
-        document.getElementById('adminFilterStatusSelect').value = '';
-      } else {
-        document.getElementById('adminFilterStatusSelect').value = statusVal;
-      }
-      renderAdminOrders();
-      document.getElementById('adminOrdersContainer').scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('#adminMainView .kpi-card').forEach(c => c.classList.remove('active')); event.currentTarget.classList.add('active');
+      document.getElementById('adminFilterStatusSelect').value = statusVal === 'all' ? '' : statusVal;
+      renderAdminOrders(); document.getElementById('adminOrdersContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
     function switchAdminSection(sec) {
-      document.getElementById('adminSectionOrders').classList.add('d-none');
-      document.getElementById('adminSectionTechs').classList.add('d-none');
-      document.getElementById('adminSectionMap').classList.add('d-none');
-
-      document.getElementById('btnAdminTabOrders').className = 'btn btn-outline-primary fw-bold';
-      document.getElementById('btnAdminTabTechs').className = 'btn btn-outline-primary fw-bold';
-      document.getElementById('btnAdminTabMap').className = 'btn btn-outline-primary fw-bold';
-
-      if (sec === 'orders') {
-        document.getElementById('adminSectionOrders').classList.remove('d-none');
-        document.getElementById('btnAdminTabOrders').className = 'btn btn-primary fw-bold';
-        renderAdminOrders();
-      } else if (sec === 'techs') {
-        document.getElementById('adminSectionTechs').classList.remove('d-none');
-        document.getElementById('btnAdminTabTechs').className = 'btn btn-primary fw-bold';
-        renderAdminTechsGrid();
-      } else if (sec === 'map') {
-        document.getElementById('adminSectionMap').classList.remove('d-none');
-        document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold';
-        setTimeout(initMap, 200);
-      }
+      document.getElementById('adminSectionOrders').classList.add('d-none'); document.getElementById('adminSectionTechs').classList.add('d-none'); document.getElementById('adminSectionMap').classList.add('d-none');
+      document.getElementById('btnAdminTabOrders').className = 'btn btn-outline-primary fw-bold'; document.getElementById('btnAdminTabTechs').className = 'btn btn-outline-primary fw-bold'; document.getElementById('btnAdminTabMap').className = 'btn btn-outline-primary fw-bold';
+      if (sec === 'orders') { document.getElementById('adminSectionOrders').classList.remove('d-none'); document.getElementById('btnAdminTabOrders').className = 'btn btn-primary fw-bold'; renderAdminOrders(); } 
+      else if (sec === 'techs') { document.getElementById('adminSectionTechs').classList.remove('d-none'); document.getElementById('btnAdminTabTechs').className = 'btn btn-primary fw-bold'; renderAdminTechsGrid(); } 
+      else if (sec === 'map') { document.getElementById('adminSectionMap').classList.remove('d-none'); document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold'; setTimeout(initMap, 200); }
     }
 
-    function clearAdminDateFilter() {
-      document.getElementById('adminFilterDate').value = '';
-      renderAdminOrders();
-    }
+    function clearAdminDateFilter() { document.getElementById('adminFilterDate').value = ''; renderAdminOrders(); }
 
     function renderAdminOrders() {
       const container = document.getElementById('adminOrdersContainer');
@@ -1279,51 +1174,35 @@
         }
         if (dateFilter && o.date !== dateFilter) return false;
         if (searchTxt) {
-          const m1 = o.clientName.toLowerCase().includes(searchTxt);
-          const m2 = o.clientPhone.includes(searchTxt);
-          const m3 = (o.assignedTechName || '').toLowerCase().includes(searchTxt);
+          const m1 = o.clientName.toLowerCase().includes(searchTxt); const m2 = o.clientPhone.includes(searchTxt); const m3 = (o.assignedTechName || '').toLowerCase().includes(searchTxt);
           if (!m1 && !m2 && !m3) return false;
         }
         return true;
       });
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مسجلة</h6></div>`;
-        return;
-      }
+      if (filtered.length === 0) { container.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h6>لا توجد بلاغات مسجلة</h6></div>`; return; }
 
       container.innerHTML = filtered.map(order => `
         <div class="col-12 col-md-6 col-lg-4">
           <div class="card card-order p-3 ${getStatusClassKey(order.status)}" onclick="openOrderDetailsModal('${order.id}')">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6>
-                <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small>
-              </div>
+              <div><h6 class="fw-bold mb-1 text-dark">${order.clientName}</h6><small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>${order.date}</small></div>
               <div>${getStatusBadgeHtml(order.status)}</div>
             </div>
-
             <div class="mb-2 text-secondary small">
               <div><i class="fa-solid fa-user-gear text-primary me-1"></i> الفني: <strong>${order.assignedTechName || 'غير محدد'}</strong></div>
               <div><i class="fa-solid fa-location-dot text-danger me-1"></i> ${order.clientAddress}</div>
               <div><i class="fa-solid fa-wrench text-secondary me-1"></i> ${order.device}</div>
             </div>
-
             <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top" onclick="event.stopPropagation()">
               <div class="d-flex gap-2">
                 <a href="tel:${order.clientPhone}" class="action-circle-btn btn-call"><i class="fa-solid fa-phone"></i></a>
                 <a href="https://wa.me/2${order.clientPhone.replace(/\D/g,'')}" target="_blank" class="action-circle-btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-                <button class="btn btn-sm btn-outline-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')">
-                  <i class="fa-solid fa-file-invoice me-1"></i> الفاتورة
-                </button>
+                <button class="btn btn-sm btn-outline-success fw-bold" onclick="openOfficialInvoiceModal('${order.id}')"><i class="fa-solid fa-file-invoice me-1"></i> الفاتورة</button>
               </div>
               <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ والعميل">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')" title="حذف البلاغ">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+                <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditOrderModal('${order.id}')" title="تعديل بيانات البلاغ والعميل"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')" title="حذف البلاغ"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
           </div>
@@ -1334,7 +1213,6 @@
     function openOrderDetailsModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
-
       document.getElementById('detailOrderCode').innerText = order.id;
       document.getElementById('detailOrderDate').innerText = order.date || 'اليوم';
       document.getElementById('detailOrderStatusBadge').innerHTML = getStatusBadgeHtml(order.status);
@@ -1344,56 +1222,33 @@
       document.getElementById('detailDevice').innerText = order.device;
       document.getElementById('detailAssignedTech').innerText = order.assignedTechName || 'غير محدد';
       document.getElementById('detailNotes').innerText = order.notes || 'لا توجد ملاحظات إضافية مسجلة.';
-
       document.getElementById('detailCallBtn').href = 'tel:' + order.clientPhone;
       document.getElementById('detailWhatsappBtn').href = 'https://wa.me/2' + order.clientPhone.replace(/\D/g,'');
 
       const invState = document.getElementById('detailInvoiceState');
-      if (order.invoice && order.invoice.totalCost) {
-        invState.className = 'badge bg-success fs-6';
-        invState.innerText = `تم إصدار الفاتورة (${order.invoice.totalCost} ج.م)`;
-      } else {
-        invState.className = 'badge bg-secondary fs-6';
-        invState.innerText = 'لم تصدر فاتورة بعد';
-      }
+      if (order.invoice && order.invoice.totalCost) { invState.className = 'badge bg-success fs-6'; invState.innerText = `تم إصدار الفاتورة (${order.invoice.totalCost} ج.م)`; } 
+      else { invState.className = 'badge bg-secondary fs-6'; invState.innerText = 'لم تصدر فاتورة بعد'; }
 
-      document.getElementById('detailEditBtn').onclick = () => {
-        bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
-        openEditOrderModal(order.id);
-      };
-
-      document.getElementById('detailInvoiceBtn').onclick = () => {
-        bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
-        openOfficialInvoiceModal(order.id);
-      };
-
+      document.getElementById('detailEditBtn').onclick = () => { bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide(); openEditOrderModal(order.id); };
+      document.getElementById('detailInvoiceBtn').onclick = () => { bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide(); openOfficialInvoiceModal(order.id); };
       new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
     }
 
     function showAddOrderModal() {
-      document.getElementById('orderModalTitle').innerText = 'إضافة بلاغ صيانة جديد';
-      document.getElementById('orderFormId').value = '';
-      document.getElementById('orderForm').reset();
+      document.getElementById('orderModalTitle').innerText = 'إضافة بلاغ صيانة جديد'; document.getElementById('orderFormId').value = ''; document.getElementById('orderForm').reset();
       document.getElementById('orderDate').value = getLocalDateStr();
-      const select = document.getElementById('orderAssignedTech');
-      select.innerHTML = '<option value="">-- اختر الفني --</option>' + globalTechs.map(t => `<option value="${t.id}">${t.name} (${t.code || t.id})</option>`).join('');
+      const select = document.getElementById('orderAssignedTech'); select.innerHTML = '<option value="">-- اختر الفني --</option>' + globalTechs.map(t => `<option value="${t.id}">${t.name} (${t.code || t.id})</option>`).join('');
       new bootstrap.Modal(document.getElementById('orderModal')).show();
     }
 
     function openEditOrderModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
-      document.getElementById('orderModalTitle').innerText = 'تعديل بيانات البلاغ والعميل';
-      document.getElementById('orderFormId').value = order.id;
-      document.getElementById('orderClientName').value = order.clientName;
-      document.getElementById('orderClientPhone').value = order.clientPhone;
-      document.getElementById('orderClientAddress').value = order.clientAddress;
-      document.getElementById('orderDevice').value = order.device;
-      document.getElementById('orderDate').value = order.date;
-      document.getElementById('orderStatus').value = order.status;
-      document.getElementById('orderNotes').value = order.notes || '';
-      const select = document.getElementById('orderAssignedTech');
-      select.innerHTML = '<option value="">-- اختر الفني --</option>' + globalTechs.map(t => `<option value="${t.id}" ${t.id === order.assignedTechId ? 'selected' : ''}>${t.name} (${t.code || t.id})</option>`).join('');
+      document.getElementById('orderModalTitle').innerText = 'تعديل بيانات البلاغ والعميل'; document.getElementById('orderFormId').value = order.id;
+      document.getElementById('orderClientName').value = order.clientName; document.getElementById('orderClientPhone').value = order.clientPhone;
+      document.getElementById('orderClientAddress').value = order.clientAddress; document.getElementById('orderDevice').value = order.device;
+      document.getElementById('orderDate').value = order.date; document.getElementById('orderStatus').value = order.status; document.getElementById('orderNotes').value = order.notes || '';
+      const select = document.getElementById('orderAssignedTech'); select.innerHTML = '<option value="">-- اختر الفني --</option>' + globalTechs.map(t => `<option value="${t.id}" ${t.id === order.assignedTechId ? 'selected' : ''}>${t.name} (${t.code || t.id})</option>`).join('');
       new bootstrap.Modal(document.getElementById('orderModal')).show();
     }
 
@@ -1401,8 +1256,7 @@
       e.preventDefault();
       const existingId = document.getElementById('orderFormId').value;
       const id = existingId || ('ORD-' + Math.floor(1000 + Math.random() * 9000));
-      const assignedId = document.getElementById('orderAssignedTech').value;
-      const assignedTech = globalTechs.find(t => t.id === assignedId);
+      const assignedId = document.getElementById('orderAssignedTech').value; const assignedTech = globalTechs.find(t => t.id === assignedId);
 
       const orderData = {
         id: id, clientName: document.getElementById('orderClientName').value.trim(), clientPhone: document.getElementById('orderClientPhone').value.trim(),
@@ -1410,16 +1264,10 @@
         assignedTechId: assignedId, assignedTechName: assignedTech ? assignedTech.name : 'غير محدد', date: document.getElementById('orderDate').value || getLocalDateStr(),
         status: document.getElementById('orderStatus').value, notes: document.getElementById('orderNotes').value.trim()
       };
-
-      db.ref('orders/' + id).update(orderData).then(() => {
-        bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-        showToast(existingId ? 'تم تعديل بيانات البلاغ والعميل بنجاح!' : 'تم حفظ البلاغ سحابياً بنجاح');
-      });
+      db.ref('orders/' + id).update(orderData).then(() => { bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide(); showToast(existingId ? 'تم التعديل بنجاح!' : 'تم حفظ البلاغ سحابياً'); });
     }
 
-    function deleteOrder(orderId) {
-      if (confirm('هل أنت متأكد من حذف هذا البلاغ؟')) { db.ref('orders/' + orderId).remove().then(() => showToast('تم الحذف')); }
-    }
+    function deleteOrder(orderId) { if (confirm('هل أنت متأكد من حذف هذا البلاغ؟')) { db.ref('orders/' + orderId).remove().then(() => showToast('تم الحذف')); } }
 
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
@@ -1432,24 +1280,16 @@
                 <h6 class="fw-bold mb-0">${t.name}</h6>
                 <span class="badge bg-success-subtle text-success py-0 my-1 small"><i class="fa-solid fa-check-circle"></i> معتمد سحابياً</span>
                 <div class="small text-muted">${t.specialty || 'صيانة عامة'}</div>
-                <div class="small">
-                  <span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span>
-                  <span class="${t.isOnline ? 'text-success fw-bold' : 'text-secondary'}">${t.isOnline ? 'متصل الآن' : 'غير متصل'}</span>
-                </div>
+                <div class="small"><span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span><span class="${t.isOnline ? 'text-success fw-bold' : 'text-secondary'}">${t.isOnline ? 'متصل الآن' : 'غير متصل'}</span></div>
               </div>
             </div>
             <div class="bg-light p-2 rounded small mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span><strong>كود:</strong> <span class="badge bg-primary">${t.code || t.id}</span></span>
-                <span><strong>المستخدم:</strong> <span class="badge bg-dark">${t.username}</span></span>
-              </div>
+              <div class="d-flex justify-content-between mb-1"><span><strong>كود:</strong> <span class="badge bg-primary">${t.code || t.id}</span></span><span><strong>المستخدم:</strong> <span class="badge bg-dark">${t.username}</span></span></div>
               <div class="mb-1"><strong>كلمة المرور:</strong> <span class="badge bg-secondary">${t.password}</span></div>
               <div><strong>الهاتف:</strong> ${t.phone}</div>
             </div>
             <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
-              <button class="btn btn-sm btn-outline-success fw-bold" onclick="viewTechIdCard('${t.id}')">
-                <i class="fa-solid fa-id-badge me-1"></i> الكارنيه والبطاقة
-              </button>
+              <button class="btn btn-sm btn-outline-success fw-bold" onclick="viewTechIdCard('${t.id}')"><i class="fa-solid fa-id-badge me-1"></i> الكارنيه والبطاقة</button>
               <div class="d-flex gap-1">
                 <button class="btn btn-sm btn-outline-primary fw-bold" onclick="openEditTechModal('${t.id}')"><i class="fa-solid fa-pen-to-square me-1"></i> تعديل</button>
                 <button class="btn btn-sm btn-outline-danger" onclick="deleteTechnician('${t.id}')"><i class="fa-solid fa-trash"></i></button>
@@ -1461,95 +1301,48 @@
     }
 
     function showAddTechModal() {
-      document.getElementById('techModalTitle').innerText = 'إضافة فني جديد';
-      document.getElementById('techFormId').value = '';
-      document.getElementById('techPhotoBase64').value = '';
-      document.getElementById('techIdCardBase64').value = '';
-      document.getElementById('techPhotoPreview').src = 'https://via.placeholder.com/90';
-      document.getElementById('techIdCardPreview').src = 'https://via.placeholder.com/130x85?text=ID+Card';
-      document.getElementById('techForm').reset();
-      document.getElementById('techCodeInput').value = 'TECH-' + Math.floor(100 + Math.random() * 900);
+      document.getElementById('techModalTitle').innerText = 'إضافة فني جديد'; document.getElementById('techFormId').value = ''; document.getElementById('techPhotoBase64').value = ''; document.getElementById('techIdCardBase64').value = ''; document.getElementById('techPhotoPreview').src = 'https://via.placeholder.com/90'; document.getElementById('techIdCardPreview').src = 'https://via.placeholder.com/130x85?text=ID+Card'; document.getElementById('techForm').reset(); document.getElementById('techCodeInput').value = 'TECH-' + Math.floor(100 + Math.random() * 900);
       new bootstrap.Modal(document.getElementById('techModal')).show();
     }
 
     function openEditTechModal(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
-      document.getElementById('techModalTitle').innerText = 'تعديل بيانات الفني';
-      document.getElementById('techFormId').value = tech.id;
-      document.getElementById('techName').value = tech.name;
-      document.getElementById('techCodeInput').value = tech.code || tech.id;
-      document.getElementById('techUsername').value = tech.username;
-      document.getElementById('techPassword').value = tech.password;
-      document.getElementById('techPhone').value = tech.phone;
-      document.getElementById('techSpecialty').value = tech.specialty || '';
-      document.getElementById('techPhotoBase64').value = tech.photo || '';
-      document.getElementById('techPhotoPreview').src = tech.photo || 'https://via.placeholder.com/90';
-      document.getElementById('techIdCardBase64').value = tech.idCardPhoto || '';
-      document.getElementById('techIdCardPreview').src = tech.idCardPhoto || 'https://via.placeholder.com/130x85?text=ID+Card';
+      document.getElementById('techModalTitle').innerText = 'تعديل بيانات الفني'; document.getElementById('techFormId').value = tech.id; document.getElementById('techName').value = tech.name; document.getElementById('techCodeInput').value = tech.code || tech.id; document.getElementById('techUsername').value = tech.username; document.getElementById('techPassword').value = tech.password; document.getElementById('techPhone').value = tech.phone; document.getElementById('techSpecialty').value = tech.specialty || ''; document.getElementById('techPhotoBase64').value = tech.photo || ''; document.getElementById('techPhotoPreview').src = tech.photo || 'https://via.placeholder.com/90'; document.getElementById('techIdCardBase64').value = tech.idCardPhoto || ''; document.getElementById('techIdCardPreview').src = tech.idCardPhoto || 'https://via.placeholder.com/130x85?text=ID+Card';
       new bootstrap.Modal(document.getElementById('techModal')).show();
     }
 
     function handleImageFileSelect(input, hiddenInputId, previewImgId) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById(hiddenInputId).value = e.target.result;
-          document.getElementById(previewImgId).src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
+      if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById(hiddenInputId).value = e.target.result; document.getElementById(previewImgId).src = e.target.result; }; reader.readAsDataURL(input.files[0]); }
     }
 
     function saveTechnician(e) {
       e.preventDefault();
-      const existingId = document.getElementById('techFormId').value;
-      const techId = existingId || ('T' + Math.floor(100 + Math.random() * 900));
+      const existingId = document.getElementById('techFormId').value; const techId = existingId || ('T' + Math.floor(100 + Math.random() * 900));
       const techObj = {
-        id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(),
-        username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(),
-        phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة',
-        photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '',
-        isOnline: true, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04
+        id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(), username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(), phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة', photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '', isOnline: true, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04
       };
-      db.ref('techs/' + techId).set(techObj).then(() => {
-        bootstrap.Modal.getInstance(document.getElementById('techModal')).hide();
-        showToast('تم حفظ وتحديث بيانات الفني بنجاح!');
-      });
+      db.ref('techs/' + techId).set(techObj).then(() => { bootstrap.Modal.getInstance(document.getElementById('techModal')).hide(); showToast('تم حفظ وتحديث بيانات الفني بنجاح!'); });
     }
 
-    function deleteTechnician(techId) {
-      if (confirm('هل أنت متأكد من حذف هذا الفني نهائياً من السحابة؟')) { db.ref('techs/' + techId).remove().then(() => showToast('تم الحذف')); }
-    }
+    function deleteTechnician(techId) { if (confirm('هل أنت متأكد من حذف هذا الفني نهائياً من السحابة؟')) { db.ref('techs/' + techId).remove().then(() => showToast('تم الحذف')); } }
 
     function viewTechIdCard(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
-      document.getElementById('profileModalName').innerText = tech.name;
-      document.getElementById('profileModalCode').innerText = tech.code || tech.id;
-      document.getElementById('profileModalSpecialty').innerText = 'التخصص: ' + (tech.specialty || 'صيانة عامة');
-      document.getElementById('profileModalPhone').innerText = tech.phone;
-      document.getElementById('profileModalPhoto').src = tech.photo || 'https://via.placeholder.com/90';
+      document.getElementById('profileModalName').innerText = tech.name; document.getElementById('profileModalCode').innerText = tech.code || tech.id; document.getElementById('profileModalSpecialty').innerText = 'التخصص: ' + (tech.specialty || 'صيانة عامة'); document.getElementById('profileModalPhone').innerText = tech.phone; document.getElementById('profileModalPhoto').src = tech.photo || 'https://via.placeholder.com/90';
       const idCardBox = document.getElementById('profileModalIdCardBox');
-      if (tech.idCardPhoto) { idCardBox.style.display = 'block'; document.getElementById('profileModalIdCard').src = tech.idCardPhoto; } 
-      else { idCardBox.style.display = 'none'; }
+      if (tech.idCardPhoto) { idCardBox.style.display = 'block'; document.getElementById('profileModalIdCard').src = tech.idCardPhoto; } else { idCardBox.style.display = 'none'; }
       new bootstrap.Modal(document.getElementById('techProfileModal')).show();
     }
 
     function showTechProfileModal() { if (currentTech) viewTechIdCard(currentTech.id); }
 
-    // ==================== نافذة الفاتورة والتعامل مع الكيبورد بسلاسة ====================
+    // ==================== رسم الفاتورة وإنشاء الـ PDF باحترافية ====================
     let officialInvoiceParts = [];
-
-    // إعداد خطوط PDFMake العربية
-    pdfMake.fonts = {
-      Roboto: {
-        normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf',
-        bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Medium.ttf',
-        italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Italic.ttf',
-        bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-MediumItalic.ttf'
-      }
-    };
+    
+    // الشعار كصورة ثابتة نقية 100% ليقرأها الـ PDF والواتساب بدون أي خطأ
+    const LOGO_KIRIAZI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFkElEQVR4nO2dW2hcVRjH/2fSpmnaJrVN0zRNm5hETbVN1BqrD2qrgihFfFDwQQUVKz4oqPgk+KaI+KBo8U2xKkWF+qCgiIggQvWlaCwaNWmTNmkaTZrGTbN5PCd1Z+ZkZ5Izc85M9h8+hFzmzJlzvv1+Z86eM2dBBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEFUpRkANgDYDGADgCaS7AawF8A1AHfK1z/1YwBvA5gBcB/APQBvlK/n9Yd8p1wB8CGANQDOAhhgE9Q6LwN4C8BlAH8CeFkSshLADY27t49NUKuEAVwBcAzANwBWSlx0V+PuXWETlJzDAK4BOAvgfYmL6hrfM5IExA8AnABwCsBBEhdtaHzPqyQx/pMAzgKYAnBcgT11P02lW3W4B6jBq2xixX2vS0w2N+o21oP5/jU2qXoexh92gK4qE/aL2kY39z19k4+xyRWeo4XoIeB87SjAkwCeBPAYgD1sIvnxN8BfQ80D2A7gQQBPAHjA81T49wHMAPgZwHkAlwDMBfzv1wDcB3CX2wI11+4A8AKAvQAe8ziVbwP4FcAPAA4DWA/gHo/7/X1b5U/c+74XwAsAHjI4PQLgOICLAE4DeA3AThn7/d4X+R337t4F4BUADxnc+1EAHwL4FcA0gD0AvuH988wL5H0AP+Pe9kEArzG19/MAjrrud1l1f6LqWzO+3Vj3mJ3nKx/gQ1zP8u2u+43X7S017rM22eTf118wXjJ1D1d4+wR8X+O+zL5lGfcx6Q7bX1l9n/1d/157pEbs+1vGfYxXbT2g/T4tZfT3fP82m7z8m+V16e2w9/55bHLydw/l/UeL0e443XG643TH6Y7THac7TndcNZ3e21WnO053nO443XG643TH6Y7THac7rtpO7+2q0x2nO64YnTYvG3k3gLcBbASwAcCj1p139yGf8h1o5Z+v3gXwBYC/AQyxCepE2/U93gB2cK33hG2yN3m+7+9+kZl/fPzI03c5bTq+J/k3gEsAfsL1+4nIer6nF+/3A3yE6/d4kZl/fPzI03dZn6/5nuTfAC4C+AnX7yci6/meXrzfD/ARrt/jRWb+8fEjT99lXU7n3wAWMvN3zfxD0zNnALzHzD8+fuTpu6zPyXU3gL1t4HkAj+B64XgKwFs8T4V/n2c1nAXwC4BTvBBtHcCjAB4C8AivNnkGwMsA7iM9/q7w75uYx2UAxwFMAjhd4b1k5y6AVwA8ZHDvpQC+BnAGwHkAmwBscP0+b6XyNoDvcO/7D15u+KDBvU/y3P0SgF8BXOK7XvB2T4t4lM19bK4T133K7W/1Ldt+0/017s1zLgLgWwO2b5x7uH3mGvdx21c2+4yv2P4D93n3l4ydfL/GfYbXyq7YfrP6vvr9m9P+5L+3XjB25l5+v1XjPr/7W2xf2XyT/b1Lxs7vPtxnbnEf37sUAH83d2+c7jjdcbpD0h2nO053nO64ajq9t6tOd5zuON1xuuN0x+mO0x2nO67aTu/tqtMdpztOd1yBTo/xW7lK5x8d+/5e5513vBvAWwBe5M11W2yTPQrgHQCfArgAYJi/f2rX+Ue7vvcCeI+34B8EMMQmqBXa9X1l+38H8BiAXTymWj3/eA1rN4D3ADwF4B6PB4t4gL1dvw/g10qcf1S8v1M6R4qaf5y5n01Q67Tr+8r2P+a1pAebzD8u8yK0MwB+AfArL1Yru/9w1fOP+wC8B+A5AA97PFiU02P9/gEANwEcx/X8Yw2A7TwedD188GgB1/OPwxyr5x8V7+91r+08j4vS+Ud1/6Hj/GMCv+B6/vEQ5x81n3+06/vK9j8F4ByAn/h7X5VfRBAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEwfX+BwA0g08v6yR0AAAAAElFTkSuQmCC';
 
     function openOfficialInvoiceModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
@@ -1557,20 +1350,21 @@
 
       document.getElementById('invoiceOrderId').value = order.id;
 
+      // 1. التاريخ التلقائي الذي طلبته
       const today = new Date();
-      let dayVal = String(today.getDate()).padStart(2, '0');
-      let monthVal = String(today.getMonth() + 1).padStart(2, '0');
-      let yearVal = String(today.getFullYear());
+      document.getElementById('invDateDay').value = String(today.getDate()).padStart(2, '0');
+      document.getElementById('invDateMonth').value = String(today.getMonth() + 1).padStart(2, '0');
+      document.getElementById('invDateYear').value = String(today.getFullYear());
 
       if (order.invoice) {
         document.getElementById('invoiceTemplateSelector').value = order.invoice.templateType || 'kiriazi_electronic';
         officialInvoiceParts = JSON.parse(JSON.stringify(order.invoice.parts || []));
       } else {
         document.getElementById('invoiceTemplateSelector').value = 'kiriazi_electronic';
-        officialInvoiceParts = [
-          { name: 'فحص وصيانة عامة للجهاز', qty: 1, price: 150 }
-        ];
+        officialInvoiceParts = [{ name: 'فحص وصيانة عامة للجهاز', qty: 1, price: 150 }];
       }
+
+      renderActiveInvoiceLayout();
 
       document.getElementById('invSheetClientName').value = order.clientName;
       document.getElementById('invSheetClientPhone').value = order.clientPhone;
@@ -1579,308 +1373,342 @@
       document.getElementById('invSheetDeviceBrand').value = order.device.includes('كيريازي') ? 'كيريازي' : 'عام';
       document.getElementById('invSheetDeviceModel').value = 'موديل حديث';
       document.getElementById('invSheetProblemDesc').value = order.notes || 'عدم تبريد تحت / فحص وصيانة دورية';
-
       document.getElementById('invSheetNumber').value = (order.invoice && order.invoice.number) ? order.invoice.number : Math.floor(1000 + Math.random() * 9000);
 
+      // استرجاع التاريخ إن كان محفوظاً مسبقاً
       if (order.invoice && order.invoice.dateParts) {
-        dayVal = order.invoice.dateParts.day; monthVal = order.invoice.dateParts.month; yearVal = order.invoice.dateParts.year;
+        document.getElementById('invDateDay').value = order.invoice.dateParts.day;
+        document.getElementById('invDateMonth').value = order.invoice.dateParts.month;
+        document.getElementById('invDateYear').value = order.invoice.dateParts.year;
       }
-      document.getElementById('invDateDay').value = dayVal; document.getElementById('invDateMonth').value = monthVal; document.getElementById('invDateYear').value = yearVal;
 
-      renderSimpleTable();
-      updateTotalOnly(); // تحديث الإجمالي فقط بدون إعادة رسم لضمان بقاء الكيبورد
-
+      renderOfficialPartsTable();
       new bootstrap.Modal(document.getElementById('officialInvoiceModal')).show();
     }
 
+    function renderActiveInvoiceLayout() {
+      const template = document.getElementById('invoiceTemplateSelector').value;
+      const headerContainer = document.getElementById('invDynamicHeaderContainer');
+      const boxesContainer = document.getElementById('invDynamicBoxesContainer');
+      const stampBox = document.getElementById('invSheetStamp');
+      const subtotalLabel = document.getElementById('invSubtotalLabel');
+      const totalLabel = document.getElementById('invTotalLabel');
+      const totalRow = document.getElementById('invTotalRowStyle');
+      const termsContainer = document.getElementById('invDynamicTermsContainer');
+      const thElements = document.querySelectorAll('#invTableHeaderRow th');
+
+      if (template === 'kiriazi_electronic') {
+        headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
+        headerContainer.style.background = "#ffffff";
+        headerContainer.innerHTML = `
+          <div style="width: 230px; text-align: right;">
+            <!-- استخدام الشعار كصورة ثابتة لتفادي أخطاء المكتبات -->
+            <img src="${LOGO_KIRIAZI}" style="max-width: 170px; height: auto;">
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <h2 style="font-weight: 900; color: #0d3b66; margin: 0; font-size: 2.2rem; letter-spacing: -0.5px;">فاتورة اصلاح وضمان الكترونية</h2>
+            <div style="font-size: 1rem; font-weight: bold; color: #333; margin-top: 4px;">Certified Home Appliances Maintenance</div>
+          </div>
+          <div style="width: 230px; text-align: left;">
+            <div style="background: #198754; color: #fff; padding: 6px 24px; border-radius: 20px 0 20px 0; font-weight: 900; font-size: 1.35rem; display: inline-block; box-shadow: 0 3px 6px rgba(0,0,0,0.15);">
+              <i class="fa-solid fa-file-invoice me-1"></i> فاتورة
+            </div>
+            <div class="mt-2 text-start fw-bold" style="font-size: 0.95rem;">
+              <span>رقم الفاتورة : </span>
+              <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold fs-6" style="width: 85px;" value="1001">
+            </div>
+          </div>
+        `;
+
+        boxesContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title" style="background:#198754 !important;"><i class="fa-solid fa-mobile-screen me-1"></i> بيانات الجهاز</div>
+              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+            <div style="min-width: 200px; text-align: center;">
+              <div style="display: inline-flex; align-items: baseline; justify-content: center; font-size: 1.05rem; font-weight: bold;">
+                <span class="me-2"><i class="fa-solid fa-calendar-days text-success"></i> التاريخ : </span>
+                <div style="display: inline-flex; align-items: baseline; direction: ltr !important;">
+                  <input type="text" id="invDateDay" placeholder="01" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;">
+                  <span class="fw-bold mx-1 fs-5">/</span>
+                  <input type="text" id="invDateMonth" placeholder="10" class="inv-dotted-input text-center fw-bold fs-5" style="width: 38px; direction: ltr !important;">
+                  <span class="fw-bold mx-1 fs-5">/</span>
+                  <input type="text" id="invDateYear" placeholder="2026" class="inv-dotted-input text-center fw-bold fs-5" style="width: 60px; direction: ltr !important;">
+                </div>
+              </div>
+            </div>
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title" style="background:#198754 !important;"><i class="fa-solid fa-gear me-1"></i> بيانات العميل</div>
+              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>رقم الهاتف : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>العنوان : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+          </div>
+        `;
+
+        thElements.forEach(th => { th.style.backgroundColor = "#0e5c36"; th.style.color = "#ffffff"; });
+        subtotalLabel.innerHTML = `<span>المجموع الفرعي :</span> <i class="fa-solid fa-coins text-warning ms-1"></i>`;
+        totalLabel.innerHTML = `<span>الإجمالي الكلي :</span> <i class="fa-solid fa-sack-dollar text-warning ms-1"></i>`;
+        totalRow.style.backgroundColor = "#0e5c36";
+        totalRow.style.color = "#ffffff";
+
+        termsContainer.innerHTML = `
+          <div class="inv-terms-bar mt-3 py-2 px-3">
+            <div class="d-flex align-items-center">
+              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
+              <span class="me-1">شروط الضمان :</span>
+            </div>
+            <div><i class="fa-solid fa-wrench text-success me-1"></i> تم تسليم الجهاز يعمل بحالة جيدة</div>
+            <div>|</div>
+            <div><i class="fa-solid fa-clock text-primary me-1"></i> خدمة 24/7</div>
+            <div>|</div>
+            <div><i class="fa-solid fa-shield-halved text-success me-1"></i> ضمان لمدة عام من تاريخ الفاتورة</div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 px-3 py-1 rounded" style="background:#0e5c36; color:#fff; font-weight:bold;">
+            <div class="fs-5" style="letter-spacing:1px;"><i class="fa-solid fa-heart me-2 text-danger"></i> راحتك .. هدفنا</div>
+            <div class="small opacity-75">صيانة معتمدة بأعلى معايير الجودة والتوريد الأصلي</div>
+          </div>
+        `;
+
+        stampBox.className = "stamp-electronic-seal";
+        stampBox.innerHTML = `
+          <div style="font-size:0.95rem;">ضمان</div>
+          <div style="font-size:0.9rem;">لمدة عام</div>
+          <div style="font-size:0.85rem;">★★★</div>
+        `;
+      } else {
+        // لباقي القوالب نضع اللوجو الثابت لتفادي الأخطاء
+        headerContainer.className = "d-flex justify-content-between align-items-center p-3 border-bottom";
+        headerContainer.style.background = "#ffffff";
+        headerContainer.innerHTML = `
+          <div style="width: 230px; text-align: right;">
+            <div style="background:#0e5c36; color:#fff; padding:4px 25px; border-radius:20px; font-weight:bold; font-size:1.1rem; display:inline-block;">فاتورة</div>
+            <div class="mt-1 fw-bold">رقم الفاتورة : <input type="text" id="invSheetNumber" class="inv-dotted-input text-center fw-bold" style="width: 90px;" value="1001"></div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <h2 style="font-weight: 900; color: #1b633b; margin: 0;">Electric for Home Appliances</h2>
+            <div class="text-muted small fw-bold">Professional Repair &amp; Maintenance Services</div>
+          </div>
+          <div style="width: 230px; text-align: left;">
+            <img src="${LOGO_KIRIAZI}" style="max-width: 170px; height: auto;">
+          </div>
+        `;
+
+        boxesContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title">بيانات الجهاز</div>
+              <div class="inv-row-item"><span>نوع الجهاز : </span><input type="text" id="invSheetDeviceType" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>الماركة : </span><input type="text" id="invSheetDeviceBrand" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>الموديل : </span><input type="text" id="invSheetDeviceModel" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+            <div style="min-width: 180px; text-align: center;">
+              <div class="fw-bold mb-1">التاريخ :</div>
+              <div style="display: inline-flex; direction: ltr !important;">
+                <input type="text" id="invDateDay" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
+                <input type="text" id="invDateMonth" class="inv-dotted-input text-center fw-bold" style="width: 35px;"> /
+                <input type="text" id="invDateYear" class="inv-dotted-input text-center fw-bold" style="width: 55px;">
+              </div>
+            </div>
+            <div class="inv-box-section">
+              <div class="inv-box-pill-title">بيانات العميل</div>
+              <div class="inv-row-item"><span>اسم العميل : </span><input type="text" id="invSheetClientName" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item"><span>رقم الهاتف : </span><input type="text" id="invSheetClientPhone" class="inv-dotted-input w-100 ms-1"></div>
+              <div class="inv-row-item mb-0"><span>العنوان : </span><input type="text" id="invSheetClientAddress" class="inv-dotted-input w-100 ms-1"></div>
+            </div>
+          </div>
+        `;
+
+        thElements.forEach(th => { th.style.backgroundColor = "#0e5c36"; th.style.color = "#ffffff"; });
+        subtotalLabel.innerHTML = `المجموع الفرعي :`;
+        totalLabel.innerHTML = `الإجمالي الكلي :`;
+        totalRow.style.backgroundColor = "#e8f5e9";
+        totalRow.style.color = "#111";
+
+        termsContainer.innerHTML = `
+          <div class="inv-terms-bar">
+            <div class="d-flex align-items-center">
+              <span class="inv-check-badge"><i class="fa-solid fa-check"></i></span>
+              <span class="me-1">شروط الضمان :</span>
+            </div>
+            <div>• تم تسليم الجهاز بعمل بحالة جيدة</div>
+            <div>|</div>
+            <div>• ضمان لمدة عام من تاريخ الفاتورة</div>
+          </div>
+        `;
+
+        stampBox.className = "stamp-kiriazi-red";
+        stampBox.innerHTML = `<div>ضمان</div><div style="font-size:0.95rem;">لمدة عام</div><div>★★★</div>`;
+      }
+    }
+
+    // 2. الحل السحري للكيبورد: تحديث العناصر المطلوبة فقط دون إعادة بناء الـ HTML
     function addOfficialPartRow() {
       officialInvoiceParts.push({ name: '', qty: 1, price: 0 });
-      renderSimpleTable();
-      updateTotalOnly();
+      renderOfficialPartsTable();
     }
 
     function removeOfficialPartRow(idx) {
       if (officialInvoiceParts.length > 1) {
         officialInvoiceParts.splice(idx, 1);
-        renderSimpleTable();
-        updateTotalOnly();
+        renderOfficialPartsTable();
       }
     }
 
-    function renderSimpleTable() {
-      const tbody = document.getElementById('invSimpleTableBody');
-      tbody.innerHTML = officialInvoiceParts.map((item, i) => `
-        <tr>
-          <td class="fw-bold bg-light">${i + 1}</td>
-          <td><input type="text" class="form-control form-control-sm text-end fw-bold border-0 bg-transparent" placeholder="وصف القطعة..." value="${item.name}" oninput="updateDataArray(${i}, 'name', this.value)"></td>
-          <td><input type="number" min="1" class="form-control form-control-sm text-center fw-bold border-0 bg-transparent px-1" value="${item.qty}" oninput="updateDataArray(${i}, 'qty', this.value)"></td>
-          <td><input type="number" min="0" class="form-control form-control-sm text-center fw-bold border-0 bg-transparent px-1" value="${item.price}" oninput="updateDataArray(${i}, 'price', this.value)"></td>
-          <td class="fw-bold text-success align-middle" id="itemTotal_${i}">${(parseFloat(item.qty)||1) * (parseFloat(item.price)||0)}</td>
-          <td><button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" onclick="removeOfficialPartRow(${i})"><i class="fa-solid fa-trash-can"></i></button></td>
-        </tr>
-      `).join('');
-    }
-
-    function updateDataArray(idx, key, val) {
-      if (key === 'qty' || key === 'price') val = parseFloat(val) || 0;
-      officialInvoiceParts[idx][key] = val;
+    // يتم مناداة هذه الدالة عند (فتح النافذة) أو (إضافة/حذف) سطر، وليس عند كتابة أي حرف
+    function renderOfficialPartsTable() {
+      const tbody = document.getElementById('invOfficialTableBody');
+      tbody.innerHTML = '';
       
-      // تحديث إجمالي السطر فوراً بدون إعادة رسم الجدول (يحافظ على الكيبورد)
-      if (key === 'qty' || key === 'price') {
-        const itemTot = (parseFloat(officialInvoiceParts[idx].qty)||1) * (parseFloat(officialInvoiceParts[idx].price)||0);
-        document.getElementById(`itemTotal_${idx}`).innerText = itemTot;
-      }
-      updateTotalOnly();
+      officialInvoiceParts.forEach((item, i) => {
+        const tr = document.createElement('tr');
+        tr.id = `partRow_${i}`;
+        tr.innerHTML = `
+          <td style="font-weight:bold;">${i + 1}</td>
+          <td><input type="text" value="${item.name}" placeholder="البيان..." oninput="updatePartName(${i}, this.value)" style="width:100%; border:none; border-bottom:1.5px dotted #888; background:transparent; font-weight:bold; outline:none; text-align:right;"></td>
+          <td><input type="number" min="1" value="${item.qty}" oninput="updatePartMath(${i}, 'qty', this.value)" style="width:100%; border:none; border-bottom:1.5px dotted #888; background:transparent; font-weight:bold; outline:none; text-align:center;"></td>
+          <td><input type="number" min="0" value="${item.price}" oninput="updatePartMath(${i}, 'price', this.value)" style="width:100%; border:none; border-bottom:1.5px dotted #888; background:transparent; font-weight:bold; outline:none; text-align:center;"></td>
+          <td style="font-weight:bold; color:#0e5c36;" id="partTotal_${i}">${(item.qty || 1) * (item.price || 0)}</td>
+          <td class="no-print"><button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 border-0" onclick="removeOfficialPartRow(${i})"><i class="fa-solid fa-trash-can"></i></button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      calculateGlobalTotals();
     }
 
-    function updateTotalOnly() {
+    function updatePartName(idx, val) {
+      officialInvoiceParts[idx].name = val;
+    }
+
+    // تُحدث سعر السطر وتجمع الإجمالي بدون أن تمسح خانة الإدخال من الـ DOM
+    function updatePartMath(idx, key, val) {
+      officialInvoiceParts[idx][key] = parseFloat(val) || 0;
+      const rowTotal = (officialInvoiceParts[idx].qty || 1) * (officialInvoiceParts[idx].price || 0);
+      document.getElementById(`partTotal_${idx}`).innerText = rowTotal;
+      calculateGlobalTotals();
+    }
+
+    function calculateGlobalTotals() {
+      let subtotal = 0;
+      officialInvoiceParts.forEach(p => subtotal += (parseFloat(p.qty) || 1) * (parseFloat(p.price) || 0));
+      document.getElementById('invSheetSubtotalDisplay').innerText = subtotal;
+      document.getElementById('invSheetTotalDisplay').innerText = subtotal;
+    }
+
+    function getOfficialInvoicePayload() {
       let total = 0;
       officialInvoiceParts.forEach(p => total += (parseFloat(p.qty) || 1) * (parseFloat(p.price) || 0));
-      document.getElementById('invSimpleTotalDisplay').innerText = total;
+      const day = document.getElementById('invDateDay')?.value || '';
+      const month = document.getElementById('invDateMonth')?.value || '';
+      const year = document.getElementById('invDateYear')?.value || '';
+
+      return {
+        number: document.getElementById('invSheetNumber')?.value || '1001',
+        templateType: document.getElementById('invoiceTemplateSelector').value,
+        date: `${year}-${month}-${day}`,
+        dateParts: { day, month, year },
+        clientName: document.getElementById('invSheetClientName')?.value || '',
+        clientPhone: document.getElementById('invSheetClientPhone')?.value || '',
+        clientAddress: document.getElementById('invSheetClientAddress')?.value || '',
+        device: document.getElementById('invSheetDeviceType')?.value || '',
+        problemDesc: document.getElementById('invSheetProblemDesc')?.value || '',
+        parts: officialInvoiceParts.filter(p => p.name.trim() !== '' || p.price > 0),
+        totalCost: total
+      };
     }
 
     function saveOfficialInvoice() {
       const orderId = document.getElementById('invoiceOrderId').value;
-      let total = 0;
-      officialInvoiceParts.forEach(p => total += (parseFloat(p.qty) || 1) * (parseFloat(p.price) || 0));
+      const payload = getOfficialInvoicePayload();
       
-      const payload = {
-        number: document.getElementById('invSheetNumber').value || '1001',
-        templateType: document.getElementById('invoiceTemplateSelector').value,
-        date: `${document.getElementById('invDateYear').value}-${document.getElementById('invDateMonth').value}-${document.getElementById('invDateDay').value}`,
-        dateParts: { day: document.getElementById('invDateDay').value, month: document.getElementById('invDateMonth').value, year: document.getElementById('invDateYear').value },
-        clientName: document.getElementById('invSheetClientName').value,
-        clientPhone: document.getElementById('invSheetClientPhone').value,
-        clientAddress: document.getElementById('invSheetClientAddress').value,
-        device: document.getElementById('invSheetDeviceType').value,
-        problemDesc: document.getElementById('invSheetProblemDesc').value,
-        parts: officialInvoiceParts.filter(p => p.name.trim() !== '' || p.price > 0),
-        totalCost: total
-      };
-
       db.ref('orders/' + orderId).update({ invoice: payload, status: 'تم', statusDate: getLocalDateStr() }).then(() => {
-        showToast('تم اعتماد وحفظ الفاتورة سحابياً بنجاح!');
+        showToast('تم اعتماد الفاتورة ومزامنتها سحابياً بنجاح!');
       });
     }
 
-    // ==================== رسم وإنشاء الـ PDF بالبرمجة الصريحة 100% ====================
+    // 3. التصدير النقي والناجح كـ PDF عبر مكتبة html2pdf
     function generateAndSendPDF() {
       saveOfficialInvoice();
-      showToast('جاري إنشاء ملف PDF فائق الجودة للواتساب...');
 
-      const invNumber = document.getElementById('invSheetNumber').value;
-      const clientName = document.getElementById('invSheetClientName').value;
-      const clientPhone = document.getElementById('invSheetClientPhone').value;
-      let totalSum = 0;
+      const invoiceElement = document.getElementById('printableOfficialInvoice');
+      const clientPhone = document.getElementById('invSheetClientPhone')?.value.replace(/\D/g, '') || '';
+      const clientName = document.getElementById('invSheetClientName')?.value || '';
+      const invNumber = document.getElementById('invSheetNumber')?.value || '1001';
 
-      // تجهيز بيانات الجدول للـ PDF
-      const tableBody = [
-        [
-          { text: 'م', style: 'tableHeader', alignment: 'center' },
-          { text: 'البيان / قطع الغيار', style: 'tableHeader', alignment: 'right' },
-          { text: 'الكمية', style: 'tableHeader', alignment: 'center' },
-          { text: 'سعر الوحدة', style: 'tableHeader', alignment: 'center' },
-          { text: 'الإجمالي', style: 'tableHeader', alignment: 'center' }
-        ]
-      ];
+      showToast('جاري تصدير الفاتورة كملف PDF فائق الدقة للواتساب...');
 
-      officialInvoiceParts.forEach((part, index) => {
-        if(part.name.trim() === '' && part.price === 0) return;
-        const itemTotal = (parseFloat(part.qty) || 1) * (parseFloat(part.price) || 0);
-        totalSum += itemTotal;
-        tableBody.push([
-          { text: (index + 1).toString(), alignment: 'center', margin: [0, 5, 0, 5] },
-          { text: part.name, alignment: 'right', margin: [0, 5, 5, 5] },
-          { text: part.qty.toString(), alignment: 'center', margin: [0, 5, 0, 5] },
-          { text: part.price.toString(), alignment: 'center', margin: [0, 5, 0, 5] },
-          { text: itemTotal.toString(), alignment: 'center', margin: [0, 5, 0, 5], color: '#0e5c36', bold: true }
-        ]);
+      // تحويل مربعات الكتابة إلى نصوص ثابتة لكي يصورها الـ PDF بنقاء بدون مربعات
+      const origInputs = invoiceElement.querySelectorAll('input');
+      const replacements = [];
+      
+      origInputs.forEach(inp => {
+        if (inp.type !== 'hidden') {
+          const span = document.createElement('span');
+          span.textContent = inp.value || ' ';
+          span.style.fontWeight = 'bold';
+          span.style.borderBottom = '1.5px dotted #333';
+          span.style.padding = '0 6px';
+          span.style.display = 'inline-block';
+          span.style.textAlign = 'center';
+          if (['invDateDay', 'invDateMonth', 'invDateYear', 'invSheetNumber'].includes(inp.id)) {
+            span.style.direction = 'ltr';
+          }
+          inp.parentNode.insertBefore(span, inp);
+          inp.style.display = 'none';
+          replacements.push({ input: inp, span: span });
+        }
       });
 
-      // إضافة صفوف المجاميع
-      tableBody.push([
-        { text: 'المجموع الفرعي :', colSpan: 4, alignment: 'left', bold: true, margin: [0, 5, 10, 5], border: [true, true, true, false] },
-        {}, {}, {},
-        { text: totalSum.toString() + ' ج.م', alignment: 'center', bold: true, margin: [0, 5, 0, 5], border: [true, true, true, false] }
-      ]);
-      tableBody.push([
-        { text: 'الإجمالي الكلي :', colSpan: 4, alignment: 'left', bold: true, margin: [0, 5, 10, 5], fillColor: '#0e5c36', color: '#ffffff' },
-        {}, {}, {},
-        { text: totalSum.toString() + ' ج.م', alignment: 'center', bold: true, margin: [0, 5, 0, 5], fillColor: '#0e5c36', color: '#ffffff' }
-      ]);
+      const trashBtns = invoiceElement.querySelectorAll('.no-print');
+      trashBtns.forEach(btn => btn.style.display = 'none');
 
-      // بناء هيكل ملف الـ PDF كاملاً
-      const docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
-        pageMargins: [40, 40, 40, 40],
-        defaultStyle: { font: 'Roboto', fontSize: 12 },
-        content: [
-          // 1. الترويسة العلوية الكاملة
-          {
-            columns: [
-              {
-                width: 250,
-                alignment: 'right',
-                stack: [
-                  {
-                    image: LOGO_KIRIAZI, // لوجو كريازي المعتمد عالي الدقة
-                    width: 160,
-                    alignment: 'right'
-                  }
-                ]
-              },
-              {
-                width: '*',
-                alignment: 'center',
-                stack: [
-                  { text: 'فاتورة اصلاح وضمان الكترونية', fontSize: 24, bold: true, color: '#0d3b66', margin: [0, 5, 0, 0] },
-                  { text: 'Certified Home Appliances Maintenance', fontSize: 11, bold: true, color: '#333333', margin: [0, 3, 0, 0] }
-                ]
-              },
-              {
-                width: 200,
-                alignment: 'left',
-                stack: [
-                  {
-                    table: {
-                      widths: ['*'],
-                      body: [[{ text: 'فاتورة', fillColor: '#198754', color: '#ffffff', bold: true, fontSize: 18, alignment: 'center', border: [false, false, false, false], margin: [0, 5, 0, 5] }]]
-                    },
-                    layout: { defaultBorder: false }
-                  },
-                  { text: 'رقم الفاتورة : ' + invNumber, alignment: 'left', bold: true, margin: [0, 8, 0, 0], fontSize: 14 }
-                ]
-              }
-            ],
-            margin: [0, 0, 0, 20]
-          },
-
-          // 2. الصناديق الثلاثة (عميل - تاريخ - جهاز)
-          {
-            columns: [
-              // بيانات الجهاز (يمين)
-              {
-                width: '32%',
-                table: {
-                  widths: ['*'],
-                  body: [
-                    [{ text: 'بيانات الجهاز', fillColor: '#198754', color: '#ffffff', bold: true, alignment: 'center', border: [true, true, true, false], margin: [0, 3, 0, 3] }],
-                    [{
-                      stack: [
-                        { text: 'نوع الجهاز : ' + document.getElementById('invSheetDeviceType').value, margin: [0, 2, 0, 4], alignment: 'right' },
-                        { text: 'الماركة : ' + document.getElementById('invSheetDeviceBrand').value, margin: [0, 0, 0, 4], alignment: 'right' },
-                        { text: 'الموديل : ' + document.getElementById('invSheetDeviceModel').value, margin: [0, 0, 0, 2], alignment: 'right' }
-                      ],
-                      border: [true, false, true, true], padding: [10, 10, 10, 10]
-                    }]
-                  ]
-                },
-                layout: { defaultBorder: true }
-              },
-              // التاريخ (وسط)
-              {
-                width: '36%',
-                alignment: 'center',
-                stack: [
-                  { text: 'التاريخ', bold: true, fontSize: 14, margin: [0, 20, 0, 5] },
-                  { text: `${document.getElementById('invDateYear').value} / ${document.getElementById('invDateMonth').value} / ${document.getElementById('invDateDay').value}`, bold: true, fontSize: 16 }
-                ]
-              },
-              // بيانات العميل (يسار)
-              {
-                width: '32%',
-                table: {
-                  widths: ['*'],
-                  body: [
-                    [{ text: 'بيانات العميل', fillColor: '#198754', color: '#ffffff', bold: true, alignment: 'center', border: [true, true, true, false], margin: [0, 3, 0, 3] }],
-                    [{
-                      stack: [
-                        { text: 'اسم العميل : ' + clientName, margin: [0, 2, 0, 4], alignment: 'right' },
-                        { text: 'رقم الهاتف : ' + clientPhone, margin: [0, 0, 0, 4], alignment: 'right' },
-                        { text: 'العنوان : ' + document.getElementById('invSheetClientAddress').value, margin: [0, 0, 0, 2], alignment: 'right' }
-                      ],
-                      border: [true, false, true, true], padding: [10, 10, 10, 10]
-                    }]
-                  ]
-                },
-                layout: { defaultBorder: true }
-              }
-            ],
-            columnGap: 10,
-            margin: [0, 0, 0, 15]
-          },
-
-          // 3. وصف المشكلة
-          {
-            text: 'وصف المشكلة : ' + document.getElementById('invSheetProblemDesc').value,
-            bold: true, fontSize: 13, alignment: 'right', margin: [0, 0, 0, 15]
-          },
-
-          // 4. جدول البنود
-          {
-            table: {
-              headerRows: 1,
-              widths: ['auto', '*', 'auto', 'auto', 'auto'],
-              body: tableBody
-            },
-            layout: {
-              hLineWidth: function (i, node) { return 1; },
-              vLineWidth: function (i, node) { return 1; },
-              hLineColor: function (i, node) { return '#888888'; },
-              vLineColor: function (i, node) { return '#888888'; },
-              fillColor: function (rowIndex, node, columnIndex) {
-                return (rowIndex === 0) ? '#0e5c36' : null;
-              }
-            }
-          },
-
-          // 5. شروط الضمان والختم
-          {
-            columns: [
-              {
-                width: '75%',
-                margin: [0, 30, 0, 0],
-                stack: [
-                  { text: 'شروط الضمان :', bold: true, fontSize: 13, alignment: 'right', margin: [0, 0, 0, 5] },
-                  { text: '• تم تسليم الجهاز بعمل بحالة جيدة', alignment: 'right', margin: [0, 0, 0, 3] },
-                  { text: '• ضمان لمدة عام من تاريخ الفاتورة', alignment: 'right', margin: [0, 0, 0, 3] },
-                  { text: '• خدمة 24/7', alignment: 'right' }
-                ]
-              },
-              {
-                width: '25%',
-                alignment: 'center',
-                margin: [0, 15, 0, 0],
-                image: LOGO_AUTH, // ختم الضمان الدائري الذهبي
-                width: 100
-              }
-            ]
-          }
-        ],
-        styles: {
-          tableHeader: { bold: true, fontSize: 13, color: 'white', margin: [0, 8, 0, 8] }
-        }
+      // إعدادات الـ PDF
+      const opt = {
+        margin:       0.1,
+        filename:     `فاتورة_${invNumber}.pdf`,
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { scale: 2.5, useCORS: true }, // حجم ومقاسات مثالية للورقة
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
       };
 
-      // توليد الـ PDF وفتح الواتساب
-      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      
-      pdfDocGenerator.getBlob((blob) => {
+      html2pdf().set(opt).from(invoiceElement).output('blob').then(function(blob) {
+        
+        // إعادة الفاتورة لوضع الإدخال العادي على الشاشة
+        trashBtns.forEach(btn => btn.style.display = '');
+        replacements.forEach(rep => {
+          rep.input.style.display = '';
+          rep.span.remove();
+        });
+
         const file = new File([blob], `فاتورة_${invNumber}.pdf`, { type: 'application/pdf' });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({
-            files: [file],
-            title: 'فاتورة صيانة',
-            text: `مرحباً أستاذ ${clientName}، مرفق الفاتورة والضمان.`
-          }).then(() => showToast('تمت مشاركة الفاتورة بنجاح')).catch(console.error);
+          try {
+            navigator.share({
+              files: [file],
+              title: 'فاتورة صيانة معتمدة',
+              text: `مرحباً أستاذ ${clientName}، مرفق لحضرتك فاتورة الصيانة المعتمدة وضمان لمدة عام.`
+            });
+            showToast('تمت مشاركة الفاتورة بنجاح!');
+          } catch (err) {
+            console.log('Share dismissed');
+          }
         } else {
-          // إذا لم يدعم الهاتف المشاركة المباشرة، ننزله ونفتح الواتساب
-          pdfDocGenerator.download(`فاتورة_${invNumber}.pdf`);
+          // تنزيل الملف إذا لم يدعم الهاتف الـ Share، وفتح الواتساب
+          const downloadUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = `فاتورة_${invNumber}.pdf`;
+          link.click();
+          URL.revokeObjectURL(downloadUrl);
+
           setTimeout(() => {
             const msg = encodeURIComponent(`مرحباً أستاذ ${clientName}، مرفق لحضرتك فاتورة الصيانة المعتمدة وضمان لمدة عام (تم تنزيل ملف الـ PDF على هاتفي وسأرسله لك الآن).`);
-            window.open(`https://wa.me/2${clientPhone.replace(/\D/g, '')}?text=${msg}`, '_blank');
+            window.open(`https://wa.me/2${clientPhone}?text=${msg}`, '_blank');
+            showToast('تم حفظ الملف وفتح الواتساب...');
           }, 1500);
         }
       });
