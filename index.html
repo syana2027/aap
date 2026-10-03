@@ -408,7 +408,7 @@
       </div>
       <div class="col-6 col-md-6">
         <div class="kpi-card" style="color: #dc3545; border-top: 4px solid #dc3545;" onclick="clickKpiStatusFilter('مرتجع')">
-          <small class="text-muted fw-bold d-block">المرجع</small>
+          <small class="text-muted fw-bold d-block">المرتجع</small>
           <h4 class="mb-0 fw-bold" id="techTodayReturns">0</h4>
         </div>
       </div>
@@ -664,7 +664,7 @@
         <div class="modal-body p-3 bg-light">
           <input type="hidden" id="invoiceOrderId">
           
-          <!-- حقول البيانات العلوية الثابتة -->
+          <!-- حقول البيانات العلوية الثابتة مع إضافة تحديد مدة الضمان -->
           <div class="row g-3 mb-3">
             <div class="col-md-3">
               <label class="small fw-bold">رقم الفاتورة</label>
@@ -674,7 +674,17 @@
               <label class="small fw-bold">تاريخ الفاتورة</label>
               <input type="text" id="inputInvDate" class="form-control text-center fw-bold" readonly onclick="openDateModal('inputInvDate')">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
+              <label class="small fw-bold text-success">مدة الضمان الممنوحة</label>
+              <select class="form-select fw-bold border-success" id="inputInvWarrantyDuration">
+                <option value="عام" selected>ضمان لمدة عام (12 شهر)</option>
+                <option value="ستة أشهر">ضمان لمدة ستة أشهر (6 شهور)</option>
+                <option value="ثلاثة أشهر">ضمان لمدة ثلاثة أشهر (3 شهور)</option>
+                <option value="شهر">ضمان لمدة شهر واحد</option>
+                <option value="بدون ضمان">بدون ضمان</option>
+              </select>
+            </div>
+            <div class="col-md-3">
               <label class="small fw-bold">وصف المشكلة</label>
               <input type="text" id="inputInvProblem" class="form-control fw-bold">
             </div>
@@ -838,13 +848,6 @@
 
   <div class="modal fade" id="adminLoginModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-dark text-white"><h6 class="modal-title fw-bold"><i class="fa-solid fa-shield-halved text-warning me-1"></i> دخول الإدارة</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-3"><form onsubmit="submitAdminPassword(event)"><div class="mb-3"><label class="form-label fw-bold small">رمز الإدارة</label><input type="password" id="adminInputPass" class="form-control text-center fs-5 fw-bold" required></div><button type="submit" class="btn btn-primary w-100 fw-bold">دخول</button></form></div></div></div></div>
   <div class="modal fade" id="adminSecurityModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning text-dark"><h6 class="modal-title fw-bold">تغيير رمز الإدارة</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-3"><form onsubmit="saveAdminNewSecuritySettings(event)"><div class="mb-2"><label class="form-label small fw-bold">الرمز الحالي</label><input type="password" id="secCurrentPass" class="form-control" required></div><div class="mb-2"><label class="form-label small fw-bold">الرمز الجديد</label><input type="password" id="secNewPass" class="form-control" required></div><div class="mb-3"><label class="form-label small fw-bold">تأكيد الرمز</label><input type="password" id="secConfirmPass" class="form-control" required></div><button type="submit" class="btn btn-warning fw-bold w-100">تحديث</button></form></div></div></div></div>
-
-  <!-- Toast للإشعارات -->
-  <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 99999;">
-    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert">
-      <div class="d-flex"><div class="toast-body" id="toastMessage">تم بنجاح</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>
-    </div>
-  </div>
 
   <!-- JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1158,6 +1161,7 @@
       document.getElementById('inputInvProblem').value = order.notes || 'فحص وصيانة عامة';
       document.getElementById('inputInvDate').value = (order.invoice && order.invoice.date) ? order.invoice.date : getLocalDateStr();
       document.getElementById('inputInvNumber').value = (order.invoice && order.invoice.number) ? order.invoice.number : Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('inputInvWarrantyDuration').value = (order.invoice && order.invoice.warrantyDuration) ? order.invoice.warrantyDuration : 'عام';
 
       invoicePartsData = (order.invoice && order.invoice.parts) ? JSON.parse(JSON.stringify(order.invoice.parts)) : [{ name: 'فحص وصيانة عامة للجهاز', qty: 1, price: 150 }];
       document.getElementById('invoiceTemplateSelector').value = (order.invoice && order.invoice.templateType) ? order.invoice.templateType : 'kiriazi_electronic';
@@ -1210,6 +1214,7 @@
         number: document.getElementById('inputInvNumber').value,
         templateType: document.getElementById('invoiceTemplateSelector').value,
         date: document.getElementById('inputInvDate').value,
+        warrantyDuration: document.getElementById('inputInvWarrantyDuration').value,
         clientName: document.getElementById('inputInvClientName').value,
         clientPhone: document.getElementById('inputInvClientPhone').value,
         clientAddress: document.getElementById('inputInvClientAddress').value,
@@ -1233,6 +1238,24 @@
         const container = document.getElementById('hiddenInvoiceContainer');
         const dateParts = (payload.date || getLocalDateStr()).split('-');
         const totalCost = payload.totalCost;
+        const warrantyDuration = payload.warrantyDuration || 'عام';
+
+        // ضبط نصوص الضمان حسب الاختيار
+        let sealText = 'لمدة عام';
+        let termsWarrantyText = 'ضمان لمدة عام من تاريخ الفاتورة';
+        if (warrantyDuration === 'ستة أشهر') {
+          sealText = 'لمدة 6 أشهر';
+          termsWarrantyText = 'ضمان لمدة 6 أشهر من تاريخ الفاتورة';
+        } else if (warrantyDuration === 'ثلاثة أشهر') {
+          sealText = 'لمدة 3 أشهر';
+          termsWarrantyText = 'ضمان لمدة 3 أشهر من تاريخ الفاتورة';
+        } else if (warrantyDuration === 'شهر') {
+          sealText = 'لمدة شهر';
+          termsWarrantyText = 'ضمان لمدة شهر من تاريخ الفاتورة';
+        } else if (warrantyDuration === 'بدون ضمان') {
+          sealText = 'بدون ضمان';
+          termsWarrantyText = 'فاتورة صيانة بدون فترة ضمان';
+        }
 
         let partsHtml = '';
         payload.parts.forEach((p, i) => {
@@ -1307,28 +1330,29 @@
                   <tfoot>
                     <tr><td colspan="3" style="border:none;"></td><td style="text-align:left;">المجموع الفرعي :</td><td style="color:#0e5c36;">${totalCost} ج.م</td></tr>
                     <tr style="background:#0e5c36; color:white;"><td colspan="3" style="border:none; background:white;"></td><td style="text-align:left;">الإجمالي الكلي :</td><td>${totalCost} ج.م</td></tr>
-                  </tfoot>
-                </table>
+                </tfoot>
+              </table>
 
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
-                  <div class="render-terms-bar" style="flex:1; margin-top:0;">
-                    <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                    <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>خدمة 24/7</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
-                  </div>
-                  <div class="render-seal-gold">
-                    <div style="font-size:1.1rem;">ضمان</div>
-                    <div style="font-size:0.95rem;">لمدة عام</div>
-                    <div style="font-size:0.85rem;">★★★</div>
-                  </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
+                <div class="render-terms-bar" style="flex:1; margin-top:0;">
+                  <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
+                  <div>تم تسليم الجهاز يعمل بحالة جيدة</div><div>|</div><div>خدمة 24/7</div><div>|</div><div>${termsWarrantyText}</div>
                 </div>
-
-                <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
-                  <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
-                  <div style="font-size:1.1rem;">راحتك .. هدفنا</div>
-                  <div style="opacity:0.85; font-size:0.9rem;">صيانة معتمدة بأعلى معايير الجودة والتوريد الأصلي</div>
+                <div class="render-seal-gold">
+                  <div style="font-size:1.05rem;">ضمان</div>
+                  <div style="font-size:0.9rem;">${sealText}</div>
+                  <div style="font-size:0.8rem;">★★★</div>
                 </div>
               </div>
+
+              <!-- بدون أيقونة القلب في النص -->
+              <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
+                <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
+                <div style="font-size:1.1rem;">راحتك .. هدفنا</div>
+                <div style="opacity:0.85; font-size:0.9rem;">صيانة معتمدة بأعلى معايير الجودة والتوريد الأصلي</div>
+              </div>
             </div>
+          </div>
           `;
         } 
         // 2. قالب المركز المعتمد (19387)
@@ -1385,15 +1409,16 @@
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
                   <div class="render-terms-bar" style="flex:1; margin-top:0;">
                     <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                    <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+                    <div>تم تسليم الجهاز يعمل بحالة جيدة</div><div>|</div><div>${termsWarrantyText}</div>
                   </div>
                   <div class="render-seal-gold">
-                    <div style="font-size:1.1rem;">ضمان</div>
-                    <div style="font-size:0.95rem;">لمدة عام</div>
-                    <div style="font-size:0.85rem;">★★★</div>
+                    <div style="font-size:1.05rem;">ضمان</div>
+                    <div style="font-size:0.9rem;">${sealText}</div>
+                    <div style="font-size:0.8rem;">★★★</div>
                   </div>
                 </div>
 
+                <!-- بدون أيقونة القلب -->
                 <div style="background:#198754; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
                   <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
                   <div>خدمة معتمدة 24/7</div>
@@ -1454,15 +1479,16 @@
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-top:16px;">
                   <div class="render-terms-bar" style="flex:1; margin-top:0;">
                     <div style="display:flex; align-items:center;"><span class="render-check-badge">✓</span> <span>شروط الضمان :</span></div>
-                    <div>تم تسليم الجهاز بعمل بحالة جيدة</div><div>|</div><div>ضمان لمدة عام من تاريخ الفاتورة</div>
+                    <div>تم تسليم الجهاز يعمل بحالة جيدة</div><div>|</div><div>${termsWarrantyText}</div>
                   </div>
                   <div class="render-seal-gold">
-                    <div style="font-size:1.1rem;">ضمان</div>
-                    <div style="font-size:0.95rem;">لمدة عام</div>
-                    <div style="font-size:0.85rem;">★★★</div>
+                    <div style="font-size:1.05rem;">ضمان</div>
+                    <div style="font-size:0.9rem;">${sealText}</div>
+                    <div style="font-size:0.8rem;">★★★</div>
                   </div>
                 </div>
 
+                <!-- بدون أيقونة القلب -->
                 <div style="background:#0e5c36; color:white; padding:8px 16px; margin-top:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
                   <div style="font-size:1.25rem;">كريازي حبي واعتزازي</div>
                   <div>صيانة منزلية معتمدة</div>
@@ -1489,7 +1515,7 @@
             }
 
             const cleanPhone = (payload.clientPhone || '').replace(/\D/g, '');
-            const msg = encodeURIComponent(`مرحباً أستاذ ${payload.clientName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة وضمان لمدة عام.`);
+            const msg = encodeURIComponent(`مرحباً أستاذ ${payload.clientName}، مرفق لحضرتك صورة فاتورة الصيانة المعتمدة (${termsWarrantyText}).`);
 
             if (navigator.canShare && navigator.canShare({ files: [new File([blob], 'invoice.png', { type: 'image/png' })] })) {
               try {
@@ -1499,10 +1525,10 @@
                   title: 'فاتورة صيانة',
                   text: `فاتورة العميل: ${payload.clientName}`
                 });
-                showToast('تمت المشاركة بنجاح!');
+                showToast('تمت مشاركة الفاتورة بنجاح!');
                 return;
               } catch (e) {
-                // في حال الإلغاء نمر للتنزيل وفتح الواتساب
+                // البديل المباشر
               }
             }
 
