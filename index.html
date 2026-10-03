@@ -157,8 +157,12 @@
 
     #map {
       height: 520px;
+      min-height: 480px;
       border-radius: 12px;
       width: 100%;
+      background: #e5e9f0;
+      position: relative;
+      z-index: 1;
     }
     .custom-map-avatar {
       background: transparent;
@@ -221,7 +225,7 @@
       border-color: #3b434e !important;
     }
 
-    /* ==================== الحاوية المخفية للتصوير كصورة للواتساب ==================== */
+    /* الحاوية المخفية للتصوير كصورة للواتساب */
     #hiddenInvoiceContainer {
       position: absolute;
       top: 0;
@@ -559,7 +563,7 @@
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- خريطة الفنيين -->
+    <!-- خريطة الفنيين المحدثة والمحصنة بالكامل -->
     <div id="adminSectionMap" class="d-none">
       <div class="card border-0 shadow-sm p-3 bg-white">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -645,7 +649,7 @@
     </div>
   </div>
 
-  <!-- ==================== مودال الفاتورة (شاشة الإدخال المستقرة لمنع اختفاء الكيبورد) ==================== -->
+  <!-- ==================== مودال الفاتورة ==================== -->
   <div class="modal fade" id="officialInvoiceModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
@@ -664,7 +668,6 @@
         <div class="modal-body p-3 bg-light">
           <input type="hidden" id="invoiceOrderId">
           
-          <!-- حقول البيانات العلوية الثابتة مع تحديد مدة الضمان -->
           <div class="row g-3 mb-3">
             <div class="col-md-3">
               <label class="small fw-bold">رقم الفاتورة</label>
@@ -709,7 +712,6 @@
             </div>
           </div>
 
-          <!-- جدول البنود المستقر المحمي بالكامل -->
           <div class="table-responsive bg-white rounded border">
             <table class="table table-bordered table-sm mb-0 text-center align-middle">
               <thead class="table-dark">
@@ -727,7 +729,6 @@
         <div class="modal-footer justify-content-between bg-white p-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
           <div class="d-flex flex-wrap gap-2">
-            <!-- الزر الذي يبني الفاتورة ويصورها للواتساب كصورة 100% -->
             <button type="button" class="btn btn-success fw-bold btn-sm px-3 shadow" onclick="generateAndSendImage()">
               <i class="fa-brands fa-whatsapp fa-lg me-1"></i> إنشاء وإرسال صورة واتساب
             </button>
@@ -740,10 +741,10 @@
     </div>
   </div>
 
-  <!-- ==================== الحاوية المخفية (التي يتم تصويرها بجودة عالية) ==================== -->
+  <!-- الحاوية المخفية للتصوير -->
   <div id="hiddenInvoiceContainer"></div>
 
-  <!-- حاوية التنبيهات Toast المحمية المضافة صراحةً لمنع أي انهيار -->
+  <!-- حاوية التنبيهات Toast المحمية -->
   <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 99999;">
     <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
@@ -753,7 +754,7 @@
     </div>
   </div>
 
-  <!-- باقي المودالات العامة -->
+  <!-- باقي المودالات -->
   <div class="modal fade" id="datePickerModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow">
@@ -891,7 +892,13 @@
     });
     db.ref('techs').on('value', (snap) => {
       const val = snap.val(); globalTechs = val ? Object.values(val) : [];
-      if (currentRole === 'admin') { renderAdminTechsGrid(); populateMapTechFilterSelect(); if (mapInstance) filterMapByTech(document.getElementById('mapTechFilterSelect')?.value || 'all'); }
+      if (currentRole === 'admin') { 
+        renderAdminTechsGrid(); 
+        populateMapTechFilterSelect(); 
+        if (mapInstance && !document.getElementById('adminSectionMap').classList.contains('d-none')) {
+          filterMapByTech(document.getElementById('mapTechFilterSelect')?.value || 'all'); 
+        }
+      }
       if (currentRole === 'technician' && currentTech) {
         const updated = globalTechs.find(t => t.id === currentTech.id);
         if (updated) { currentTech = updated; if (updated.photo) document.getElementById('techHeaderAvatar').src = updated.photo; }
@@ -915,7 +922,7 @@
       document.getElementById('darkModeIcon').className = isDark ? 'fa-solid fa-sun text-warning' : 'fa-solid fa-moon'; showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري');
     }
 
-    // دالة التنبيه الآمنة والمحصنة من أي خطأ
+    // دالة التنبيه الآمنة
     function showToast(msg) {
       try {
         const msgEl = document.getElementById('toastMessage');
@@ -925,13 +932,24 @@
           new bootstrap.Toast(toastEl, { delay: 3000 }).show();
         }
       } catch (e) {
-        console.log('Toast notification:', msg);
+        console.log('Toast:', msg);
       }
     }
 
     function manualRefresh() {
       const icon = document.getElementById('refreshSpin'); icon.classList.add('fa-spin');
-      setTimeout(() => { icon.classList.remove('fa-spin'); if (currentRole === 'technician') renderTechOrders(); if (currentRole === 'admin') { renderAdminOrders(); renderAdminTechsGrid(); } showToast('تمت المزامنة بنجاح'); }, 500);
+      setTimeout(() => { 
+        icon.classList.remove('fa-spin'); 
+        if (currentRole === 'technician') renderTechOrders(); 
+        if (currentRole === 'admin') { 
+          renderAdminOrders(); 
+          renderAdminTechsGrid(); 
+          if (!document.getElementById('adminSectionMap').classList.contains('d-none')) {
+            initMap();
+          }
+        } 
+        showToast('تمت المزامنة بنجاح'); 
+      }, 500);
     }
 
     function openAdminLoginModal() { document.getElementById('adminInputPass').value = ''; new bootstrap.Modal(document.getElementById('adminLoginModal')).show(); }
@@ -1054,12 +1072,31 @@
       document.querySelectorAll('#adminMainView .kpi-card').forEach(c => c.classList.remove('active')); event.currentTarget.classList.add('active');
       document.getElementById('adminFilterStatusSelect').value = statusVal === 'all' ? '' : statusVal; renderAdminOrders(); document.getElementById('adminOrdersContainer').scrollIntoView({ behavior: 'smooth' });
     }
+    
     function switchAdminSection(sec) {
-      document.getElementById('adminSectionOrders').classList.add('d-none'); document.getElementById('adminSectionTechs').classList.add('d-none'); document.getElementById('adminSectionMap').classList.add('d-none');
-      document.getElementById('btnAdminTabOrders').className = 'btn btn-outline-primary fw-bold'; document.getElementById('btnAdminTabTechs').className = 'btn btn-outline-primary fw-bold'; document.getElementById('btnAdminTabMap').className = 'btn btn-outline-primary fw-bold';
-      if (sec === 'orders') { document.getElementById('adminSectionOrders').classList.remove('d-none'); document.getElementById('btnAdminTabOrders').className = 'btn btn-primary fw-bold'; renderAdminOrders(); } 
-      else if (sec === 'techs') { document.getElementById('adminSectionTechs').classList.remove('d-none'); document.getElementById('btnAdminTabTechs').className = 'btn btn-primary fw-bold'; renderAdminTechsGrid(); } 
-      else if (sec === 'map') { document.getElementById('adminSectionMap').classList.remove('d-none'); document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold'; setTimeout(initMap, 200); }
+      document.getElementById('adminSectionOrders').classList.add('d-none'); 
+      document.getElementById('adminSectionTechs').classList.add('d-none'); 
+      document.getElementById('adminSectionMap').classList.add('d-none');
+      
+      document.getElementById('btnAdminTabOrders').className = 'btn btn-outline-primary fw-bold'; 
+      document.getElementById('btnAdminTabTechs').className = 'btn btn-outline-primary fw-bold'; 
+      document.getElementById('btnAdminTabMap').className = 'btn btn-outline-primary fw-bold';
+      
+      if (sec === 'orders') { 
+        document.getElementById('adminSectionOrders').classList.remove('d-none'); 
+        document.getElementById('btnAdminTabOrders').className = 'btn btn-primary fw-bold'; 
+        renderAdminOrders(); 
+      } 
+      else if (sec === 'techs') { 
+        document.getElementById('adminSectionTechs').classList.remove('d-none'); 
+        document.getElementById('btnAdminTabTechs').className = 'btn btn-primary fw-bold'; 
+        renderAdminTechsGrid(); 
+      } 
+      else if (sec === 'map') { 
+        document.getElementById('adminSectionMap').classList.remove('d-none'); 
+        document.getElementById('btnAdminTabMap').className = 'btn btn-primary fw-bold'; 
+        initMap(); 
+      }
     }
 
     function clearAdminDateFilter() { document.getElementById('adminFilterDate').value = ''; renderAdminOrders(); }
@@ -1167,13 +1204,12 @@
     }
     function showTechProfileModal() { if (currentTech) viewTechIdCard(currentTech.id); }
 
-    // ==================== منطق إدخال الفاتورة السلس (بدون اختفاء الكيبورد ومحمي بالكامل) ====================
+    // ==================== منطق إدخال الفاتورة السلس ====================
     function openOfficialInvoiceModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
       document.getElementById('invoiceOrderId').value = order.id;
 
-      // ملء بيانات العميل والجهاز
       document.getElementById('inputInvClientName').value = order.clientName;
       document.getElementById('inputInvClientPhone').value = order.clientPhone;
       document.getElementById('inputInvClientAddress').value = order.clientAddress;
@@ -1227,7 +1263,6 @@
     function addInvoicePartRow() { invoicePartsData.push({ name: '', qty: 1, price: 0 }); renderInvoiceInputTable(); }
     function removeInvoicePart(i) { if (invoicePartsData.length > 1) { invoicePartsData.splice(i, 1); renderInvoiceInputTable(); } }
     
-    // تم تأمين هذه الدالة بنسبة 100% لتفادي خطأ Cannot set properties of null
     function calcInvoiceTotal() {
       let total = 0;
       invoicePartsData.forEach(p => total += (parseFloat(p.qty)||1) * (parseFloat(p.price)||0));
@@ -1274,7 +1309,6 @@
         const totalCost = payload.totalCost;
         const warrantyDuration = payload.warrantyDuration || 'عام';
 
-        // ضبط نصوص الضمان حسب الاختيار بدقة
         let sealText = 'لمدة عام';
         let termsWarrantyText = 'ضمان لمدة عام من تاريخ الفاتورة';
         if (warrantyDuration === 'ستة أشهر') {
@@ -1304,7 +1338,6 @@
           `;
         });
 
-        // شعار كريازي الأصلي بدقة SVG
         const kiriaziOfficialSvgLogo = `
           <svg width="220" height="95" viewBox="0 0 220 95" xmlns="http://www.w3.org/2000/svg" style="display:inline-block; vertical-align:middle;">
             <ellipse cx="110" cy="52" rx="104" ry="40" fill="#035e29" stroke="#fed800" stroke-width="5" />
@@ -1320,7 +1353,6 @@
           </svg>
         `;
 
-        // 1. القالب الإلكتروني الحديث
         if (payload.templateType === 'kiriazi_electronic') {
           container.innerHTML = `
             <div class="invoice-render-box">
@@ -1388,7 +1420,6 @@
             </div>
           `;
         } 
-        // 2. قالب المركز المعتمد (19387)
         else if (payload.templateType === 'authorized') {
           container.innerHTML = `
             <div class="invoice-render-box">
@@ -1459,7 +1490,6 @@
             </div>
           `;
         }
-        // 3. قالب كيريازي الكلاسيكي (Electric for Home Appliances)
         else {
           container.innerHTML = `
             <div class="invoice-render-box">
@@ -1559,7 +1589,7 @@
                 showToast('تمت مشاركة الفاتورة بنجاح!');
                 return;
               } catch (e) {
-                // البديل المباشر
+                // البديل
               }
             }
 
@@ -1582,6 +1612,125 @@
 
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
+      }
+    }
+
+    // ==================== دوال التاريخ ====================
+    let activeDateInputId = null; let calYear = new Date().getFullYear(); let calMonth = new Date().getMonth();
+    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+
+    function openDateModal(inputId) { activeDateInputId = inputId; renderDateModalCalendar(); new bootstrap.Modal(document.getElementById('datePickerModal')).show(); }
+    function renderDateModalCalendar() {
+      document.getElementById('dateModalTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
+      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); const firstDayEgypt = (firstDayJs + 1) % 7; const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayStr = getLocalDateStr(); const currentVal = activeDateInputId ? document.getElementById(activeDateInputId)?.value : '';
+      let html = ''; for (let i = 0; i < firstDayEgypt; i++) html += '<div></div>';
+      for (let d = 1; d <= totalDays; d++) {
+        const fullDate = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        let bg = 'btn-outline-secondary'; if (fullDate === currentVal) bg = 'btn-primary text-white'; else if (fullDate === todayStr) bg = 'btn-outline-primary fw-bold';
+        html += `<button type="button" class="btn btn-sm ${bg} p-1" onclick="selectCalendarDate('${fullDate}')">${d}</button>`;
+      }
+      document.getElementById('dateModalDaysGrid').innerHTML = html;
+    }
+    function prevCalMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderDateModalCalendar(); }
+    function nextCalMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderDateModalCalendar(); }
+    function selectCalendarDate(dateStr) { if (activeDateInputId) { document.getElementById(activeDateInputId).value = dateStr; if (activeDateInputId === 'techFilterDate') renderTechOrders(); if (activeDateInputId === 'adminFilterDate') renderAdminOrders(); } bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide(); }
+    function selectYesterday() { selectCalendarDate(getLocalDateStr(new Date(new Date().setDate(new Date().getDate() - 1)))); }
+    function clearCurrentDatePicker() { selectCalendarDate(''); }
+
+    // ==================== دوال الخريطة المحصنة بالكامل ====================
+    function initMap() {
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) return;
+
+      if (!mapInstance) {
+        mapInstance = L.map('map', {
+          zoomControl: true,
+          fadeAnimation: true
+        }).setView([30.0444, 31.2357], 12);
+
+        // استخدام OpenStreetMap الموثوق مع fallback
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        }).addTo(mapInstance);
+      }
+
+      // تأخير كافٍ لضمان احتساب أبعاد الحاوية بعد التبديل
+      setTimeout(() => {
+        if (mapInstance) {
+          mapInstance.invalidateSize();
+          populateMapTechFilterSelect();
+          filterMapByTech(document.getElementById('mapTechFilterSelect')?.value || 'all');
+        }
+      }, 350);
+    }
+
+    function populateMapTechFilterSelect() {
+      const sel = document.getElementById('mapTechFilterSelect');
+      if (!sel) return;
+      const currentVal = sel.value;
+      sel.innerHTML = `<option value="all">📍 عرض جميع الفنيين على الخريطة</option>` + globalTechs.map(t => `<option value="${t.id}">👤 ${t.name} (${t.code || t.id})</option>`).join('');
+      if (currentVal) sel.value = currentVal;
+    }
+
+    function filterMapByTech(techId) {
+      if (!mapInstance) return;
+      for (let k in mapMarkers) mapInstance.removeLayer(mapMarkers[k]);
+      mapMarkers = {};
+      if (mapRoutePolyline) { mapInstance.removeLayer(mapRoutePolyline); mapRoutePolyline = null; }
+
+      if (techId === 'all') {
+        globalTechs.forEach(t => {
+          const lat = parseFloat(t.lat) || 30.0444;
+          const lng = parseFloat(t.lng) || 31.2357;
+          const customIcon = L.divIcon({ 
+            className: 'custom-map-avatar', 
+            html: `<div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
+            iconSize: [44, 44], 
+            iconAnchor: [22, 22] 
+          });
+          const marker = L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance);
+          marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code || t.id}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`); 
+          mapMarkers[t.id] = marker;
+        });
+        mapInstance.setView([30.0444, 31.2357], 12); 
+        const statusEl = document.getElementById('lastMapUpdateText');
+        if (statusEl) statusEl.innerText = `تم عرض جميع الفنيين (${globalTechs.length})`;
+      } else {
+        const t = globalTechs.find(x => x.id === techId); 
+        if (!t) return;
+        const lat = parseFloat(t.lat) || 30.0444;
+        const lng = parseFloat(t.lng) || 31.2357;
+        const customIcon = L.divIcon({ 
+          className: 'custom-map-avatar', 
+          html: `<div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
+          iconSize: [48, 48], 
+          iconAnchor: [24, 24] 
+        });
+        const techMarker = L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance); 
+        techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code || t.id}<br>هاتف: ${t.phone}`).openPopup(); 
+        mapMarkers['tech'] = techMarker;
+
+        const routePoints = [[lat, lng]]; 
+        const todayStr = getLocalDateStr(); 
+        const techOrders = globalOrders.filter(o => o.assignedTechId === t.id && (o.date === todayStr || o.statusDate === todayStr));
+        
+        techOrders.forEach((ord, index) => {
+          const ordLat = lat + (index + 1) * 0.007 * (index % 2 === 0 ? 1 : -1); 
+          const ordLng = lng + (index + 1) * 0.007 * (index % 2 === 0 ? -1 : 1);
+          routePoints.push([ordLat, ordLng]); 
+          const orderMarker = L.marker([ordLat, ordLng]).addTo(mapInstance); 
+          orderMarker.bindPopup(`<b>عميل رقم ${index + 1}: ${ord.clientName}</b><br>${ord.device}<br>الحالة: ${ord.status}`); 
+          mapMarkers['ord_' + ord.id] = orderMarker;
+        });
+
+        if (routePoints.length > 1) { 
+          mapRoutePolyline = L.polyline(routePoints, { color: '#0d6efd', weight: 4, opacity: 0.8, dashArray: '8, 8' }).addTo(mapInstance); 
+        }
+        mapInstance.setView([lat, lng], 14); 
+        const statusEl = document.getElementById('lastMapUpdateText');
+        if (statusEl) statusEl.innerText = `خط سير: ${t.name} (لديه ${techOrders.length} بلاغات اليوم)`;
       }
     }
   </script>
