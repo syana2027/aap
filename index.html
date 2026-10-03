@@ -709,7 +709,7 @@
             </div>
           </div>
 
-          <!-- جدول البنود المستقر المحمي من أخطاء DOM -->
+          <!-- جدول البنود المستقر المحمي بالكامل -->
           <div class="table-responsive bg-white rounded border">
             <table class="table table-bordered table-sm mb-0 text-center align-middle">
               <thead class="table-dark">
@@ -742,6 +742,16 @@
 
   <!-- ==================== الحاوية المخفية (التي يتم تصويرها بجودة عالية) ==================== -->
   <div id="hiddenInvoiceContainer"></div>
+
+  <!-- حاوية التنبيهات Toast المحمية المضافة صراحةً لمنع أي انهيار -->
+  <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 99999;">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body fw-bold" id="toastMessage">تم بنجاح</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
 
   <!-- باقي المودالات العامة -->
   <div class="modal fade" id="datePickerModal" tabindex="-1">
@@ -905,7 +915,19 @@
       document.getElementById('darkModeIcon').className = isDark ? 'fa-solid fa-sun text-warning' : 'fa-solid fa-moon'; showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري');
     }
 
-    function showToast(msg) { document.getElementById('toastMessage').innerText = msg; new bootstrap.Toast(document.getElementById('liveToast'), { delay: 3000 }).show(); }
+    // دالة التنبيه الآمنة والمحصنة من أي خطأ
+    function showToast(msg) {
+      try {
+        const msgEl = document.getElementById('toastMessage');
+        if (msgEl) msgEl.innerText = msg;
+        const toastEl = document.getElementById('liveToast');
+        if (toastEl && window.bootstrap && typeof bootstrap.Toast === 'function') {
+          new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+        }
+      } catch (e) {
+        console.log('Toast notification:', msg);
+      }
+    }
 
     function manualRefresh() {
       const icon = document.getElementById('refreshSpin'); icon.classList.add('fa-spin');
@@ -1537,7 +1559,7 @@
                 showToast('تمت مشاركة الفاتورة بنجاح!');
                 return;
               } catch (e) {
-                // في حال الإلغاء نمر للتنزيل وفتح الواتساب
+                // البديل المباشر
               }
             }
 
@@ -1560,78 +1582,6 @@
 
       } catch (err) {
         alert('حدث خطأ: ' + err.message);
-      }
-    }
-
-    // ==================== دوال التاريخ ====================
-    let activeDateInputId = null; let calYear = new Date().getFullYear(); let calMonth = new Date().getMonth();
-    const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-
-    function openDateModal(inputId) { activeDateInputId = inputId; renderDateModalCalendar(); new bootstrap.Modal(document.getElementById('datePickerModal')).show(); }
-    function renderDateModalCalendar() {
-      document.getElementById('dateModalTitle').innerText = `${ARABIC_MONTHS[calMonth]} ${calYear}`;
-      const firstDayJs = new Date(calYear, calMonth, 1).getDay(); const firstDayEgypt = (firstDayJs + 1) % 7; const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
-      const todayStr = getLocalDateStr(); const currentVal = activeDateInputId ? document.getElementById(activeDateInputId)?.value : '';
-      let html = ''; for (let i = 0; i < firstDayEgypt; i++) html += '<div></div>';
-      for (let d = 1; d <= totalDays; d++) {
-        const fullDate = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        let bg = 'btn-outline-secondary'; if (fullDate === currentVal) bg = 'btn-primary text-white'; else if (fullDate === todayStr) bg = 'btn-outline-primary fw-bold';
-        html += `<button type="button" class="btn btn-sm ${bg} p-1" onclick="selectCalendarDate('${fullDate}')">${d}</button>`;
-      }
-      document.getElementById('dateModalDaysGrid').innerHTML = html;
-    }
-    function prevCalMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderDateModalCalendar(); }
-    function nextCalMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderDateModalCalendar(); }
-    function selectCalendarDate(dateStr) { if (activeDateInputId) { document.getElementById(activeDateInputId).value = dateStr; if (activeDateInputId === 'techFilterDate') renderTechOrders(); if (activeDateInputId === 'adminFilterDate') renderAdminOrders(); } bootstrap.Modal.getInstance(document.getElementById('datePickerModal')).hide(); }
-    function selectYesterday() { selectCalendarDate(getLocalDateStr(new Date(new Date().setDate(new Date().getDate() - 1)))); }
-    function clearCurrentDatePicker() { selectCalendarDate(''); }
-
-    // ==================== الخريطة ====================
-    function initMap() {
-      const mapContainer = document.getElementById('map');
-      if (!mapContainer) return;
-      if (!mapInstance) {
-        mapInstance = L.map('map').setView([30.0444, 31.2357], 12);
-        L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(mapInstance);
-      }
-      mapInstance.invalidateSize();
-      populateMapTechFilterSelect();
-      filterMapByTech('all');
-    }
-
-    function populateMapTechFilterSelect() {
-      const sel = document.getElementById('mapTechFilterSelect');
-      if (!sel) return;
-      const currentVal = sel.value;
-      sel.innerHTML = `<option value="all">📍 عرض جميع الفنيين على الخريطة</option>` + globalTechs.map(t => `<option value="${t.id}">👤 ${t.name} (${t.code || t.id})</option>`).join('');
-      if (currentVal) sel.value = currentVal;
-    }
-
-    function filterMapByTech(techId) {
-      if (!mapInstance) return;
-      for (let k in mapMarkers) mapInstance.removeLayer(mapMarkers[k]);
-      mapMarkers = {};
-      if (mapRoutePolyline) { mapInstance.removeLayer(mapRoutePolyline); mapRoutePolyline = null; }
-
-      if (techId === 'all') {
-        globalTechs.forEach(t => {
-          const customIcon = L.divIcon({ className: 'custom-map-avatar', html: `<div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;"></div>`, iconSize: [44, 44], iconAnchor: [22, 22] });
-          const marker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance);
-          marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`); mapMarkers[t.id] = marker;
-        });
-        mapInstance.setView([30.0444, 31.2357], 12); document.getElementById('lastMapUpdateText').innerText = `تم عرض جميع الفنيين (${globalTechs.length})`;
-      } else {
-        const t = globalTechs.find(x => x.id === techId); if (!t) return;
-        const customIcon = L.divIcon({ className: 'custom-map-avatar', html: `<div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;"></div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
-        const techMarker = L.marker([t.lat, t.lng], { icon: customIcon }).addTo(mapInstance); techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code}<br>هاتف: ${t.phone}`).openPopup(); mapMarkers['tech'] = techMarker;
-
-        const routePoints = [[t.lat, t.lng]]; const todayStr = getLocalDateStr(); const techOrders = globalOrders.filter(o => o.assignedTechId === t.id && (o.date === todayStr || o.statusDate === todayStr));
-        techOrders.forEach((ord, index) => {
-          const ordLat = t.lat + (index + 1) * 0.007 * (index % 2 === 0 ? 1 : -1); const ordLng = t.lng + (index + 1) * 0.007 * (index % 2 === 0 ? -1 : 1);
-          routePoints.push([ordLat, ordLng]); const orderMarker = L.marker([ordLat, ordLng]).addTo(mapInstance); orderMarker.bindPopup(`<b>عميل رقم ${index + 1}: ${ord.clientName}</b><br>${ord.device}<br>الحالة: ${ord.status}`); mapMarkers['ord_' + ord.id] = orderMarker;
-        });
-        if (routePoints.length > 1) { mapRoutePolyline = L.polyline(routePoints, { color: '#0d6efd', weight: 4, opacity: 0.8, dashArray: '8, 8' }).addTo(mapInstance); }
-        mapInstance.setView([t.lat, t.lng], 14); document.getElementById('lastMapUpdateText').innerText = `خط سير: ${t.name} (لديه ${techOrders.length} بلاغات اليوم)`;
       }
     }
   </script>
