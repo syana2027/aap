@@ -198,6 +198,23 @@
       margin-bottom: 12px;
     }
 
+    /* مؤشرات الاتصال الحقيقي */
+    .online-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #28a745;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #28a745;
+    }
+    .offline-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #6c757d;
+      border-radius: 50%;
+    }
+
     /* الوضع الليلي */
     body.dark-mode {
       background-color: #121417 !important;
@@ -366,10 +383,10 @@
       <div>
         <i class="fa-solid fa-location-crosshairs text-primary me-2 fa-lg"></i>
         <strong class="small">مشاركة الموقع المباشر (GPS) مع الإدارة:</strong>
-        <span id="gpsStatusText" class="badge bg-secondary ms-1">جاهز للتفعيل</span>
+        <span id="gpsStatusText" class="badge bg-success ms-1">جاري التتبع التلقائي...</span>
       </div>
-      <button class="btn btn-sm btn-primary fw-bold" onclick="requestTechLiveGPS()">
-        <i class="fa-solid fa-satellite-dish me-1"></i> تفعيل GPS الآن
+      <button class="btn btn-sm btn-outline-primary fw-bold" onclick="requestTechLiveGPS()">
+        <i class="fa-solid fa-arrows-rotate me-1"></i> تحديث الإحداثيات
       </button>
     </div>
 
@@ -563,7 +580,7 @@
       <div class="row g-3" id="adminTechsGridContainer"></div>
     </div>
 
-    <!-- صفحة تفاصيل وسجل أداء الفني (جديدة ومستقلة) -->
+    <!-- صفحة تفاصيل وسجل أداء الفني المستقلة -->
     <div id="adminSectionTechDetail" class="d-none">
       <div class="card border-0 shadow-sm rounded-4 mb-3 bg-white">
         <div class="card-body p-3">
@@ -592,7 +609,7 @@
         </div>
       </div>
 
-      <!-- مؤشرات أداء الفني المالية والعملية -->
+      <!-- مؤشرات أداء الفني -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-md-2">
           <div class="kpi-card" style="border-top: 4px solid #0d6efd;">
@@ -651,11 +668,10 @@
         </div>
       </div>
 
-      <!-- شبكة بلاغات هذا الفني فقط -->
       <div id="techDetailOrdersContainer" class="row g-3"></div>
     </div>
 
-    <!-- خريطة الفنيين المحصنة -->
+    <!-- خريطة الفنيين -->
     <div id="adminSectionMap" class="d-none">
       <div class="card border-0 shadow-sm p-3 bg-white">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -976,7 +992,7 @@
     let globalOrders = []; let globalTechs = [];
     let invoicePartsData = [];
     let mapInstance = null; let mapMarkers = {}; let mapRoutePolyline = null;
-    let selectedDetailTechId = null; // لتخزين الفني المختار في صفحة التفاصيل
+    let selectedDetailTechId = null;
 
     db.ref('orders').on('value', (snap) => {
       const val = snap.val(); globalOrders = val ? Object.values(val) : [];
@@ -1008,7 +1024,13 @@
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
       const savedRole = localStorage.getItem('syana_role'); const savedTech = localStorage.getItem('syana_current_tech');
-      if (savedRole === 'admin') { setRoleAdmin(); } else if (savedRole === 'technician' && savedTech) { setRoleTechnician(JSON.parse(savedTech)); } else { showLoginView(); }
+      if (savedRole === 'admin') { 
+        setRoleAdmin(); 
+      } else if (savedRole === 'technician' && savedTech) { 
+        setRoleTechnician(JSON.parse(savedTech)); 
+      } else { 
+        showLoginView(); 
+      }
     });
 
     function initTheme() {
@@ -1080,25 +1102,80 @@
         if (!val) { alert('لا يوجد بيانات فنيين مسجلة في قاعدة البيانات حالياً!'); return; }
         const techs = Object.values(val);
         const matched = techs.find(t => t && t.username && typeof t.username === 'string' && t.username.trim().toLowerCase() === u && t.password === p);
-        if (matched) { setRoleTechnician(matched); showToast(`أهلاً بك يا فني: ${matched.name}`); requestTechLiveGPS(); } else { alert('خطأ: اسم المستخدم أو كلمة المرور غير صحيحة.'); }
+        if (matched) { 
+          setRoleTechnician(matched); 
+          showToast(`أهلاً بك يا فني: ${matched.name}`); 
+        } else { 
+          alert('خطأ: اسم المستخدم أو كلمة المرور غير صحيحة.'); 
+        }
       }).catch((error) => { alert('عذراً، قاعدة بيانات Firebase مغلقة!'); console.error(error); });
     }
 
+    // تشغيل الـ GPS وربطه تلقائياً فورياً
     function requestTechLiveGPS() {
       if (!navigator.geolocation) { showToast('جهازك لا يدعم تحديد الموقع.'); return; }
-      const statusBadge = document.getElementById('gpsStatusText'); if (statusBadge) { statusBadge.className = 'badge bg-warning text-dark ms-1'; statusBadge.innerText = 'جاري التحديد...'; }
+      const statusBadge = document.getElementById('gpsStatusText'); 
+      if (statusBadge) { 
+        statusBadge.className = 'badge bg-warning text-dark ms-1'; 
+        statusBadge.innerText = 'جاري التحديد...'; 
+      }
+      
       function handlePosSuccess(pos) {
         if (currentTech) {
-          const lat = pos.coords.latitude; const lng = pos.coords.longitude; const time = new Date().toLocaleTimeString('ar-EG');
-          db.ref('techs/' + currentTech.id).update({ lat: lat, lng: lng, isOnline: true, lastLocationTime: time });
-          if (statusBadge) { statusBadge.className = 'badge bg-success ms-1'; statusBadge.innerText = 'موقعك نشط ✔'; }
+          const lat = pos.coords.latitude; 
+          const lng = pos.coords.longitude; 
+          const time = new Date().toLocaleTimeString('ar-EG');
+          db.ref('techs/' + currentTech.id).update({ 
+            lat: lat, 
+            lng: lng, 
+            isOnline: true, 
+            lastLocationTime: time 
+          });
+          if (statusBadge) { 
+            statusBadge.className = 'badge bg-success ms-1'; 
+            statusBadge.innerText = 'موقعك نشط ✔'; 
+          }
         }
       }
+      
       navigator.geolocation.getCurrentPosition(
-        (pos) => { handlePosSuccess(pos); if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId); window.gpsWatchId = navigator.geolocation.watchPosition(handlePosSuccess, () => {}, { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }); },
-        (err) => { navigator.geolocation.getCurrentPosition(handlePosSuccess, (err2) => { if (statusBadge) { statusBadge.className = 'badge bg-secondary ms-1'; statusBadge.innerText = 'شغل الموقع بالهاتف'; } }, { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }); },
+        (pos) => { 
+          handlePosSuccess(pos); 
+          if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId); 
+          window.gpsWatchId = navigator.geolocation.watchPosition(handlePosSuccess, () => {}, { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }); 
+        },
+        (err) => { 
+          navigator.geolocation.getCurrentPosition(handlePosSuccess, (err2) => { 
+            if (statusBadge) { 
+              statusBadge.className = 'badge bg-secondary ms-1'; 
+              statusBadge.innerText = 'يرجى تشغيل الموقع بالجهاز'; 
+            } 
+          }, { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }); 
+        },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
+    }
+
+    // إدارة التواجد الحقيقي أونلاين وأوفلاين للفني
+    function setupTechPresence(techId) {
+      const connectedRef = db.ref('.info/connected');
+      const techRef = db.ref('techs/' + techId);
+
+      connectedRef.on('value', (snap) => {
+        if (snap.val() === true) {
+          // بمجرد انقطاع الاتصال (قفل الصفحة، المتصفح، أو انقطاع النت)
+          techRef.onDisconnect().update({
+            isOnline: false,
+            lastSeen: new Date().toLocaleTimeString('ar-EG')
+          });
+          
+          // تأكيد أنه متصل الآن
+          techRef.update({
+            isOnline: true,
+            lastSeen: 'متصل الآن'
+          });
+        }
+      });
     }
 
     function setRoleAdmin() {
@@ -1110,10 +1187,29 @@
     function setRoleTechnician(techObj) {
       currentRole = 'technician'; currentTech = techObj; localStorage.setItem('syana_role', 'technician'); localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
       document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.remove('d-none'); document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none'); document.getElementById('logoutBtn').classList.remove('d-none'); const userHeader = document.getElementById('techUserHeader'); userHeader.classList.remove('d-none'); document.getElementById('techHeaderName').innerText = techObj.name; if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo; document.getElementById('roleBadge').className = 'badge bg-success fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
+      
+      // تفعيل الموقع وتواجد الأونلاين الحقيقي تلقائياً فور الدخول
+      setupTechPresence(techObj.id);
+      requestTechLiveGPS();
+      
       renderTechOrders();
     }
 
-    function performLogout() { localStorage.removeItem('syana_role'); localStorage.removeItem('syana_current_tech'); showLoginView(); showToast('تم تسجيل الخروج'); }
+    function performLogout() { 
+      if (currentRole === 'technician' && currentTech) {
+        // تحديث حالته إلى أوفلاين صراحةً قبل تسجيل الخروج
+        db.ref('techs/' + currentTech.id).update({
+          isOnline: false,
+          lastSeen: new Date().toLocaleTimeString('ar-EG')
+        });
+        if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId);
+      }
+      localStorage.removeItem('syana_role'); 
+      localStorage.removeItem('syana_current_tech'); 
+      showLoginView(); 
+      showToast('تم تسجيل الخروج'); 
+    }
+
     function showLoginView() { currentRole = null; currentTech = null; document.getElementById('loginView').classList.remove('d-none'); document.getElementById('techMainView').classList.add('d-none'); document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none'); document.getElementById('logoutBtn').classList.add('d-none'); document.getElementById('techUserHeader').classList.add('d-none'); document.getElementById('roleBadge').className = 'badge bg-secondary'; document.getElementById('roleBadge').innerText = 'تسجيل الدخول'; }
 
     function getStatusClassKey(st) {
@@ -1302,7 +1398,7 @@
       }).join('');
     }
 
-    // ==================== منطق صفحة الفني المستقلة ====================
+    // منطق صفحة الفني المستقلة
     function openTechDetailSection(techId) {
       const tech = globalTechs.find(t => t.id === techId);
       if (!tech) return;
@@ -1343,7 +1439,6 @@
       if (!selectedDetailTechId) return;
       const techOrders = globalOrders.filter(o => o.assignedTechId === selectedDetailTechId);
       
-      // حساب الإحصائيات
       const totalCount = techOrders.length;
       const doneCount = techOrders.filter(o => o.status === 'تم').length;
       const kashfCount = techOrders.filter(o => o.status === 'كشف').length;
@@ -1364,7 +1459,6 @@
       document.getElementById('techDetailReturnOrders').innerText = returnCount;
       document.getElementById('techDetailTotalRevenue').innerText = totalRevenue;
 
-      // تطبيق الفلاتر
       const statusFilter = document.getElementById('techDetailStatusFilter').value;
       const dateFilter = document.getElementById('techDetailDateFilter').value;
 
@@ -1446,7 +1540,7 @@
 
     function saveTechnician(e) {
       e.preventDefault(); const existingId = document.getElementById('techFormId').value; const techId = existingId || ('T' + Math.floor(100 + Math.random() * 900));
-      const techObj = { id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(), username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(), phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة', photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '', isOnline: true, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04 };
+      const techObj = { id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(), username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(), phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة', photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '', isOnline: false, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04 };
       db.ref('techs/' + techId).set(techObj).then(() => { bootstrap.Modal.getInstance(document.getElementById('techModal')).hide(); showToast('تم حفظ وتحديث بيانات الفني بنجاح!'); });
     }
 
@@ -1461,7 +1555,7 @@
     }
     function showTechProfileModal() { if (currentTech) viewTechIdCard(currentTech.id); }
 
-    // ==================== منطق إدخال الفاتورة السلس ====================
+    // منطق الفاتورة
     function openOfficialInvoiceModal(orderId) {
       const order = globalOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -1554,7 +1648,7 @@
       return payload;
     }
 
-    // ==================== بناء وتصوير الفاتورة المرجعية المخفية كصورة ====================
+    // بناء وتوليد صورة الفاتورة
     async function generateAndSendImage() {
       try {
         const payload = saveOfficialInvoice();
@@ -1872,7 +1966,7 @@
       }
     }
 
-    // ==================== دوال التاريخ ====================
+    // دوال التاريخ
     let activeDateInputId = null; let calYear = new Date().getFullYear(); let calMonth = new Date().getMonth();
     const ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
@@ -1903,7 +1997,7 @@
     function selectYesterday() { selectCalendarDate(getLocalDateStr(new Date(new Date().setDate(new Date().getDate() - 1)))); }
     function clearCurrentDatePicker() { selectCalendarDate(''); }
 
-    // ==================== دوال الخريطة المحصنة بالكامل ====================
+    // دوال الخريطة المحصنة
     function initMap() {
       const mapContainer = document.getElementById('map');
       if (!mapContainer) return;
