@@ -189,6 +189,25 @@
       padding: 12px 18px;
     }
 
+    /* مؤشرات الاتصال الحقيقي */
+    .online-indicator {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      background-color: #28a745;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #28a745;
+      vertical-align: middle;
+    }
+    .offline-indicator {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      background-color: #6c757d;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
     /* بطاقة تفاصيل البلاغ */
     .detail-section-card {
       background: #f8fafc;
@@ -196,23 +215,6 @@
       border: 1px solid #e2e8f0;
       padding: 12px 14px;
       margin-bottom: 12px;
-    }
-
-    /* مؤشرات الاتصال الحقيقي */
-    .online-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background-color: #28a745;
-      border-radius: 50%;
-      box-shadow: 0 0 6px #28a745;
-    }
-    .offline-indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background-color: #6c757d;
-      border-radius: 50%;
     }
 
     /* الوضع الليلي */
@@ -983,6 +985,11 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
+    // دالة فحص وتأكيد حالة الاتصال الصريحة (تمنع العكس نهائياً)
+    function checkIsOnline(val) {
+      return (val === true || val === 'true' || val === 1 || val === '1');
+    }
+
     function getLocalDateStr(dateObj = new Date()) {
       const year = dateObj.getFullYear(); const month = String(dateObj.getMonth() + 1).padStart(2, '0'); const day = String(dateObj.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
@@ -1111,7 +1118,6 @@
       }).catch((error) => { alert('عذراً، قاعدة بيانات Firebase مغلقة!'); console.error(error); });
     }
 
-    // تشغيل الـ GPS وربطه تلقائياً فورياً
     function requestTechLiveGPS() {
       if (!navigator.geolocation) { showToast('جهازك لا يدعم تحديد الموقع.'); return; }
       const statusBadge = document.getElementById('gpsStatusText'); 
@@ -1156,20 +1162,17 @@
       );
     }
 
-    // إدارة التواجد الحقيقي أونلاين وأوفلاين للفني
     function setupTechPresence(techId) {
       const connectedRef = db.ref('.info/connected');
       const techRef = db.ref('techs/' + techId);
 
       connectedRef.on('value', (snap) => {
         if (snap.val() === true) {
-          // بمجرد انقطاع الاتصال (قفل الصفحة، المتصفح، أو انقطاع النت)
           techRef.onDisconnect().update({
             isOnline: false,
             lastSeen: new Date().toLocaleTimeString('ar-EG')
           });
           
-          // تأكيد أنه متصل الآن
           techRef.update({
             isOnline: true,
             lastSeen: 'متصل الآن'
@@ -1188,16 +1191,13 @@
       currentRole = 'technician'; currentTech = techObj; localStorage.setItem('syana_role', 'technician'); localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
       document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.remove('d-none'); document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none'); document.getElementById('logoutBtn').classList.remove('d-none'); const userHeader = document.getElementById('techUserHeader'); userHeader.classList.remove('d-none'); document.getElementById('techHeaderName').innerText = techObj.name; if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo; document.getElementById('roleBadge').className = 'badge bg-success fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
       
-      // تفعيل الموقع وتواجد الأونلاين الحقيقي تلقائياً فور الدخول
       setupTechPresence(techObj.id);
       requestTechLiveGPS();
-      
       renderTechOrders();
     }
 
     function performLogout() { 
       if (currentRole === 'technician' && currentTech) {
-        // تحديث حالته إلى أوفلاين صراحةً قبل تسجيل الخروج
         db.ref('techs/' + currentTech.id).update({
           isOnline: false,
           lastSeen: new Date().toLocaleTimeString('ar-EG')
@@ -1358,21 +1358,26 @@
 
     function deleteOrder(orderId) { if (confirm('هل أنت متأكد من حذف هذا البلاغ؟')) { db.ref('orders/' + orderId).remove().then(() => showToast('تم الحذف')); } }
 
+    // عرض شبكة الفنيين مع تصحيح شرط الاتصال الصريح
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => {
+        const isOnline = checkIsOnline(t.isOnline);
         const techTotalOrders = globalOrders.filter(o => o.assignedTechId === t.id).length;
         const techDoneOrders = globalOrders.filter(o => o.assignedTechId === t.id && o.status === 'تم').length;
         return `
           <div class="col-12 col-md-6 col-lg-4">
             <div class="card border-0 shadow-sm p-3 h-100 bg-white rounded-3">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <img src="${t.photo || 'https://via.placeholder.com/80'}" class="rounded-circle shadow-sm" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #0d6efd;">
+                <img src="${t.photo || 'https://via.placeholder.com/80'}" class="rounded-circle shadow-sm" style="width: 65px; height: 65px; object-fit: cover; border: 3px solid ${isOnline ? '#28a745' : '#adb5bd'};">
                 <div>
                   <h6 class="fw-bold mb-0">${t.name}</h6>
                   <span class="badge bg-success-subtle text-success py-0 my-1 small"><i class="fa-solid fa-check-circle"></i> معتمد سحابياً</span>
                   <div class="small text-muted">${t.specialty || 'صيانة عامة'}</div>
-                  <div class="small"><span class="${t.isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span><span class="${t.isOnline ? 'text-success fw-bold' : 'text-secondary'}">${t.isOnline ? 'متصل الآن' : 'غير متصل'}</span></div>
+                  <div class="small">
+                    <span class="${isOnline ? 'online-indicator' : 'offline-indicator'} me-1"></span>
+                    <strong class="${isOnline ? 'text-success' : 'text-secondary'}">${isOnline ? 'متصل الآن' : 'غير متصل'}</strong>
+                  </div>
                 </div>
               </div>
               <div class="bg-light p-2 rounded small mb-2">
@@ -1419,14 +1424,16 @@
     }
 
     function updateTechDetailHeader(tech) {
+      const isOnline = checkIsOnline(tech.isOnline);
       document.getElementById('detailTechAvatar').src = tech.photo || 'https://via.placeholder.com/80';
+      document.getElementById('detailTechAvatar').style.borderColor = isOnline ? '#28a745' : '#adb5bd';
       document.getElementById('detailTechName').innerText = tech.name;
       document.getElementById('detailTechCode').innerText = 'كود: ' + (tech.code || tech.id);
       document.getElementById('detailTechSpecialty').innerText = tech.specialty || 'صيانة عامة';
       document.getElementById('detailTechPhone').innerText = tech.phone;
       
       const onlineEl = document.getElementById('detailTechOnlineBadge');
-      if (tech.isOnline) {
+      if (isOnline) {
         onlineEl.className = 'badge bg-success';
         onlineEl.innerText = 'متصل الآن';
       } else {
@@ -1648,7 +1655,6 @@
       return payload;
     }
 
-    // بناء وتوليد صورة الفاتورة
     async function generateAndSendImage() {
       try {
         const payload = saveOfficialInvoice();
@@ -2039,16 +2045,17 @@
 
       if (techId === 'all') {
         globalTechs.forEach(t => {
+          const isOnline = checkIsOnline(t.isOnline);
           const lat = parseFloat(t.lat) || 30.0444;
           const lng = parseFloat(t.lng) || 31.2357;
           const customIcon = L.divIcon({ 
             className: 'custom-map-avatar', 
-            html: `<div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${t.isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
+            html: `<div style="position:relative; width:44px; height:44px; border-radius:50%; border:3px solid ${isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.35); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/44'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
             iconSize: [44, 44], 
             iconAnchor: [22, 22] 
           });
           const marker = L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance);
-          marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code || t.id}<br>الحالة: ${t.isOnline ? 'متصل الآن' : 'غير متصل'}`); 
+          marker.bindPopup(`<b>${t.name}</b><br>كود: ${t.code || t.id}<br>الحالة: <strong>${isOnline ? 'متصل الآن' : 'غير متصل'}</strong>`); 
           mapMarkers[t.id] = marker;
         });
         mapInstance.setView([30.0444, 31.2357], 12); 
@@ -2057,16 +2064,17 @@
       } else {
         const t = globalTechs.find(x => x.id === techId); 
         if (!t) return;
+        const isOnline = checkIsOnline(t.isOnline);
         const lat = parseFloat(t.lat) || 30.0444;
         const lng = parseFloat(t.lng) || 31.2357;
         const customIcon = L.divIcon({ 
-          className: 'custom-map-avatar', 
-          html: `<div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid #0d6efd; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
-          iconSize: [48, 48], 
-          iconAnchor: [24, 24] 
+            className: 'custom-map-avatar', 
+            html: `<div style="position:relative; width:48px; height:48px; border-radius:50%; border:3px solid ${isOnline ? '#28a745' : '#6c757d'}; overflow:hidden; box-shadow:0 4px 12px rgba(13,110,253,0.5); background:#fff;"><img src="${t.photo || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; object-fit:cover;"></div>`, 
+            iconSize: [48, 48], 
+            iconAnchor: [24, 24] 
         });
         const techMarker = L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance); 
-        techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code || t.id}<br>هاتف: ${t.phone}`).openPopup(); 
+        techMarker.bindPopup(`<b>موقع الفني: ${t.name}</b><br>كود: ${t.code || t.id}<br>هاتف: ${t.phone}<br>الحالة: <strong>${isOnline ? 'متصل الآن' : 'غير متصل'}</strong>`).openPopup(); 
         mapMarkers['tech'] = techMarker;
 
         const routePoints = [[lat, lng]]; 
