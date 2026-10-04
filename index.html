@@ -189,21 +189,21 @@
       padding: 12px 18px;
     }
 
-    /* مؤشرات الاتصال الحقيقي */
+    /* مؤشرات الاتصال الحقيقي القائمة على النبض */
     .online-indicator {
       display: inline-block;
       width: 11px;
       height: 11px;
       background-color: #28a745;
       border-radius: 50%;
-      box-shadow: 0 0 6px #28a745;
+      box-shadow: 0 0 7px #28a745;
       vertical-align: middle;
     }
     .offline-indicator {
       display: inline-block;
       width: 11px;
       height: 11px;
-      background-color: #6c757d;
+      background-color: #adb5bd;
       border-radius: 50%;
       vertical-align: middle;
     }
@@ -985,9 +985,13 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    // دالة فحص وتأكيد حالة الاتصال الصريحة (تمنع العكس نهائياً)
-    function checkIsOnline(val) {
-      return (val === true || val === 'true' || val === 1 || val === '1');
+    // فحص الاتصال الحقيقي القائم على نبض الوقت الزمني (Heartbeat)
+    // إذا وصل نبض من جهاز الفني خلال آخر 90 ثانية يعتبر متصلاً، وإلا فهو غير متصل
+    function checkIsOnline(t) {
+      if (!t) return false;
+      const now = Date.now();
+      const lastActive = t.lastSeenTimestamp || 0;
+      return (now - lastActive) < 90000;
     }
 
     function getLocalDateStr(dateObj = new Date()) {
@@ -1000,6 +1004,7 @@
     let invoicePartsData = [];
     let mapInstance = null; let mapMarkers = {}; let mapRoutePolyline = null;
     let selectedDetailTechId = null;
+    let heartbeatTimer = null;
 
     db.ref('orders').on('value', (snap) => {
       const val = snap.val(); globalOrders = val ? Object.values(val) : [];
@@ -1118,6 +1123,20 @@
       }).catch((error) => { alert('عذراً، قاعدة بيانات Firebase مغلقة!'); console.error(error); });
     }
 
+    // إرسال نبض الحياة للموقع والاتصال
+    function sendHeartbeat(pos) {
+      if (!currentTech) return;
+      const updateData = {
+        lastSeenTimestamp: Date.now(),
+        lastLocationTime: new Date().toLocaleTimeString('ar-EG')
+      };
+      if (pos && pos.coords) {
+        updateData.lat = pos.coords.latitude;
+        updateData.lng = pos.coords.longitude;
+      }
+      db.ref('techs/' + currentTech.id).update(updateData);
+    }
+
     function requestTechLiveGPS() {
       if (!navigator.geolocation) { showToast('جهازك لا يدعم تحديد الموقع.'); return; }
       const statusBadge = document.getElementById('gpsStatusText'); 
@@ -1127,20 +1146,10 @@
       }
       
       function handlePosSuccess(pos) {
-        if (currentTech) {
-          const lat = pos.coords.latitude; 
-          const lng = pos.coords.longitude; 
-          const time = new Date().toLocaleTimeString('ar-EG');
-          db.ref('techs/' + currentTech.id).update({ 
-            lat: lat, 
-            lng: lng, 
-            isOnline: true, 
-            lastLocationTime: time 
-          });
-          if (statusBadge) { 
-            statusBadge.className = 'badge bg-success ms-1'; 
-            statusBadge.innerText = 'موقعك نشط ✔'; 
-          }
+        sendHeartbeat(pos);
+        if (statusBadge) { 
+          statusBadge.className = 'badge bg-success ms-1'; 
+          statusBadge.innerText = 'موقعك نشط ✔'; 
         }
       }
       
@@ -1151,37 +1160,29 @@
           window.gpsWatchId = navigator.geolocation.watchPosition(handlePosSuccess, () => {}, { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }); 
         },
         (err) => { 
-          navigator.geolocation.getCurrentPosition(handlePosSuccess, (err2) => { 
-            if (statusBadge) { 
-              statusBadge.className = 'badge bg-secondary ms-1'; 
-              statusBadge.innerText = 'يرجى تشغيل الموقع بالجهاز'; 
-            } 
-          }, { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 }); 
+          sendHeartbeat(null);
+          if (statusBadge) { 
+            statusBadge.className = 'badge bg-secondary ms-1'; 
+            statusBadge.innerText = 'شغل الموقع بالجهاز'; 
+          } 
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     }
 
-    function setupTechPresence(techId) {
-      const connectedRef = db.ref('.info/connected');
-      const techRef = db.ref('techs/' + techId);
-
-      connectedRef.on('value', (snap) => {
-        if (snap.val() === true) {
-          techRef.onDisconnect().update({
-            isOnline: false,
-            lastSeen: new Date().toLocaleTimeString('ar-EG')
-          });
-          
-          techRef.update({
-            isOnline: true,
-            lastSeen: 'متصل الآن'
-          });
+    // تفعيل نبض الوقت كل 25 ثانية لضمان دقة الاتصال
+    function startHeartbeatLoop(techId) {
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      sendHeartbeat(null);
+      heartbeatTimer = setInterval(() => {
+        if (currentRole === 'technician' && currentTech) {
+          sendHeartbeat(null);
         }
-      });
+      }, 25000);
     }
 
     function setRoleAdmin() {
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
       currentRole = 'admin'; currentTech = null; localStorage.setItem('syana_role', 'admin'); localStorage.removeItem('syana_current_tech');
       document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.add('d-none'); document.getElementById('adminMainView').classList.remove('d-none'); document.getElementById('switchRoleBtn').classList.add('d-none'); document.getElementById('logoutBtn').classList.remove('d-none'); document.getElementById('techUserHeader').classList.add('d-none'); document.getElementById('roleBadge').className = 'badge bg-warning text-dark fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-shield-halved me-1"></i> إدارة النظام';
       renderAdminOrders(); renderAdminTechsGrid();
@@ -1191,18 +1192,20 @@
       currentRole = 'technician'; currentTech = techObj; localStorage.setItem('syana_role', 'technician'); localStorage.setItem('syana_current_tech', JSON.stringify(techObj));
       document.getElementById('loginView').classList.add('d-none'); document.getElementById('techMainView').classList.remove('d-none'); document.getElementById('adminMainView').classList.add('d-none'); document.getElementById('switchRoleBtn').classList.remove('d-none'); document.getElementById('logoutBtn').classList.remove('d-none'); const userHeader = document.getElementById('techUserHeader'); userHeader.classList.remove('d-none'); document.getElementById('techHeaderName').innerText = techObj.name; if (techObj.photo) document.getElementById('techHeaderAvatar').src = techObj.photo; document.getElementById('roleBadge').className = 'badge bg-success fw-bold'; document.getElementById('roleBadge').innerHTML = '<i class="fa-solid fa-user-check me-1"></i> فني معتمد';
       
-      setupTechPresence(techObj.id);
+      startHeartbeatLoop(techObj.id);
       requestTechLiveGPS();
       renderTechOrders();
     }
 
     function performLogout() { 
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId);
       if (currentRole === 'technician' && currentTech) {
+        // تصفير وقت النشاط عند تسجيل الخروج ليصبح غير متصل فوراً
         db.ref('techs/' + currentTech.id).update({
-          isOnline: false,
-          lastSeen: new Date().toLocaleTimeString('ar-EG')
+          lastSeenTimestamp: 0,
+          lastLocationTime: new Date().toLocaleTimeString('ar-EG')
         });
-        if (window.gpsWatchId) navigator.geolocation.clearWatch(window.gpsWatchId);
       }
       localStorage.removeItem('syana_role'); 
       localStorage.removeItem('syana_current_tech'); 
@@ -1358,11 +1361,11 @@
 
     function deleteOrder(orderId) { if (confirm('هل أنت متأكد من حذف هذا البلاغ؟')) { db.ref('orders/' + orderId).remove().then(() => showToast('تم الحذف')); } }
 
-    // عرض شبكة الفنيين مع تصحيح شرط الاتصال الصريح
+    // عرض شبكة الفنيين بالاعتماد الحصري على فحص نبض الوقت
     function renderAdminTechsGrid() {
       const container = document.getElementById('adminTechsGridContainer');
       container.innerHTML = globalTechs.map(t => {
-        const isOnline = checkIsOnline(t.isOnline);
+        const isOnline = checkIsOnline(t);
         const techTotalOrders = globalOrders.filter(o => o.assignedTechId === t.id).length;
         const techDoneOrders = globalOrders.filter(o => o.assignedTechId === t.id && o.status === 'تم').length;
         return `
@@ -1424,7 +1427,7 @@
     }
 
     function updateTechDetailHeader(tech) {
-      const isOnline = checkIsOnline(tech.isOnline);
+      const isOnline = checkIsOnline(tech);
       document.getElementById('detailTechAvatar').src = tech.photo || 'https://via.placeholder.com/80';
       document.getElementById('detailTechAvatar').style.borderColor = isOnline ? '#28a745' : '#adb5bd';
       document.getElementById('detailTechName').innerText = tech.name;
@@ -1547,7 +1550,7 @@
 
     function saveTechnician(e) {
       e.preventDefault(); const existingId = document.getElementById('techFormId').value; const techId = existingId || ('T' + Math.floor(100 + Math.random() * 900));
-      const techObj = { id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(), username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(), phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة', photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '', isOnline: false, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04 };
+      const techObj = { id: techId, code: document.getElementById('techCodeInput').value.trim() || ('TECH-' + techId), name: document.getElementById('techName').value.trim(), username: document.getElementById('techUsername').value.trim().toLowerCase(), password: document.getElementById('techPassword').value.trim(), phone: document.getElementById('techPhone').value.trim(), specialty: document.getElementById('techSpecialty').value.trim() || 'صيانة عامة', photo: document.getElementById('techPhotoBase64').value || 'https://via.placeholder.com/90', idCardPhoto: document.getElementById('techIdCardBase64').value || '', lastSeenTimestamp: 0, lat: 30.0444 + (Math.random() - 0.5) * 0.04, lng: 31.2357 + (Math.random() - 0.5) * 0.04 };
       db.ref('techs/' + techId).set(techObj).then(() => { bootstrap.Modal.getInstance(document.getElementById('techModal')).hide(); showToast('تم حفظ وتحديث بيانات الفني بنجاح!'); });
     }
 
@@ -2045,7 +2048,7 @@
 
       if (techId === 'all') {
         globalTechs.forEach(t => {
-          const isOnline = checkIsOnline(t.isOnline);
+          const isOnline = checkIsOnline(t);
           const lat = parseFloat(t.lat) || 30.0444;
           const lng = parseFloat(t.lng) || 31.2357;
           const customIcon = L.divIcon({ 
@@ -2064,7 +2067,7 @@
       } else {
         const t = globalTechs.find(x => x.id === techId); 
         if (!t) return;
-        const isOnline = checkIsOnline(t.isOnline);
+        const isOnline = checkIsOnline(t);
         const lat = parseFloat(t.lat) || 30.0444;
         const lng = parseFloat(t.lng) || 31.2357;
         const customIcon = L.divIcon({ 
